@@ -24,18 +24,37 @@ class FeaturelyApiClient {
     required Future<String> Function() deviceIdProvider,
     http.Client? httpClient,
     Duration Function(int attempt)? readRetryDelay,
+    void Function(String operation, Object error)? onError,
   })  : _baseUrl = baseUrl,
         _apiKey = apiKey,
         _deviceIdProvider = deviceIdProvider,
         _http = httpClient ?? http.Client(),
         _readRetryDelay = readRetryDelay ??
-            ((attempt) => Duration(milliseconds: 400 * (1 << attempt)));
+            ((attempt) => Duration(milliseconds: 400 * (1 << attempt))),
+        _onError = onError;
 
   final String _baseUrl;
   final String _apiKey;
   final Future<String> Function() _deviceIdProvider;
   final http.Client _http;
   final Duration Function(int attempt) _readRetryDelay;
+  final void Function(String operation, Object error)? _onError;
+
+  /// Runs [run], reporting the error to the host's listener when the
+  /// operation ultimately fails (after any retries). Listener exceptions
+  /// never propagate into the SDK.
+  Future<T> _reporting<T>(String operation, Future<T> Function() run) async {
+    try {
+      return await run();
+    } catch (error) {
+      try {
+        _onError?.call(operation, error);
+      } catch (_) {
+        // A throwing host listener must not break the SDK's own handling.
+      }
+      rethrow;
+    }
+  }
 
   static const int _maxReadRetries = 2;
 
@@ -60,53 +79,58 @@ class FeaturelyApiClient {
     FeedbackStatus? status,
     String? cursor,
     int? limit,
-  }) async {
-    final json = await _getJson('/feedback', {
-      'sort': sort.wire,
-      if (status != null) 'status': status.wire,
-      if (cursor != null) 'cursor': cursor,
-      if (limit != null) 'limit': '$limit',
-    });
-    final items = ((json['items'] as List<dynamic>?) ?? const [])
-        .whereType<Map<String, dynamic>>()
-        .map(FeedbackItem.fromJson)
-        .toList();
-    return Page(items: items, nextCursor: json['nextCursor'] as String?);
-  }
+  }) =>
+      _reporting('listFeedback', () async {
+        final json = await _getJson('/feedback', {
+          'sort': sort.wire,
+          if (status != null) 'status': status.wire,
+          if (cursor != null) 'cursor': cursor,
+          if (limit != null) 'limit': '$limit',
+        });
+        final items = ((json['items'] as List<dynamic>?) ?? const [])
+            .whereType<Map<String, dynamic>>()
+            .map(FeedbackItem.fromJson)
+            .toList();
+        return Page(items: items, nextCursor: json['nextCursor'] as String?);
+      });
 
   /// `GET /feedback/:id` — detail with comments.
-  Future<FeedbackDetail> getFeedback(String id) async =>
-      FeedbackDetail.fromJson(await _getJson('/feedback/$id'));
+  Future<FeedbackDetail> getFeedback(String id) =>
+      _reporting('getFeedback', () async =>
+          FeedbackDetail.fromJson(await _getJson('/feedback/$id')));
 
   /// `GET /config` — per-project configuration.
-  Future<SdkConfig> getConfig() async =>
-      SdkConfig.fromJson(await _getJson('/config'));
+  Future<SdkConfig> getConfig() => _reporting('getConfig',
+      () async => SdkConfig.fromJson(await _getJson('/config')));
 
   /// `POST /feedback/:id/vote` — idempotent vote.
-  Future<VoteResult> vote(String id) async => VoteResult.fromJson(
-      await _sendJson('POST', '/feedback/$id/vote', expect: 200));
+  Future<VoteResult> vote(String id) =>
+      _reporting('vote', () async => VoteResult.fromJson(
+          await _sendJson('POST', '/feedback/$id/vote', expect: 200)));
 
   /// `DELETE /feedback/:id/vote` — idempotent unvote.
-  Future<VoteResult> unvote(String id) async => VoteResult.fromJson(
-      await _sendJson('DELETE', '/feedback/$id/vote', expect: 200));
+  Future<VoteResult> unvote(String id) =>
+      _reporting('unvote', () async => VoteResult.fromJson(
+          await _sendJson('DELETE', '/feedback/$id/vote', expect: 200)));
 
   /// `POST /feedback/:id/comments` — add a public comment.
-  Future<FeedbackComment> addComment(String id, String body) async =>
-      FeedbackComment.fromJson(await _sendJson(
-        'POST',
-        '/feedback/$id/comments',
-        body: {'body': body},
-        expect: 201,
-      ));
+  Future<FeedbackComment> addComment(String id, String body) =>
+      _reporting('addComment', () async =>
+          FeedbackComment.fromJson(await _sendJson(
+            'POST',
+            '/feedback/$id/comments',
+            body: {'body': body},
+            expect: 201,
+          )));
 
   /// `POST /identify` — link the device to an external user. Idempotent.
-  Future<void> identify(String userId) async =>
-      _sendJson('POST', '/identify', body: {'userId': userId}, expect: 204);
+  Future<void> identify(String userId) => _reporting('identify', () =>
+      _sendJson('POST', '/identify', body: {'userId': userId}, expect: 204));
 
   /// `DELETE /identify` — the logout signal (a server-side no-op; the SDK
   /// completes logout by rotating its device ID).
-  Future<void> unidentify() async =>
-      _sendJson('DELETE', '/identify', expect: 204);
+  Future<void> unidentify() => _reporting(
+      'unidentify', () => _sendJson('DELETE', '/identify', expect: 204));
 
   /// `POST /feedback` — multipart submission. Never auto-retried: a `201`
   /// must never be resubmitted.
@@ -118,36 +142,37 @@ class FeaturelyApiClient {
     Map<String, String> metadata = const {},
     Uint8List? screenshotBytes,
     String? screenshotContentType,
-  }) async {
-    final request = http.MultipartRequest('POST', _uri('/feedback'));
-    request.headers.addAll(await authHeaders());
-    request.fields['title'] = title;
-    request.fields['description'] = description;
-    request.fields['type'] = type.wire;
-    if (email != null && email.isNotEmpty) request.fields['email'] = email;
-    request.fields.addAll(metadata);
-    if (screenshotBytes != null) {
-      final contentType = screenshotContentType ?? 'image/png';
-      request.files.add(http.MultipartFile.fromBytes(
-        'screenshot',
-        screenshotBytes,
-        filename: 'screenshot.${contentType.split('/').last}',
-        contentType: MediaType.parse(contentType),
-      ));
-    }
-    final http.Response response;
-    try {
-      response = await http.Response.fromStream(await _http.send(request));
-    } on FeaturelyApiException {
-      rethrow;
-    } catch (error) {
-      throw FeaturelyNetworkException(error);
-    }
-    if (response.statusCode == 201) {
-      return FeedbackItem.fromJson(_decodeMap(response.body));
-    }
-    throw _errorFor(response);
-  }
+  }) =>
+      _reporting('submitFeedback', () async {
+        final request = http.MultipartRequest('POST', _uri('/feedback'));
+        request.headers.addAll(await authHeaders());
+        request.fields['title'] = title;
+        request.fields['description'] = description;
+        request.fields['type'] = type.wire;
+        if (email != null && email.isNotEmpty) request.fields['email'] = email;
+        request.fields.addAll(metadata);
+        if (screenshotBytes != null) {
+          final contentType = screenshotContentType ?? 'image/png';
+          request.files.add(http.MultipartFile.fromBytes(
+            'screenshot',
+            screenshotBytes,
+            filename: 'screenshot.${contentType.split('/').last}',
+            contentType: MediaType.parse(contentType),
+          ));
+        }
+        final http.Response response;
+        try {
+          response = await http.Response.fromStream(await _http.send(request));
+        } on FeaturelyApiException {
+          rethrow;
+        } catch (error) {
+          throw FeaturelyNetworkException(error);
+        }
+        if (response.statusCode == 201) {
+          return FeedbackItem.fromJson(_decodeMap(response.body));
+        }
+        throw _errorFor(response);
+      });
 
   /// Closes the underlying HTTP client.
   void dispose() => _http.close();

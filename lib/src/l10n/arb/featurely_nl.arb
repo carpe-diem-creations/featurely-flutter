@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Alle",
   "sdkFilterReset": "Resetten",
   "sdkFilterShowResults": "{count, plural, one {Toon {count} verzoek} other {Toon {count} verzoeken}}",
+  "sdkFilterShowResultsOverflow": "Toon {count}+ verzoeken",
   "sdkStatusOpen": "Open",
   "sdkStatusPlanned": "Gepland",
   "sdkStatusInProgress": "In behandeling",

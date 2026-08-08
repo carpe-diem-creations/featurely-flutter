@@ -77,6 +77,11 @@ class FeaturelyLocalizationsZh extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return '查看 $count+ 条请求';
+  }
+
+  @override
   String get sdkStatusOpen => '待处理';
 
   @override

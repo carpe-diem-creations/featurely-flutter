@@ -170,15 +170,19 @@ class _ListScreenState extends State<ListScreen> {
         );
       case ListPhase.loaded:
         final items = controller.items;
+        final hasFooter = controller.loadingMore || controller.loadMoreFailed;
         return RefreshIndicator.adaptive(
           onRefresh: controller.loadFirst,
           child: ListView.builder(
             controller: _scroll,
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.only(top: 2, bottom: 96),
-            itemCount: items.length + (controller.loadingMore ? 1 : 0),
+            itemCount: items.length + (hasFooter ? 1 : 0),
             itemBuilder: (context, index) {
               if (index >= items.length) {
+                if (controller.loadMoreFailed) {
+                  return _LoadMoreRetryFooter(onRetry: controller.loadMore);
+                }
                 return const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Center(
@@ -200,6 +204,43 @@ class _ListScreenState extends State<ListScreen> {
           ),
         );
     }
+  }
+}
+
+class _LoadMoreRetryFooter extends StatelessWidget {
+  const _LoadMoreRetryFooter({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FeaturelyScope.of(context).theme;
+    final strings = FeaturelyLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Text(
+              strings.sdkListLoadError,
+              style: TextStyle(fontSize: 13, color: theme.textTertiary),
+            ),
+          ),
+          TextButton(
+            onPressed: onRetry,
+            child: Text(
+              strings.sdkCommonRetry,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: theme.accent,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -248,6 +289,19 @@ class _FeedbackRow extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       height: 1.3,
                       color: theme.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  // 1-line excerpt per the spec; newlines collapse so the
+                  // first line of a multi-paragraph description still shows.
+                  Text(
+                    item.description.replaceAll(RegExp(r'\s+'), ' ').trim(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      height: 1.3,
+                      color: theme.textTertiary,
                     ),
                   ),
                   const SizedBox(height: 5),

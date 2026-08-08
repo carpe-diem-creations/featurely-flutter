@@ -428,7 +428,10 @@ neutral surfaces plus the single accent.
 - Optimistic vote UI must render the toggle instantly (<16 ms frame); list scrolling
   uses `ListView.builder` with const-friendly rows; skeletons render immediately while
   the first page loads.
-- Screenshot re-encode runs off the UI thread (`compute`/isolate) for large images.
+- Screenshot re-encode runs off the UI thread: the `dart:ui` codecs decode and
+  encode on the engine's worker threads (a `compute` isolate cannot host `dart:ui`
+  codecs or the platform HEIC decoder), and re-encoded images are downscaled to at
+  most 2048 px on the longest edge to bound the work and the PNG output size.
 - Never trust server `message` strings into UI (English, developer-facing).
 
 ## TESTING REQUIREMENTS

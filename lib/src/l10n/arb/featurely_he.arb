@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "הכול",
   "sdkFilterReset": "איפוס",
   "sdkFilterShowResults": "{count, plural, one {הצגת בקשה אחת} two {הצגת שתי בקשות} other {הצגת {count} בקשות}}",
+  "sdkFilterShowResultsOverflow": "הצגת {count}+ בקשות",
   "sdkStatusOpen": "פתוח",
   "sdkStatusPlanned": "מתוכנן",
   "sdkStatusInProgress": "בתהליך",

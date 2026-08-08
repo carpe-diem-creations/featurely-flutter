@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Mind",
   "sdkFilterReset": "Visszaállítás",
   "sdkFilterShowResults": "{count, plural, one {{count} kérés megjelenítése} other {{count} kérés megjelenítése}}",
+  "sdkFilterShowResultsOverflow": "{count}+ kérés megjelenítése",
   "sdkStatusOpen": "Nyitott",
   "sdkStatusPlanned": "Tervezett",
   "sdkStatusInProgress": "Folyamatban",

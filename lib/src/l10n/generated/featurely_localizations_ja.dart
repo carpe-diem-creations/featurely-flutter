@@ -77,6 +77,11 @@ class FeaturelyLocalizationsJa extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return '$count件以上のリクエストを表示';
+  }
+
+  @override
   String get sdkStatusOpen => '受付中';
 
   @override

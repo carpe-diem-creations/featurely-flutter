@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "सभी",
   "sdkFilterReset": "रीसेट करें",
   "sdkFilterShowResults": "{count, plural, one {{count} अनुरोध देखें} other {{count} अनुरोध देखें}}",
+  "sdkFilterShowResultsOverflow": "{count}+ अनुरोध देखें",
   "sdkStatusOpen": "खुला",
   "sdkStatusPlanned": "योजना में",
   "sdkStatusInProgress": "प्रगति पर",

@@ -78,6 +78,11 @@ class FeaturelyLocalizationsVi extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return 'Xem $count+ yêu cầu';
+  }
+
+  @override
   String get sdkStatusOpen => 'Đang mở';
 
   @override

@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Усі",
   "sdkFilterReset": "Скинути",
   "sdkFilterShowResults": "{count, plural, one {Показати {count} запит} few {Показати {count} запити} many {Показати {count} запитів} other {Показати {count} запиту}}",
+  "sdkFilterShowResultsOverflow": "Показати {count}+ запитів",
   "sdkStatusOpen": "Відкрито",
   "sdkStatusPlanned": "Заплановано",
   "sdkStatusInProgress": "У роботі",

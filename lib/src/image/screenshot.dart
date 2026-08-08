@@ -1,6 +1,12 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+/// The longest edge a re-encoded screenshot may have. Larger images are
+/// scaled down during decode, which bounds both the encode work and the
+/// PNG output size (a full-resolution photo re-encoded to PNG would blow
+/// straight past `attachmentMaxBytes`).
+const int kMaxReencodeDimension = 2048;
+
 /// Image formats the server accepts, decided by magic bytes only.
 enum ScreenshotFormat {
   /// `89 50 4E 47 0D 0A 1A 0A`
@@ -68,19 +74,39 @@ ScreenshotFormat detectScreenshotFormat(Uint8List bytes) {
 }
 
 /// Prepares picked bytes for upload: PNG/JPEG/WebP pass through unchanged;
-/// anything else (e.g. HEIC) is decoded and re-encoded to PNG via `dart:ui`
-/// (the engine decodes and encodes off the UI thread). Returns null when
-/// the bytes cannot be decoded at all.
-Future<PreparedScreenshot?> prepareScreenshot(Uint8List bytes) async {
+/// anything else (e.g. HEIC) is decoded and re-encoded to PNG, downscaled to
+/// at most [maxDimension] on its longest edge.
+///
+/// Threading: the decode and PNG encode run on the engine's worker threads,
+/// not the UI isolate — `dart:ui` codecs are not available in `compute`
+/// isolates, and HEIC decoding needs the platform codecs the engine wraps.
+/// The Dart side only awaits; the dimension cap bounds the engine-side work.
+/// Returns null when the bytes cannot be decoded at all.
+Future<PreparedScreenshot?> prepareScreenshot(
+  Uint8List bytes, {
+  int maxDimension = kMaxReencodeDimension,
+}) async {
   if (bytes.isEmpty) return null;
   final format = detectScreenshotFormat(bytes);
   if (format != ScreenshotFormat.unknown) {
     return PreparedScreenshot(bytes: bytes, contentType: format.contentType);
   }
+  ui.ImmutableBuffer? buffer;
+  ui.ImageDescriptor? descriptor;
   try {
-    final codec = await ui.instantiateImageCodec(bytes);
+    buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+    descriptor = await ui.ImageDescriptor.encoded(buffer);
+    final width = descriptor.width;
+    final height = descriptor.height;
+    final longest = width > height ? width : height;
+    final scale = longest > maxDimension ? maxDimension / longest : 1.0;
+    final codec = await descriptor.instantiateCodec(
+      targetWidth: (width * scale).round().clamp(1, width),
+      targetHeight: (height * scale).round().clamp(1, height),
+    );
     final frame = await codec.getNextFrame();
     final data = await frame.image.toByteData(format: ui.ImageByteFormat.png);
+    frame.image.dispose();
     codec.dispose();
     if (data == null) return null;
     return PreparedScreenshot(
@@ -89,5 +115,8 @@ Future<PreparedScreenshot?> prepareScreenshot(Uint8List bytes) async {
     );
   } catch (_) {
     return null;
+  } finally {
+    descriptor?.dispose();
+    buffer?.dispose();
   }
 }

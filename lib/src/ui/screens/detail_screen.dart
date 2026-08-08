@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../api/models.dart';
@@ -197,6 +198,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 if (showComposer)
                   _Composer(
                     controller: _composer,
+                    maxLength: (scope.config.value ?? const SdkConfig.defaults())
+                        .commentMax,
                     sending: _controller.sendingComment,
                     onSend: () {
                       final text = _composer.text;
@@ -381,11 +384,13 @@ class _CommentTile extends StatelessWidget {
 class _Composer extends StatelessWidget {
   const _Composer({
     required this.controller,
+    required this.maxLength,
     required this.sending,
     required this.onSend,
   });
 
   final TextEditingController controller;
+  final int maxLength;
   final bool sending;
   final VoidCallback onSend;
 
@@ -402,6 +407,15 @@ class _Composer extends StatelessWidget {
             child: TextField(
               controller: controller,
               textInputAction: TextInputAction.send,
+              inputFormatters: [
+                // Grapheme-aware cap at the server's commentMax, matching
+                // the title/description fields (over-long text otherwise
+                // only fails server-side as a generic send error).
+                LengthLimitingTextInputFormatter(
+                  maxLength,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                ),
+              ],
               onSubmitted: (_) => onSend(),
               decoration: InputDecoration(
                 hintText: strings.sdkDetailCommentPlaceholder,

@@ -84,6 +84,15 @@
       }
     }
   },
+  "sdkFilterShowResultsOverflow": "Show {count}+ requests",
+  "@sdkFilterShowResultsOverflow": {
+    "description": "Filter sheet apply button when the preview page was full and more results exist beyond it; count is the page cap.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sdkStatusOpen": "Open",
   "@sdkStatusOpen": {
     "description": "Status pill label. Declined is dashboard-only and has no SDK string."

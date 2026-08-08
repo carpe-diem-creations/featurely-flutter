@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "الكل",
   "sdkFilterReset": "إعادة تعيين",
   "sdkFilterShowResults": "{count, plural, zero {لا توجد طلبات} one {عرض طلب واحد} two {عرض طلبين} few {عرض {count} طلبات} many {عرض {count} طلبًا} other {عرض {count} طلب}}",
+  "sdkFilterShowResultsOverflow": "عرض {count}+ طلب",
   "sdkStatusOpen": "مفتوح",
   "sdkStatusPlanned": "مخطط له",
   "sdkStatusInProgress": "قيد التنفيذ",

@@ -42,6 +42,7 @@ class _FilterSheetState extends State<_FilterSheet> {
   late FeedbackStatus? _status = widget.controller.statusFilter;
   Page<FeedbackItem>? _preview;
   int? _count;
+  bool _overflow = false;
   int _requestId = 0;
   Timer? _debounce;
 
@@ -77,12 +78,18 @@ class _FilterSheetState extends State<_FilterSheet> {
           setState(() {
             _preview = page;
             _count = page.items.length;
+            // A full page with a cursor means the true count exceeds the
+            // preview cap; the label switches to "Show N+ requests".
+            _overflow = page.nextCursor != null;
           });
         } catch (_) {
           // Count fetch failed (offline, rate-limited): fall back to the
           // already-loaded count so Apply never gets stuck.
           if (!mounted || id != _requestId) return;
-          setState(() => _count = widget.controller.items.length);
+          setState(() {
+            _count = widget.controller.items.length;
+            _overflow = widget.controller.canLoadMore;
+          });
         }
       },
     );
@@ -191,7 +198,11 @@ class _FilterSheetState extends State<_FilterSheet> {
             ),
             const SizedBox(height: 24),
             PrimaryButton(
-              label: count == null ? '…' : strings.sdkFilterShowResults(count),
+              label: count == null
+                  ? '…'
+                  : _overflow
+                      ? strings.sdkFilterShowResultsOverflow(count)
+                      : strings.sdkFilterShowResults(count),
               busy: count == null,
               onPressed: _apply,
             ),

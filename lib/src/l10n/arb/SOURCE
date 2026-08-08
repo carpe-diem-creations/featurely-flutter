@@ -23,6 +23,8 @@
 #   sdkFormEmailError          (spec: invalid_email surfaced as a field error)
 #   sdkDetailCommentsDisabled  (spec: 403 comments_disabled stale-config notice)
 #   sdkCommonRateLimited       (spec: 429 "try again in a moment" state)
+#   sdkFilterShowResultsOverflow  (filter apply label when the count preview
+#                                  page was full and more results exist)
 #
 # To re-sync after a canonical catalog change: repeat the transform above for
 # all 25 locales, re-add the extension keys (until upstreamed), update the

@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "すべて",
   "sdkFilterReset": "リセット",
   "sdkFilterShowResults": "{count, plural, other {{count}件のリクエストを表示}}",
+  "sdkFilterShowResultsOverflow": "{count}件以上のリクエストを表示",
   "sdkStatusOpen": "受付中",
   "sdkStatusPlanned": "対応予定",
   "sdkStatusInProgress": "対応中",

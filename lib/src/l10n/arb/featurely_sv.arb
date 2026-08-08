@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Alla",
   "sdkFilterReset": "Återställ",
   "sdkFilterShowResults": "{count, plural, one {Visa {count} förfrågan} other {Visa {count} förfrågningar}}",
+  "sdkFilterShowResultsOverflow": "Visa {count}+ förfrågningar",
   "sdkStatusOpen": "Öppen",
   "sdkStatusPlanned": "Planerad",
   "sdkStatusInProgress": "Pågår",

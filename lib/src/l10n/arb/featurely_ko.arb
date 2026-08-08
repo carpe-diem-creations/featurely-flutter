@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "전체",
   "sdkFilterReset": "초기화",
   "sdkFilterShowResults": "{count, plural, other {요청 {count}개 보기}}",
+  "sdkFilterShowResultsOverflow": "요청 {count}개 이상 보기",
   "sdkStatusOpen": "접수됨",
   "sdkStatusPlanned": "예정됨",
   "sdkStatusInProgress": "진행 중",

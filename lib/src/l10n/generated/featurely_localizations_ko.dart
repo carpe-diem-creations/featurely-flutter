@@ -77,6 +77,11 @@ class FeaturelyLocalizationsKo extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return '요청 $count개 이상 보기';
+  }
+
+  @override
   String get sdkStatusOpen => '접수됨';
 
   @override

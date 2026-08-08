@@ -2,6 +2,18 @@ import 'dart:ui';
 
 import 'theme.dart';
 
+/// Host callback invoked when an SDK operation fails after its retries.
+///
+/// [operation] names the API call (e.g. `listFeedback`, `submitFeedback`);
+/// [error] is the thrown `FeaturelyApiException` or
+/// `FeaturelyNetworkException`. Errors are also handled internally (the UI
+/// shows its own localized states) — this hook exists purely so hosts can
+/// log or report them. Exception text never contains the API key.
+typedef FeaturelyErrorListener = void Function(
+  String operation,
+  Object error,
+);
+
 /// The environment a Featurely API key addresses.
 ///
 /// Derived from the key prefix — never a runtime toggle: `fk_test_…` keys read
@@ -25,6 +37,7 @@ class FeaturelyOptions {
     this.plan,
     this.theme,
     this.locale,
+    this.onError,
   }) : baseUrl = _normalizeBaseUrl(baseUrl) {
     assert(
       apiKey.startsWith('fk_live_') || apiKey.startsWith('fk_test_'),
@@ -61,6 +74,9 @@ class FeaturelyOptions {
 
   /// Locale override; when null the device locale is used.
   final Locale? locale;
+
+  /// Optional host error listener for logging/reporting.
+  final FeaturelyErrorListener? onError;
 
   /// Environment derived from the key prefix. Keys matching neither prefix
   /// are treated as Live (forward-compatible).

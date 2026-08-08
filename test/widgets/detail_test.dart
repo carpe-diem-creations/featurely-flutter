@@ -97,6 +97,26 @@ void main() {
     expect(find.text('A new comment'), findsOneWidget);
   });
 
+  testWidgets('comment composer enforces commentMax from config',
+      (tester) async {
+    final api = FakeApi();
+    api.config = const SdkConfig(
+      projectName: 'Pocket Bartender',
+      commentingEnabled: true,
+      titleMax: 60,
+      descriptionMax: 10000,
+      commentMax: 10,
+      attachmentMaxBytes: 5242880,
+    );
+    api.onGetFeedback = (id) async => detailWith([]);
+    await openDetail(tester, api);
+
+    final composer = find.byType(TextField);
+    await tester.enterText(
+        composer, 'far longer than the ten-character limit');
+    expect(tester.widget<TextField>(composer).controller!.text, 'far longer');
+  });
+
   testWidgets('404 on detail load pops back and removes the item from the list',
       (tester) async {
     final api = FakeApi();

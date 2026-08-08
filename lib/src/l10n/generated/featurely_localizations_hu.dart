@@ -81,6 +81,11 @@ class FeaturelyLocalizationsHu extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return '$count+ kérés megjelenítése';
+  }
+
+  @override
   String get sdkStatusOpen => 'Nyitott';
 
   @override

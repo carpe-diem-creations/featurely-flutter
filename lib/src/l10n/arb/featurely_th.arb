@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "ทั้งหมด",
   "sdkFilterReset": "รีเซ็ต",
   "sdkFilterShowResults": "{count, plural, other {แสดง {count} คำขอ}}",
+  "sdkFilterShowResultsOverflow": "แสดง {count}+ คำขอ",
   "sdkStatusOpen": "เปิดรับ",
   "sdkStatusPlanned": "วางแผนแล้ว",
   "sdkStatusInProgress": "กำลังดำเนินการ",

@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Alle",
   "sdkFilterReset": "Tilbakestill",
   "sdkFilterShowResults": "{count, plural, one {Vis {count} ønske} other {Vis {count} ønsker}}",
+  "sdkFilterShowResultsOverflow": "Vis {count}+ ønsker",
   "sdkStatusOpen": "Åpen",
   "sdkStatusPlanned": "Planlagt",
   "sdkStatusInProgress": "Pågår",

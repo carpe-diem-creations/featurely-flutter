@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "全部",
   "sdkFilterReset": "重置",
   "sdkFilterShowResults": "{count, plural, other {查看 {count} 条请求}}",
+  "sdkFilterShowResultsOverflow": "查看 {count}+ 条请求",
   "sdkStatusOpen": "待处理",
   "sdkStatusPlanned": "已计划",
   "sdkStatusInProgress": "进行中",

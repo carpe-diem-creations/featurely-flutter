@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Tutti",
   "sdkFilterReset": "Reimposta",
   "sdkFilterShowResults": "{count, plural, one {Mostra {count} richiesta} other {Mostra {count} richieste}}",
+  "sdkFilterShowResultsOverflow": "Mostra {count}+ richieste",
   "sdkStatusOpen": "Aperto",
   "sdkStatusPlanned": "Pianificato",
   "sdkStatusInProgress": "In corso",

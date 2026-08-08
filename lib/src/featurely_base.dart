@@ -42,6 +42,11 @@ class Featurely {
   /// submissions (e.g. `'Pro Monthly'`). [theme] and [locale] override the
   /// host-derived look and language.
   ///
+  /// [onError] is an optional observability hook: it receives every API
+  /// operation that ultimately fails (after retries), so hosts can log or
+  /// report SDK trouble — a rotated key, an unreachable instance — that the
+  /// SDK otherwise handles silently with its own localized UI states.
+  ///
   /// Never blocks the host app on network: the returned future completes
   /// after local setup; identity linking runs fire-and-forget.
   static Future<void> init({
@@ -51,6 +56,7 @@ class Featurely {
     String? plan,
     FeaturelyTheme? theme,
     Locale? locale,
+    FeaturelyErrorListener? onError,
   }) async {
     final options = FeaturelyOptions(
       baseUrl: baseUrl,
@@ -59,6 +65,7 @@ class Featurely {
       plan: plan,
       theme: theme,
       locale: locale,
+      onError: onError,
     );
     final previous = _core;
     final sameBackend = previous != null &&
@@ -73,6 +80,7 @@ class Featurely {
         apiKey: options.apiKey,
         deviceIdProvider: identity.deviceId,
         httpClient: debugHttpClient,
+        onError: onError,
       ),
       metadata: DeviceMetadata(override: debugMetadataOverride),
       plan: plan,

@@ -81,6 +81,11 @@ class FeaturelyLocalizationsFil extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return 'Ipakita ang $count+ kahilingan';
+  }
+
+  @override
   String get sdkStatusOpen => 'Bukas';
 
   @override

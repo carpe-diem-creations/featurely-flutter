@@ -45,16 +45,24 @@ class _ExampleAppState extends State<ExampleApp> {
   String? plan;
 
   Future<void> _reinit() {
-    // init is idempotent — safe to call again with new knobs.
+    // init is idempotent — safe to call again with new knobs. The explicit
+    // brightness exercises the FeaturelyTheme override (the sheet would
+    // otherwise inherit it from the host theme anyway).
     return Featurely.init(
       baseUrl: baseUrl,
       apiKey: apiKey,
       plan: plan,
-      theme: FeaturelyTheme(accentColor: accent, cornerRadius: radius),
+      theme: FeaturelyTheme(
+        accentColor: accent,
+        cornerRadius: radius,
+        brightness: dark ? Brightness.dark : Brightness.light,
+      ),
       locale: localeTag == null
           ? null
           : Locale(localeTag!.split('-').first,
               localeTag!.contains('-') ? localeTag!.split('-').last : null),
+      onError: (operation, error) =>
+          debugPrint('[featurely] $operation failed: $error'),
     );
   }
 
@@ -132,7 +140,10 @@ class _ExampleAppState extends State<ExampleApp> {
               SwitchListTile(
                 title: const Text('Dark mode'),
                 value: dark,
-                onChanged: (value) => setState(() => dark = value),
+                onChanged: (value) {
+                  setState(() => dark = value);
+                  _reinit();
+                },
               ),
               DropdownButtonFormField<String?>(
                 initialValue: localeTag,

@@ -93,6 +93,11 @@ class FeaturelyLocalizationsAr extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return 'عرض $count+ طلب';
+  }
+
+  @override
   String get sdkStatusOpen => 'مفتوح';
 
   @override

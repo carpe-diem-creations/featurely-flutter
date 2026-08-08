@@ -87,6 +87,11 @@ class FeaturelyLocalizationsUk extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return 'Показати $count+ запитів';
+  }
+
+  @override
   String get sdkStatusOpen => 'Відкрито';
 
   @override

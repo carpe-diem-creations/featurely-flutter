@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Все",
   "sdkFilterReset": "Сбросить",
   "sdkFilterShowResults": "{count, plural, one {Показать {count} запрос} few {Показать {count} запроса} many {Показать {count} запросов} other {Показать {count} запроса}}",
+  "sdkFilterShowResultsOverflow": "Показать {count}+ запросов",
   "sdkStatusOpen": "Открыто",
   "sdkStatusPlanned": "Запланировано",
   "sdkStatusInProgress": "В работе",

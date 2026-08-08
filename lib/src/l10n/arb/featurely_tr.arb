@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Tümü",
   "sdkFilterReset": "Sıfırla",
   "sdkFilterShowResults": "{count, plural, one {{count} isteği göster} other {{count} isteği göster}}",
+  "sdkFilterShowResultsOverflow": "{count}+ isteği göster",
   "sdkStatusOpen": "Açık",
   "sdkStatusPlanned": "Planlandı",
   "sdkStatusInProgress": "Devam ediyor",

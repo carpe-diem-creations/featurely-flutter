@@ -234,6 +234,12 @@ abstract class FeaturelyLocalizations {
   /// **'{count, plural, one {Show {count} request} other {Show {count} requests}}'**
   String sdkFilterShowResults(int count);
 
+  /// Filter sheet apply button when the preview page was full and more results exist beyond it; count is the page cap.
+  ///
+  /// In en, this message translates to:
+  /// **'Show {count}+ requests'**
+  String sdkFilterShowResultsOverflow(int count);
+
   /// Status pill label. Declined is dashboard-only and has no SDK string.
   ///
   /// In en, this message translates to:

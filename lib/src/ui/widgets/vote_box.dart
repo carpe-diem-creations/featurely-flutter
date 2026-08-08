@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/generated/featurely_localizations.dart';
 import '../scope.dart';
 
 /// The tappable vote box on list rows: chevron + count, accent-filled when
@@ -25,9 +26,13 @@ class VoteBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = FeaturelyScope.of(context).theme;
+    final strings = FeaturelyLocalizations.of(context);
     return Semantics(
       button: true,
       selected: voted,
+      // Screen readers announce "N votes" instead of a bare number.
+      label: strings.sdkListVotes(votes),
+      excludeSemantics: true,
       child: Material(
         color: voted ? theme.accent : theme.background,
         borderRadius: theme.borderRadius,

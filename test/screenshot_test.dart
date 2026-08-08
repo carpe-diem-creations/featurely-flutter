@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:featurely/src/image/screenshot.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,6 +23,39 @@ final Uint8List tinyGif = Uint8List.fromList([
 ]);
 
 Uint8List bytesOf(List<int> header) => Uint8List.fromList(header);
+
+/// A minimal 24-bit uncompressed BMP — decodable by the engine but an
+/// unaccepted upload format, so it exercises the re-encode path at an
+/// arbitrary size.
+Uint8List makeBmp(int width, int height) {
+  final rowSize = ((width * 3 + 3) ~/ 4) * 4;
+  final imageSize = rowSize * height;
+  final header = ByteData(54)
+    ..setUint8(0, 0x42) // B
+    ..setUint8(1, 0x4D) // M
+    ..setUint32(2, 54 + imageSize, Endian.little)
+    ..setUint32(10, 54, Endian.little) // pixel data offset
+    ..setUint32(14, 40, Endian.little) // BITMAPINFOHEADER size
+    ..setInt32(18, width, Endian.little)
+    ..setInt32(22, height, Endian.little)
+    ..setUint16(26, 1, Endian.little) // planes
+    ..setUint16(28, 24, Endian.little) // bits per pixel
+    ..setUint32(34, imageSize, Endian.little);
+  final bytes = BytesBuilder()
+    ..add(header.buffer.asUint8List())
+    ..add(Uint8List(imageSize));
+  return bytes.toBytes();
+}
+
+/// Decoded pixel dimensions of encoded image [bytes].
+Future<(int, int)> decodedDims(Uint8List bytes) async {
+  final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+  final descriptor = await ui.ImageDescriptor.encoded(buffer);
+  final dims = (descriptor.width, descriptor.height);
+  descriptor.dispose();
+  buffer.dispose();
+  return dims;
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -93,6 +127,21 @@ void main() {
       expect(prepared!.contentType, 'image/png');
       // The output is a real PNG by magic bytes.
       expect(detectScreenshotFormat(prepared.bytes), ScreenshotFormat.png);
+    });
+
+    test('re-encode downscales to maxDimension on the longest edge', () async {
+      final bmp = makeBmp(100, 50);
+      expect(detectScreenshotFormat(bmp), ScreenshotFormat.unknown);
+      final prepared = await prepareScreenshot(bmp, maxDimension: 10);
+      expect(prepared, isNotNull);
+      expect(detectScreenshotFormat(prepared!.bytes), ScreenshotFormat.png);
+      expect(await decodedDims(prepared.bytes), (10, 5));
+    });
+
+    test('re-encode never upscales below-cap images', () async {
+      final prepared = await prepareScreenshot(makeBmp(4, 2));
+      expect(prepared, isNotNull);
+      expect(await decodedDims(prepared!.bytes), (4, 2));
     });
 
     test('undecodable input is rejected with null', () async {

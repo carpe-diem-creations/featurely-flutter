@@ -96,6 +96,25 @@ await Featurely.logout();                        // on sign-out
 `Featurely.setPlan('Pro Monthly')` updates the plan label attached to
 submissions (drives the PAYING badge in your dashboard).
 
+## Observability
+
+The sheet handles every failure with its own localized UI, so errors are
+invisible to the host by default. To log or report them (a rotated key, an
+unreachable instance), pass `onError` — it receives each API operation that
+ultimately fails, after retries:
+
+```dart
+await Featurely.init(
+  …,
+  onError: (operation, error) => log.warning('featurely $operation: $error'),
+);
+```
+
+`error` is a `FeaturelyApiException` (branch on its `code`) or a
+`FeaturelyNetworkException`; neither ever contains the API key. Exceptions
+thrown by the listener are swallowed — they never break the SDK's own
+handling.
+
 ## Screenshots & permissions
 
 The submit form offers one optional screenshot from the photo library

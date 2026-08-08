@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Tất cả",
   "sdkFilterReset": "Đặt lại",
   "sdkFilterShowResults": "{count, plural, other {Xem {count} yêu cầu}}",
+  "sdkFilterShowResultsOverflow": "Xem {count}+ yêu cầu",
   "sdkStatusOpen": "Đang mở",
   "sdkStatusPlanned": "Đã lên kế hoạch",
   "sdkStatusInProgress": "Đang thực hiện",

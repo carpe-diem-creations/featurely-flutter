@@ -35,6 +35,7 @@ class FeedbackListController extends ChangeNotifier {
   bool _loadingFirst = false;
   bool _loadingMore = false;
   bool _failed = false;
+  bool _loadMoreFailed = false;
   bool _disposed = false;
   int _generation = 0;
 
@@ -59,6 +60,10 @@ class FeedbackListController extends ChangeNotifier {
 
   /// Whether a next-page request is in flight.
   bool get loadingMore => _loadingMore;
+
+  /// Whether the last next-page request failed — the list renders a retry
+  /// footer instead of silently waiting for another scroll.
+  bool get loadMoreFailed => _loadMoreFailed;
 
   /// The list phase driving which state widget renders.
   ListPhase get phase {
@@ -101,6 +106,7 @@ class FeedbackListController extends ChangeNotifier {
     if (cursor == null || _reachedEnd || _loadingMore || _loadingFirst) return;
     final generation = _generation;
     _loadingMore = true;
+    _loadMoreFailed = false;
     _notify();
     try {
       final page = await api.listFeedback(
@@ -117,8 +123,12 @@ class FeedbackListController extends ChangeNotifier {
         await loadFirst();
         return;
       }
+      _loadMoreFailed = true;
     } catch (_) {
-      // Transient: keep the cursor; the next scroll retries.
+      // Transient: keep the cursor; the footer offers Retry (and any
+      // further scroll retries too).
+      if (_disposed || generation != _generation) return;
+      _loadMoreFailed = true;
     } finally {
       if (!_disposed && generation == _generation) {
         _loadingMore = false;
@@ -218,6 +228,7 @@ class FeedbackListController extends ChangeNotifier {
     _nextCursor = page.nextCursor;
     _reachedEnd = page.nextCursor == null;
     _failed = false;
+    _loadMoreFailed = false;
   }
 
   void _append(Page<FeedbackItem> page) {

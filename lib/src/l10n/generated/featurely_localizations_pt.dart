@@ -81,6 +81,11 @@ class FeaturelyLocalizationsPt extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return 'Mostrar $count+ pedidos';
+  }
+
+  @override
   String get sdkStatusOpen => 'Aberto';
 
   @override
@@ -298,6 +303,11 @@ class FeaturelyLocalizationsPtBr extends FeaturelyLocalizationsPt {
       one: 'Mostrar $count pedido',
     );
     return '$_temp0';
+  }
+
+  @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return 'Mostrar $count+ pedidos';
   }
 
   @override

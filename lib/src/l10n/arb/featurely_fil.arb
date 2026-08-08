@@ -15,6 +15,7 @@
   "sdkFilterStatusAll": "Lahat",
   "sdkFilterReset": "I-reset",
   "sdkFilterShowResults": "{count, plural, one {Ipakita ang {count} kahilingan} other {Ipakita ang {count} kahilingan}}",
+  "sdkFilterShowResultsOverflow": "Ipakita ang {count}+ kahilingan",
   "sdkStatusOpen": "Bukas",
   "sdkStatusPlanned": "Nakaplano",
   "sdkStatusInProgress": "Isinasagawa",

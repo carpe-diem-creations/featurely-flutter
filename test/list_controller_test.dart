@@ -96,6 +96,64 @@ void main() {
     expect(calls[2], (FeedbackSort.newest, FeedbackStatus.open, null));
   });
 
+  test('a failed loadMore surfaces loadMoreFailed and Retry recovers',
+      () async {
+    final api = FakeApi();
+    var call = 0;
+    api.onList = (sort, status, cursor, limit) async {
+      call++;
+      if (call == 1) {
+        return Page(items: [makeItem(id: 'a')], nextCursor: 'cur-1');
+      }
+      if (call == 2) throw FeaturelyNetworkException();
+      return Page(items: [makeItem(id: 'b')], nextCursor: null);
+    };
+    final controller = FeedbackListController(api: api);
+    await controller.loadFirst();
+    await controller.loadMore();
+    // The cursor is kept and the failure is visible to the UI.
+    expect(controller.loadMoreFailed, isTrue);
+    expect(controller.canLoadMore, isTrue);
+    expect(controller.items.map((i) => i.id), ['a']);
+
+    await controller.loadMore();
+    expect(controller.loadMoreFailed, isFalse);
+    expect(controller.items.map((i) => i.id), ['a', 'b']);
+  });
+
+  test('API-error loadMore failures (non-cursor) also set loadMoreFailed',
+      () async {
+    final api = FakeApi();
+    var call = 0;
+    api.onList = (sort, status, cursor, limit) async {
+      call++;
+      if (call == 1) {
+        return Page(items: [makeItem(id: 'a')], nextCursor: 'cur-1');
+      }
+      throw FeaturelyApiException(FeaturelyErrorCode.rateLimited, 429);
+    };
+    final controller = FeedbackListController(api: api);
+    await controller.loadFirst();
+    await controller.loadMore();
+    expect(controller.loadMoreFailed, isTrue);
+  });
+
+  test('loadFirst clears a lingering loadMore failure', () async {
+    final api = FakeApi();
+    var call = 0;
+    api.onList = (sort, status, cursor, limit) async {
+      call++;
+      if (call == 2) throw FeaturelyNetworkException();
+      return Page(items: [makeItem(id: '$call')], nextCursor: 'cur-$call');
+    };
+    final controller = FeedbackListController(api: api);
+    await controller.loadFirst();
+    await controller.loadMore();
+    expect(controller.loadMoreFailed, isTrue);
+    await controller.loadFirst();
+    expect(controller.loadMoreFailed, isFalse);
+  });
+
   test('applyFilter with a preloaded page issues no request', () async {
     final api = FakeApi();
     var calls = 0;

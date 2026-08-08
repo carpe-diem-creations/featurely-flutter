@@ -78,6 +78,11 @@ class FeaturelyLocalizationsTh extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return 'แสดง $count+ คำขอ';
+  }
+
+  @override
   String get sdkStatusOpen => 'เปิดรับ';
 
   @override

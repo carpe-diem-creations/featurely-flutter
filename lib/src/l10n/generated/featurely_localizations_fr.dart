@@ -81,6 +81,11 @@ class FeaturelyLocalizationsFr extends FeaturelyLocalizations {
   }
 
   @override
+  String sdkFilterShowResultsOverflow(int count) {
+    return 'Afficher $count+ demandes';
+  }
+
+  @override
   String get sdkStatusOpen => 'Ouvert';
 
   @override
