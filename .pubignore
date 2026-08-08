@@ -1,0 +1,14 @@
+# A root .pubignore replaces .gitignore for pub — repeat the build ignores.
+.dart_tool/
+.packages
+build/
+pubspec.lock
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Internal specs stay in the repo (docs/), not in the published archive —
+# pub expects a singular `doc/` directory and would warn otherwise.
+docs/
+.claude/

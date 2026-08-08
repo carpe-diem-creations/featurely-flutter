@@ -1,0 +1,42 @@
+name: featurely
+description: >-
+  In-app feedback sheet for the self-hosted Featurely platform: feature
+  requests, issue reports, voting, and comments — themed by your app and
+  localized in 25 languages.
+version: 0.1.0
+repository: https://github.com/carpe-diem-creations/featurely-flutter
+issue_tracker: https://github.com/carpe-diem-creations/featurely-flutter/issues
+topics:
+  - feedback
+  - feature-requests
+  - bug-report
+  - widget
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+platforms:
+  android:
+  ios:
+
+dependencies:
+  device_info_plus: ^13.2.0
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  http: ^1.2.0
+  http_parser: ^4.0.2
+  image_picker: ^1.1.0
+  intl: ">=0.19.0 <0.21.0"
+  package_info_plus: ^10.2.1
+  shared_preferences: ^2.3.0
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  generate: true

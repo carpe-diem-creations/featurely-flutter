@@ -1,0 +1,283 @@
+{
+  "@@locale": "en",
+  "sdkListTitle": "Feedback",
+  "@sdkListTitle": {
+    "description": "Title of the SDK sheet's root screen."
+  },
+  "sdkListNewFeedback": "New feedback",
+  "@sdkListNewFeedback": {
+    "description": "The sticky call-to-action button above the safe area on the list screen."
+  },
+  "sdkListEmpty": "Nothing here yet — be the first to tell us what {appName} should do next",
+  "@sdkListEmpty": {
+    "description": "Empty state of the feedback list.",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Pocket Bartender"
+      }
+    }
+  },
+  "sdkListLoadError": "Couldn't load feedback. Check your connection.",
+  "@sdkListLoadError": {
+    "description": "Offline / failed-load state of the list screen."
+  },
+  "sdkListVotes": "{count, plural, one {{count} vote} other {{count} votes}}",
+  "@sdkListVotes": {
+    "description": "Vote count label.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "sdkListComments": "{count, plural, one {{count} comment} other {{count} comments}}",
+  "@sdkListComments": {
+    "description": "Comment count label.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "sdkFilterTitle": "Filter & sort",
+  "@sdkFilterTitle": {
+    "description": "Title of the filter & sort bottom sheet."
+  },
+  "sdkFilterSortBy": "Sort",
+  "@sdkFilterSortBy": {
+    "description": "Label of the sort section in the filter sheet."
+  },
+  "sdkFilterSortMostVoted": "Most voted",
+  "@sdkFilterSortMostVoted": {
+    "description": "Sort option: most voted first."
+  },
+  "sdkFilterSortNewest": "Newest",
+  "@sdkFilterSortNewest": {
+    "description": "Sort option: newest first."
+  },
+  "sdkFilterSortOldest": "Oldest",
+  "@sdkFilterSortOldest": {
+    "description": "Sort option: oldest first."
+  },
+  "sdkFilterStatus": "Status",
+  "@sdkFilterStatus": {
+    "description": "Label of the status chips section in the filter sheet."
+  },
+  "sdkFilterStatusAll": "All",
+  "@sdkFilterStatusAll": {
+    "description": "Status chip that clears the status filter."
+  },
+  "sdkFilterReset": "Reset",
+  "@sdkFilterReset": {
+    "description": "Button that resets the filter sheet to its defaults."
+  },
+  "sdkFilterShowResults": "{count, plural, one {Show {count} request} other {Show {count} requests}}",
+  "@sdkFilterShowResults": {
+    "description": "Primary button of the filter sheet with a live result count.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "sdkStatusOpen": "Open",
+  "@sdkStatusOpen": {
+    "description": "Status pill label. Declined is dashboard-only and has no SDK string."
+  },
+  "sdkStatusPlanned": "Planned",
+  "@sdkStatusPlanned": {
+    "description": "Status pill label."
+  },
+  "sdkStatusInProgress": "In Progress",
+  "@sdkStatusInProgress": {
+    "description": "Status pill label."
+  },
+  "sdkStatusDone": "Done",
+  "@sdkStatusDone": {
+    "description": "Status pill label."
+  },
+  "sdkFormTypeLabel": "Type",
+  "@sdkFormTypeLabel": {
+    "description": "Label of the Feature/Issue segmented control on the submit form."
+  },
+  "sdkFormTypeFeature": "Feature",
+  "@sdkFormTypeFeature": {
+    "description": "Segmented-control option for feature requests."
+  },
+  "sdkFormTypeIssue": "Issue",
+  "@sdkFormTypeIssue": {
+    "description": "Segmented-control option for bug reports. Always \"Issue\", never \"Bug\", in end-user surfaces."
+  },
+  "sdkFormTitleLabel": "Title",
+  "@sdkFormTitleLabel": {
+    "description": "Label of the title field."
+  },
+  "sdkFormTitlePlaceholder": "Sum it up in a few words",
+  "@sdkFormTitlePlaceholder": {
+    "description": "Placeholder of the title field."
+  },
+  "sdkFormTitleCounter": "{remaining, plural, one {{remaining} character left} other {{remaining} characters left}}",
+  "@sdkFormTitleCounter": {
+    "description": "Live counter shown near the 60-character title limit.",
+    "placeholders": {
+      "remaining": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "sdkFormDescriptionLabel": "Description",
+  "@sdkFormDescriptionLabel": {
+    "description": "Label of the description field."
+  },
+  "sdkFormDescriptionPlaceholderFeature": "What should {appName} do? Tell us how you'd use it.",
+  "@sdkFormDescriptionPlaceholderFeature": {
+    "description": "Description placeholder when the Feature type is selected.",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Pocket Bartender"
+      }
+    }
+  },
+  "sdkFormDescriptionPlaceholderIssue": "What went wrong in {appName}? Include what you expected to happen.",
+  "@sdkFormDescriptionPlaceholderIssue": {
+    "description": "Description placeholder when the Issue type is selected.",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Pocket Bartender"
+      }
+    }
+  },
+  "sdkFormEmailLabel": "Email",
+  "@sdkFormEmailLabel": {
+    "description": "Label of the optional email field."
+  },
+  "sdkFormEmailHelper": "Optional. We'll email you when the team replies or your request ships.",
+  "@sdkFormEmailHelper": {
+    "description": "Helper copy under the email field (PRD OQ-14 wording)."
+  },
+  "sdkFormAddScreenshot": "Add screenshot",
+  "@sdkFormAddScreenshot": {
+    "description": "Button that opens the screenshot picker (one screenshot per item)."
+  },
+  "sdkFormRemoveScreenshot": "Remove screenshot",
+  "@sdkFormRemoveScreenshot": {
+    "description": "Accessibility label of the × on the screenshot thumbnail."
+  },
+  "sdkFormSubmit": "Submit",
+  "@sdkFormSubmit": {
+    "description": "Submit button pinned to the bottom of the form."
+  },
+  "sdkFormSending": "Sending…",
+  "@sdkFormSending": {
+    "description": "Submit button label while the submission is in flight."
+  },
+  "sdkFormSubmitError": "Couldn't send. Your draft is saved. Check your connection and try again.",
+  "@sdkFormSubmitError": {
+    "description": "Inline error when a submission fails; the draft is preserved."
+  },
+  "sdkFormTryAgain": "Try again",
+  "@sdkFormTryAgain": {
+    "description": "Submit button label after a failed submission."
+  },
+  "sdkSuccessTitle": "Thanks! We read every one of these.",
+  "@sdkSuccessTitle": {
+    "description": "Title of the full-screen submit confirmation."
+  },
+  "sdkSuccessBody": "Your feedback went straight to the {appName} team.",
+  "@sdkSuccessBody": {
+    "description": "Body of the submit confirmation.",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Pocket Bartender"
+      }
+    }
+  },
+  "sdkSuccessBack": "Back to feedback",
+  "@sdkSuccessBack": {
+    "description": "Button returning from the confirmation to the list."
+  },
+  "sdkDetailSubmitted": "Submitted {date}",
+  "@sdkDetailSubmitted": {
+    "description": "Submission date line on the detail screen. The date is formatted by the platform.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Jan 5"
+      }
+    }
+  },
+  "sdkDetailVote": "Vote",
+  "@sdkDetailVote": {
+    "description": "Large vote button on the detail screen, not yet voted."
+  },
+  "sdkDetailVoted": "Voted · {count}",
+  "@sdkDetailVoted": {
+    "description": "Large vote button on the detail screen after voting.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "sdkDetailCommentsTitle": "Comments",
+  "@sdkDetailCommentsTitle": {
+    "description": "Heading of the comment thread on the detail screen."
+  },
+  "sdkDetailCommentPlaceholder": "Add a comment…",
+  "@sdkDetailCommentPlaceholder": {
+    "description": "Placeholder of the comment composer."
+  },
+  "sdkDetailCommentSend": "Send",
+  "@sdkDetailCommentSend": {
+    "description": "Send button of the comment composer."
+  },
+  "sdkDetailAnonymous": "Anonymous",
+  "@sdkDetailAnonymous": {
+    "description": "Display name of end-user comment authors."
+  },
+  "sdkDetailTeamBadge": "Team",
+  "@sdkDetailTeamBadge": {
+    "description": "Badge on team replies."
+  },
+  "sdkCommonClose": "Close",
+  "@sdkCommonClose": {
+    "description": "Accessibility label of the sheet close button."
+  },
+  "sdkCommonCancel": "Cancel",
+  "@sdkCommonCancel": {
+    "description": "Generic cancel action."
+  },
+  "sdkCommonRetry": "Retry",
+  "@sdkCommonRetry": {
+    "description": "Retry button on the offline / failed-load screen."
+  },
+  "sdkSandboxBadge": "SANDBOX",
+  "@sdkSandboxBadge": {
+    "description": "The amber strip on debug builds. Kept as a recognizable technical term; translate only where a clear local convention exists."
+  },
+  "sdkFormAttachError": "Couldn't attach that image. Try a different one.",
+  "@sdkFormAttachError": {
+    "description": "Inline error when a picked image cannot be attached (undecodable or over the size limit). [SDK-local extension key — not in the canonical catalog yet]"
+  },
+  "sdkFormEmailError": "Enter a valid email address.",
+  "@sdkFormEmailError": {
+    "description": "Field error when the server rejects the optional email (invalid_email). [SDK-local extension key — not in the canonical catalog yet]"
+  },
+  "sdkDetailCommentsDisabled": "Commenting has been turned off.",
+  "@sdkDetailCommentsDisabled": {
+    "description": "Notice shown when commenting is disabled (403 comments_disabled on a stale config). [SDK-local extension key — not in the canonical catalog yet]"
+  },
+  "sdkCommonRateLimited": "Too many requests. Try again in a moment.",
+  "@sdkCommonRateLimited": {
+    "description": "Notice for 429 rate_limited responses on user-initiated actions. [SDK-local extension key — not in the canonical catalog yet]"
+  }
+}

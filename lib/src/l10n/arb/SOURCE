@@ -1,0 +1,29 @@
+# Provenance of the ARB catalogs in this directory
+#
+# Derived from the canonical Featurely string catalog:
+#   repo:   featurely-app
+#   path:   packages/locales/catalog/*.arb
+#   commit: 705302d352ac9918647b5e568084b0bf8eebf6ba
+#   synced: 2026-08-08
+#
+# Transform (manual, per the SDK spec — no sync tooling in v1):
+#   - only `sdk.*` keys are copied (email.* keys are server-side);
+#   - key names are camelCased mechanically: strip the dots, capitalize each
+#     segment boundary (sdk.form.emailHelper -> sdkFormEmailHelper);
+#   - @-metadata and ICU placeholders are preserved on the en template;
+#   - inside plural messages, ICU `#` is normalized to the named placeholder
+#     (`one {# vote}` -> `one {{count} vote}`) because Flutter gen-l10n does
+#     not substitute `#`; this is ICU-equivalent and lossless;
+#   - locale ids use `_` separators for Flutter (pt-BR -> pt_BR).
+#
+# SDK-local extension keys (NOT in the canonical catalog yet — pending
+# upstreaming; translations were authored here in the style of the upstream
+# catalogs and should be replaced by canonical ones once the keys land):
+#   sdkFormAttachError         (spec: "couldn't attach" screenshot rejection)
+#   sdkFormEmailError          (spec: invalid_email surfaced as a field error)
+#   sdkDetailCommentsDisabled  (spec: 403 comments_disabled stale-config notice)
+#   sdkCommonRateLimited       (spec: 429 "try again in a moment" state)
+#
+# To re-sync after a canonical catalog change: repeat the transform above for
+# all 25 locales, re-add the extension keys (until upstreamed), update the
+# commit hash and date here, then run `flutter gen-l10n`.
