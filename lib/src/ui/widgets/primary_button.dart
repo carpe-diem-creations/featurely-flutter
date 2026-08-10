@@ -119,7 +119,7 @@ class OutlinedAccentButton extends StatelessWidget {
   }
 }
 
-/// The circular 32pt header icon button (close, filter, send).
+/// The circular 40pt header icon button (close, filter, send).
 class CircleIconButton extends StatelessWidget {
   /// Creates a button.
   const CircleIconButton({
@@ -127,7 +127,7 @@ class CircleIconButton extends StatelessWidget {
     required this.onTap,
     required this.semanticLabel,
     this.filled = false,
-    this.size = 32,
+    this.size = 40,
     super.key,
   });
 

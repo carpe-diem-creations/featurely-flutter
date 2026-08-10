@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2
+
+- The header close and filter buttons are larger: 40pt circles (up from
+  32pt), with the icon scaling up accordingly — a more comfortable tap
+  target.
+
 ## 0.2.1
 
 - The submit form's description hints are now just the question, in all 25
