@@ -128,12 +128,12 @@ class FeaturelyLocalizationsIt extends FeaturelyLocalizations {
 
   @override
   String sdkFormDescriptionPlaceholderFeature(String appName) {
-    return 'Cosa dovrebbe fare $appName? Raccontaci come la useresti.';
+    return 'Cosa dovrebbe fare $appName?';
   }
 
   @override
   String sdkFormDescriptionPlaceholderIssue(String appName) {
-    return 'Cosa è andato storto in $appName? Includi cosa ti aspettavi che succedesse.';
+    return 'Cosa è andato storto in $appName?';
   }
 
   @override

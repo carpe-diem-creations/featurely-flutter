@@ -309,13 +309,13 @@ abstract class FeaturelyLocalizations {
   /// Description placeholder when the Feature type is selected.
   ///
   /// In en, this message translates to:
-  /// **'What should {appName} do? Tell us how you\'d use it.'**
+  /// **'What should {appName} do?'**
   String sdkFormDescriptionPlaceholderFeature(String appName);
 
   /// Description placeholder when the Issue type is selected.
   ///
   /// In en, this message translates to:
-  /// **'What went wrong in {appName}? Include what you expected to happen.'**
+  /// **'What went wrong in {appName}?'**
   String sdkFormDescriptionPlaceholderIssue(String appName);
 
   /// Label of the optional email field.

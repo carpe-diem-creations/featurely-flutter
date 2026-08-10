@@ -144,12 +144,12 @@ class FeaturelyLocalizationsAr extends FeaturelyLocalizations {
 
   @override
   String sdkFormDescriptionPlaceholderFeature(String appName) {
-    return 'ما الذي يجب أن يفعله $appName؟ أخبرنا كيف ستستخدم هذه الميزة.';
+    return 'ما الذي يجب أن يفعله $appName؟';
   }
 
   @override
   String sdkFormDescriptionPlaceholderIssue(String appName) {
-    return 'ما الخطأ الذي حدث في $appName؟ اذكر ما كنت تتوقع حدوثه.';
+    return 'ما الخطأ الذي حدث في $appName؟';
   }
 
   @override

@@ -3,8 +3,8 @@
 # Derived from the canonical Featurely string catalog:
 #   repo:   featurely-app
 #   path:   packages/locales/catalog/*.arb
-#   commit: 705302d352ac9918647b5e568084b0bf8eebf6ba
-#   synced: 2026-08-08
+#   commit: 6fb58ba7091ee66a1341c689ce446451adce866a
+#   synced: 2026-08-10
 #
 # Transform (manual, per the SDK spec — no sync tooling in v1):
 #   - only `sdk.*` keys are copied (email.* keys are server-side);

@@ -63,15 +63,13 @@ void main() {
     await openForm(tester, api);
 
     expect(
-      find.text('What should Pocket Bartender do? '
-          "Tell us how you'd use it."),
+      find.text('What should Pocket Bartender do?'),
       findsOneWidget,
     );
     await tester.tap(find.text('Issue'));
     await tester.pump();
     expect(
-      find.text('What went wrong in Pocket Bartender? '
-          'Include what you expected to happen.'),
+      find.text('What went wrong in Pocket Bartender?'),
       findsOneWidget,
     );
     // Never the word "Bug" anywhere user-facing.

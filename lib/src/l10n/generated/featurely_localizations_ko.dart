@@ -123,12 +123,12 @@ class FeaturelyLocalizationsKo extends FeaturelyLocalizations {
 
   @override
   String sdkFormDescriptionPlaceholderFeature(String appName) {
-    return '$appName에 어떤 기능이 있으면 좋을까요? 어떻게 사용하실지 알려주세요.';
+    return '$appName에 어떤 기능이 있으면 좋을까요?';
   }
 
   @override
   String sdkFormDescriptionPlaceholderIssue(String appName) {
-    return '$appName에서 어떤 문제가 있었나요? 기대했던 동작도 함께 적어주세요.';
+    return '$appName에서 어떤 문제가 있었나요?';
   }
 
   @override

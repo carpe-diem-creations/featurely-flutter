@@ -124,12 +124,12 @@ class FeaturelyLocalizationsVi extends FeaturelyLocalizations {
 
   @override
   String sdkFormDescriptionPlaceholderFeature(String appName) {
-    return 'Bạn muốn $appName làm được gì? Hãy cho chúng tôi biết bạn sẽ dùng tính năng đó như thế nào.';
+    return 'Bạn muốn $appName làm được gì?';
   }
 
   @override
   String sdkFormDescriptionPlaceholderIssue(String appName) {
-    return 'Đã xảy ra lỗi gì trong $appName? Hãy mô tả cả điều bạn mong đợi sẽ xảy ra.';
+    return 'Đã xảy ra lỗi gì trong $appName?';
   }
 
   @override

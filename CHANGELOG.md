@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+- The submit form's description hints are now just the question, in all 25
+  locales: "What should {appName} do?" (Feature) and "What went wrong in
+  {appName}?" (Issue) — the trailing coaching sentences are dropped.
+
 ## 0.2.0
 
 **Breaking:** the environment is no longer derived from the API key prefix.

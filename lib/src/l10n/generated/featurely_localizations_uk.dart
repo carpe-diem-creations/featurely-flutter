@@ -136,12 +136,12 @@ class FeaturelyLocalizationsUk extends FeaturelyLocalizations {
 
   @override
   String sdkFormDescriptionPlaceholderFeature(String appName) {
-    return 'Що має зʼявитися в $appName? Розкажи, як ти цим користуватимешся.';
+    return 'Що має зʼявитися в $appName?';
   }
 
   @override
   String sdkFormDescriptionPlaceholderIssue(String appName) {
-    return 'Що пішло не так у $appName? Опиши, що мало статися.';
+    return 'Що пішло не так у $appName?';
   }
 
   @override

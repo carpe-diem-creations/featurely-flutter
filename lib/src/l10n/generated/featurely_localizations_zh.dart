@@ -123,12 +123,12 @@ class FeaturelyLocalizationsZh extends FeaturelyLocalizations {
 
   @override
   String sdkFormDescriptionPlaceholderFeature(String appName) {
-    return '你希望 $appName 能做什么？说说你会怎么使用它。';
+    return '你希望 $appName 能做什么？';
   }
 
   @override
   String sdkFormDescriptionPlaceholderIssue(String appName) {
-    return '$appName 出了什么问题？请说明你期望的结果。';
+    return '$appName 出了什么问题？';
   }
 
   @override

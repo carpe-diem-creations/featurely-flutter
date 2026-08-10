@@ -128,12 +128,12 @@ class FeaturelyLocalizationsHu extends FeaturelyLocalizations {
 
   @override
   String sdkFormDescriptionPlaceholderFeature(String appName) {
-    return 'Mit tudjon a(z) $appName? Meséld el, hogyan használnád.';
+    return 'Mit tudjon a(z) $appName?';
   }
 
   @override
   String sdkFormDescriptionPlaceholderIssue(String appName) {
-    return 'Mi romlott el a(z) $appName alkalmazásban? Írd le azt is, mire számítottál.';
+    return 'Mi romlott el a(z) $appName alkalmazásban?';
   }
 
   @override
