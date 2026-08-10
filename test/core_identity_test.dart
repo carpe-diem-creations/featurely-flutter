@@ -30,7 +30,7 @@ void main() {
     identity = IdentityStore();
     final options = FeaturelyOptions(
       baseUrl: 'https://feedback.example.com',
-      apiKey: 'fk_test_key',
+      apiKey: 'fk_key1',
     );
     return FeaturelyCore(
       options: options,
@@ -39,6 +39,7 @@ void main() {
       api: FeaturelyApiClient(
         baseUrl: options.baseUrl,
         apiKey: options.apiKey,
+        environment: options.environment.name,
         deviceIdProvider: () => identity.deviceId(),
         readRetryDelay: (_) => Duration.zero,
         httpClient: MockClient((request) async {

@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
+
 import 'theme.dart';
 
 /// Host callback invoked when an SDK operation fails after its retries.
@@ -14,16 +16,19 @@ typedef FeaturelyErrorListener = void Function(
   Object error,
 );
 
-/// The environment a Featurely API key addresses.
+/// The environment this configuration reports to.
 ///
-/// Derived from the key prefix — never a runtime toggle: `fk_test_…` keys read
-/// and write only Sandbox data, `fk_live_…` keys only Live data.
+/// The single project API key identifies the project only; the SDK declares
+/// the environment on every request (`X-Featurely-Environment`). By default
+/// it is derived from the build type — debug builds report to Sandbox,
+/// release builds to Live — and can be overridden at `init`. It is never a
+/// user-facing runtime toggle.
 enum FeaturelyEnvironment {
-  /// Production data (`fk_live_…` keys, and unrecognized prefixes for
-  /// forward compatibility).
+  /// Production data. The default for release builds.
   live,
 
-  /// QA data (`fk_test_…` keys). The sheet renders the amber SANDBOX strip.
+  /// QA data. The default for debug builds; the sheet renders the amber
+  /// SANDBOX strip.
   sandbox,
 }
 
@@ -33,17 +38,21 @@ class FeaturelyOptions {
   FeaturelyOptions({
     required String baseUrl,
     required this.apiKey,
+    FeaturelyEnvironment? environment,
     this.userId,
     this.plan,
     this.theme,
     this.locale,
     this.onError,
-  }) : baseUrl = _normalizeBaseUrl(baseUrl) {
+  })  : baseUrl = _normalizeBaseUrl(baseUrl),
+        environment = environment ??
+            (kDebugMode
+                ? FeaturelyEnvironment.sandbox
+                : FeaturelyEnvironment.live) {
     assert(
-      apiKey.startsWith('fk_live_') || apiKey.startsWith('fk_test_'),
-      'Featurely API keys start with fk_live_ or fk_test_. An unrecognized '
-      'prefix is treated as Live (forward-compatible), but is almost '
-      'certainly a mistake.',
+      apiKey.startsWith('fk_'),
+      'Featurely API keys start with fk_. Copy the project key from '
+      'Project Settings in the dashboard.',
     );
     assert(() {
       final uri = Uri.parse(this.baseUrl);
@@ -60,8 +69,13 @@ class FeaturelyOptions {
   /// Instance origin, e.g. `https://feedback.example.com` (no `/api/v1`).
   final String baseUrl;
 
-  /// The project API key (`fk_live_…` or `fk_test_…`).
+  /// The project's single API key (`fk_…`).
   final String apiKey;
+
+  /// The environment every request declares. Defaults to the build type:
+  /// debug builds → [FeaturelyEnvironment.sandbox], release builds →
+  /// [FeaturelyEnvironment.live].
+  final FeaturelyEnvironment environment;
 
   /// External user id passed at init, if any.
   final String? userId;
@@ -77,12 +91,6 @@ class FeaturelyOptions {
 
   /// Optional host error listener for logging/reporting.
   final FeaturelyErrorListener? onError;
-
-  /// Environment derived from the key prefix. Keys matching neither prefix
-  /// are treated as Live (forward-compatible).
-  FeaturelyEnvironment get environment => apiKey.startsWith('fk_test_')
-      ? FeaturelyEnvironment.sandbox
-      : FeaturelyEnvironment.live;
 
   static String _normalizeBaseUrl(String url) {
     var normalized = url.trim();

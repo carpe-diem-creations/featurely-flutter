@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
-const String apiKey = 'fk_test_abc123';
+const String apiKey = 'fk_abc123';
 
 FeaturelyApiClient clientWith(
   MockClient mock, {
@@ -15,6 +15,7 @@ FeaturelyApiClient clientWith(
     FeaturelyApiClient(
       baseUrl: 'https://feedback.example.com',
       apiKey: apiKey,
+      environment: 'sandbox',
       deviceIdProvider: () async => 'u_testdevice1234567890ab',
       httpClient: mock,
       readRetryDelay: (_) => Duration.zero,

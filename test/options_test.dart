@@ -5,21 +5,36 @@ void main() {
   test('trailing slashes are stripped from the base URL', () {
     final options = FeaturelyOptions(
       baseUrl: 'https://feedback.example.com///',
-      apiKey: 'fk_live_abc',
+      apiKey: 'fk_abc',
     );
     expect(options.baseUrl, 'https://feedback.example.com');
   });
 
-  test('environment derives from the key prefix', () {
+  test('environment defaults to the build type (sandbox under flutter test)', () {
+    // Tests run in debug mode, so the automatic default is Sandbox.
     expect(
-      FeaturelyOptions(baseUrl: 'https://x.example.com', apiKey: 'fk_test_a')
+      FeaturelyOptions(baseUrl: 'https://x.example.com', apiKey: 'fk_a')
           .environment,
       FeaturelyEnvironment.sandbox,
     );
+  });
+
+  test('an explicit environment overrides the build-type default', () {
     expect(
-      FeaturelyOptions(baseUrl: 'https://x.example.com', apiKey: 'fk_live_a')
-          .environment,
+      FeaturelyOptions(
+        baseUrl: 'https://x.example.com',
+        apiKey: 'fk_a',
+        environment: FeaturelyEnvironment.live,
+      ).environment,
       FeaturelyEnvironment.live,
+    );
+    expect(
+      FeaturelyOptions(
+        baseUrl: 'https://x.example.com',
+        apiKey: 'fk_a',
+        environment: FeaturelyEnvironment.sandbox,
+      ).environment,
+      FeaturelyEnvironment.sandbox,
     );
   });
 
@@ -37,7 +52,7 @@ void main() {
     expect(
       () => FeaturelyOptions(
         baseUrl: 'http://feedback.example.com',
-        apiKey: 'fk_live_a',
+        apiKey: 'fk_a',
       ),
       throwsAssertionError,
     );
@@ -48,7 +63,7 @@ void main() {
       'http://10.0.2.2:3000',
       'http://featurely.local',
     ]) {
-      expect(FeaturelyOptions(baseUrl: url, apiKey: 'fk_test_a'), isNotNull);
+      expect(FeaturelyOptions(baseUrl: url, apiKey: 'fk_a'), isNotNull);
     }
   });
 }

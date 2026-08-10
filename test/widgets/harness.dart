@@ -17,7 +17,8 @@ class FakeApi extends FeaturelyApiClient {
   FakeApi()
       : super(
           baseUrl: 'https://feedback.example.com',
-          apiKey: 'fk_test_fake',
+          apiKey: 'fk_fake',
+          environment: 'sandbox',
           deviceIdProvider: () async => 'u_fake_device_1234567890',
           httpClient: MockClient(
             (request) async => http.Response('unexpected', 500),
@@ -41,6 +42,9 @@ class FakeApi extends FeaturelyApiClient {
   Future<VoteResult> Function(String id)? onUnvote;
   Future<FeedbackComment> Function(String id, String body)? onAddComment;
   Future<FeedbackItem> Function()? onSubmit;
+
+  /// The metadata map of the most recent [submitFeedback] call.
+  Map<String, String>? lastSubmissionMetadata;
 
   @override
   Future<SdkConfig> getConfig() async => config;
@@ -82,8 +86,10 @@ class FakeApi extends FeaturelyApiClient {
     Map<String, String> metadata = const {},
     screenshotBytes,
     String? screenshotContentType,
-  }) =>
-      onSubmit!.call();
+  }) {
+    lastSubmissionMetadata = metadata;
+    return onSubmit!.call();
+  }
 }
 
 /// A feedback item fixture.
@@ -112,14 +118,15 @@ FeedbackItem makeItem({
 /// Builds a [FeaturelyCore] over [api].
 FeaturelyCore makeCore(
   FakeApi api, {
-  String apiKey = 'fk_test_fake',
+  FeaturelyEnvironment environment = FeaturelyEnvironment.sandbox,
   Locale? locale,
   bool seedConfig = true,
 }) {
   final core = FeaturelyCore(
     options: FeaturelyOptions(
       baseUrl: 'https://feedback.example.com',
-      apiKey: apiKey,
+      apiKey: 'fk_fake',
+      environment: environment,
       locale: locale,
     ),
     identity: IdentityStore(),

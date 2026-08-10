@@ -1,4 +1,5 @@
 import 'package:featurely/featurely.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
 /// Instance base URL and key are passed per build:
@@ -6,16 +7,16 @@ import 'package:flutter/material.dart';
 /// ```sh
 /// flutter run \
 ///   --dart-define=FEATURELY_BASE_URL=http://localhost:3000 \
-///   --dart-define=FEATURELY_API_KEY=fk_test_…
+///   --dart-define=FEATURELY_API_KEY=fk_…
 /// ```
 ///
 /// Use `http://10.0.2.2:3000` for the Android emulator against a local
-/// docker `featurely-app`. Debug/staging builds should pass an `fk_test_…`
-/// key so QA traffic lands in Sandbox (with the visible SANDBOX strip).
+/// docker `featurely-app`. Debug builds report to Sandbox automatically
+/// (with the visible SANDBOX strip); release builds report to Live.
 const String baseUrl =
     String.fromEnvironment('FEATURELY_BASE_URL', defaultValue: 'http://localhost:3000');
 const String apiKey =
-    String.fromEnvironment('FEATURELY_API_KEY', defaultValue: 'fk_test_example');
+    String.fromEnvironment('FEATURELY_API_KEY', defaultValue: 'fk_example');
 
 void main() {
   runApp(const ExampleApp());
@@ -91,7 +92,7 @@ class _ExampleAppState extends State<ExampleApp> {
               Text('Instance: $baseUrl',
                   style: Theme.of(context).textTheme.bodySmall),
               Text(
-                'Key: ${apiKey.startsWith('fk_test_') ? 'sandbox' : 'live'}',
+                'Environment: ${kDebugMode ? 'sandbox (debug build)' : 'live'}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 16),

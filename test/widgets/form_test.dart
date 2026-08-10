@@ -131,4 +131,26 @@ void main() {
     expect(find.text('Feedback'), findsOneWidget);
     expect(listCalls, greaterThan(before));
   });
+
+  testWidgets('a plan set mid-session is sent with the next submission',
+      (tester) async {
+    final api = FakeApi();
+    api.onSubmit = () async => makeItem();
+    final core = makeCore(api);
+    await pumpSheet(tester, core);
+    await tester.pump();
+    await tester.tap(find.text('New feedback').last);
+    await tester.pumpAndSettle();
+
+    // What `Featurely.setPlan('Pro Monthly')` does after e.g. an upgrade.
+    core.plan = 'Pro Monthly';
+
+    await tester.enterText(titleField(), 'Title');
+    await tester.enterText(descriptionField(), 'Description');
+    await tester.pump();
+    await tester.tap(submitButton());
+    await tester.pumpAndSettle();
+
+    expect(api.lastSubmissionMetadata?['plan'], 'Pro Monthly');
+  });
 }

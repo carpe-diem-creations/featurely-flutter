@@ -9,7 +9,8 @@ import 'package:http/testing.dart';
 
 FeaturelyApiClient clientWith(MockClient mock) => FeaturelyApiClient(
       baseUrl: 'https://feedback.example.com',
-      apiKey: 'fk_test_abc123',
+      apiKey: 'fk_abc123',
+      environment: 'sandbox',
       deviceIdProvider: () async => 'u_testdevice1234567890ab',
       httpClient: mock,
       readRetryDelay: (_) => Duration.zero,
@@ -33,7 +34,7 @@ const Map<String, Object> itemJson = {
 };
 
 void main() {
-  test('every request carries both auth headers', () async {
+  test('every request carries the auth and environment headers', () async {
     final requests = <http.Request>[];
     final client = clientWith(MockClient((request) async {
       requests.add(request);
@@ -41,9 +42,10 @@ void main() {
     }));
     await client.listFeedback();
     expect(requests, hasLength(1));
-    expect(requests.first.headers['Authorization'], 'Bearer fk_test_abc123');
+    expect(requests.first.headers['Authorization'], 'Bearer fk_abc123');
     expect(requests.first.headers['X-Featurely-Device-Id'],
         'u_testdevice1234567890ab');
+    expect(requests.first.headers['X-Featurely-Environment'], 'sandbox');
   });
 
   test('error shape decodes to a stable code', () async {

@@ -32,10 +32,14 @@ class Featurely {
   /// Configures the SDK. Idempotent — safe (and recommended) to call on
   /// every launch; calling it again replaces the configuration.
   ///
-  /// [baseUrl] is the instance origin (no `/api/v1` suffix). [apiKey]
-  /// determines both project and environment: `fk_test_…` keys hit Sandbox
-  /// and render the SANDBOX strip, `fk_live_…` keys hit Live. There is no
-  /// environment toggle — pick the key per build type.
+  /// [baseUrl] is the instance origin (no `/api/v1` suffix). [apiKey] is the
+  /// project's single key (`fk_…`), always available in Project Settings.
+  ///
+  /// [environment] declares which environment this app reports to. Leave it
+  /// null for the automatic default — debug builds hit Sandbox (and render
+  /// the SANDBOX strip), release builds hit Live — and set it explicitly
+  /// only for special build flavors (e.g. a staging release build that
+  /// should stay in Sandbox). It is never a user-facing runtime toggle.
   ///
   /// [userId] links the device to the host app's own account system (same
   /// semantics as [login]; last write wins). [plan] is attached to
@@ -52,6 +56,7 @@ class Featurely {
   static Future<void> init({
     required String baseUrl,
     required String apiKey,
+    FeaturelyEnvironment? environment,
     String? userId,
     String? plan,
     FeaturelyTheme? theme,
@@ -61,6 +66,7 @@ class Featurely {
     final options = FeaturelyOptions(
       baseUrl: baseUrl,
       apiKey: apiKey,
+      environment: environment,
       userId: userId,
       plan: plan,
       theme: theme,
@@ -70,7 +76,8 @@ class Featurely {
     final previous = _core;
     final sameBackend = previous != null &&
         previous.options.baseUrl == options.baseUrl &&
-        previous.options.apiKey == options.apiKey;
+        previous.options.apiKey == options.apiKey &&
+        previous.options.environment == options.environment;
     final identity = previous?.identity ?? IdentityStore();
     final core = FeaturelyCore(
       options: options,
@@ -78,6 +85,7 @@ class Featurely {
       api: FeaturelyApiClient(
         baseUrl: options.baseUrl,
         apiKey: options.apiKey,
+        environment: options.environment.name,
         deviceIdProvider: identity.deviceId,
         httpClient: debugHttpClient,
         onError: onError,

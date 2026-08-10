@@ -10,8 +10,9 @@ import 'models.dart';
 
 /// HTTP client for the frozen `/api/v1` contract.
 ///
-/// Every request carries `Authorization: Bearer <key>` and
-/// `X-Featurely-Device-Id`. Reads retry transport errors and 5xx with
+/// Every request carries `Authorization: Bearer <key>`,
+/// `X-Featurely-Device-Id`, and the per-request environment declaration
+/// `X-Featurely-Environment`. Reads retry transport errors and 5xx with
 /// backoff (max 2 retries); non-429 4xx are never retried unchanged; 429 is
 /// surfaced with its parsed `retry-after` and never auto-retried. The API
 /// key is never logged and never appears in exception text.
@@ -21,12 +22,14 @@ class FeaturelyApiClient {
   FeaturelyApiClient({
     required String baseUrl,
     required String apiKey,
+    required String environment,
     required Future<String> Function() deviceIdProvider,
     http.Client? httpClient,
     Duration Function(int attempt)? readRetryDelay,
     void Function(String operation, Object error)? onError,
   })  : _baseUrl = baseUrl,
         _apiKey = apiKey,
+        _environment = environment,
         _deviceIdProvider = deviceIdProvider,
         _http = httpClient ?? http.Client(),
         _readRetryDelay = readRetryDelay ??
@@ -35,6 +38,7 @@ class FeaturelyApiClient {
 
   final String _baseUrl;
   final String _apiKey;
+  final String _environment;
   final Future<String> Function() _deviceIdProvider;
   final http.Client _http;
   final Duration Function(int attempt) _readRetryDelay;
@@ -63,11 +67,12 @@ class FeaturelyApiClient {
         queryParameters: (query == null || query.isEmpty) ? null : query,
       );
 
-  /// Both auth headers, for use by `Image.network` on the attachment
-  /// endpoint as well as every request this client makes.
+  /// The auth + environment headers, for use by `Image.network` on the
+  /// attachment endpoint as well as every request this client makes.
   Future<Map<String, String>> authHeaders() async => {
         'Authorization': 'Bearer $_apiKey',
         'X-Featurely-Device-Id': await _deviceIdProvider(),
+        'X-Featurely-Environment': _environment,
       };
 
   /// The attachment URL for [id]; fetch only when `hasAttachment` is true.

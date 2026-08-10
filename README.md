@@ -11,8 +11,9 @@ everything in the Featurely web dashboard.
   light/dark mode; iOS and Android adaptive details.
 - **25 languages** including RTL (`ar`, `he`), resolved independently of the
   host app's locale.
-- **Sandbox/live separation by key** — `fk_test_…` keys hit Sandbox and show
-  an unmistakable amber SANDBOX strip; test data can never pollute Live.
+- **Automatic sandbox/live separation** — one API key; debug builds report
+  to Sandbox (with an unmistakable amber SANDBOX strip), release builds to
+  Live. Test data can never pollute Live.
 - Android and iOS only.
 
 ## Getting started
@@ -41,15 +42,25 @@ Future<void> main() async {
 await Featurely.show(context);
 ```
 
-### Choosing the API key per build
+### Environments
 
-The key determines the project **and** the environment: `fk_live_…` reads
-and writes Live data, `fk_test_…` only Sandbox data. There is no runtime
-toggle — pick the key from the build type, e.g. with
-`--dart-define=FEATURELY_API_KEY=…` and flavors/build modes, so debug and
-staging builds always carry a sandbox key. Sandbox sessions render an amber
-SANDBOX strip across the top of the sheet so QA always knows which mode
-they're in.
+Each project has a single API key (always available in Project Settings);
+the SDK declares the environment on every request. By default it follows
+the build type — debug builds report to Sandbox, release builds to Live —
+so there is nothing to configure. For special flavors (e.g. a staging
+release build that should stay in Sandbox), override it at `init`:
+
+```dart
+await Featurely.init(
+  baseUrl: …,
+  apiKey: …,
+  environment: FeaturelyEnvironment.sandbox,
+);
+```
+
+Sandbox sessions render an amber SANDBOX strip across the top of the sheet
+so QA always knows which mode they're in. It is never a user-facing runtime
+toggle.
 
 ## Theming
 
@@ -132,7 +143,7 @@ automatically before upload.
 cd example
 flutter run \
   --dart-define=FEATURELY_BASE_URL=http://localhost:3000 \
-  --dart-define=FEATURELY_API_KEY=fk_test_…
+  --dart-define=FEATURELY_API_KEY=fk_…
 ```
 
 (Use `http://10.0.2.2:3000` on the Android emulator.) It exposes theming
