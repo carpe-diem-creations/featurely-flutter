@@ -20,7 +20,7 @@ everything in the Featurely web dashboard.
 
 ```yaml
 dependencies:
-  featurely: ^0.1.0
+  featurely: ^0.2.0
 ```
 
 Initialize once at startup (idempotent — call it on every launch), then
