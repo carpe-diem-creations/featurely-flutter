@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3
+
+- Releases are now published to pub.dev automatically from CI when a
+  version tag is pushed. No package changes.
+
 ## 0.2.2
 
 - The header close and filter buttons are larger: 40pt circles (up from
