@@ -34,6 +34,12 @@ jobs:
       - name: Run tests
         run: flutter test
 
+      - name: Show and discard files modified by the toolchain
+        run: |
+          git status --porcelain
+          git diff
+          git checkout -- .
+
       - name: Publish dry-run
         run: flutter pub publish --dry-run
 
