@@ -47,4 +47,5 @@ jobs:
     needs: validate
     permissions:
       id-token: write # required for OIDC-based authentication with pub.dev
+      contents: read
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
