@@ -43,9 +43,34 @@ jobs:
       - name: Publish dry-run
         run: flutter pub publish --dry-run
 
+  # Inlined instead of calling dart-lang/setup-dart's reusable publish
+  # workflow: that workflow grants its job only `id-token: write`, so its
+  # checkout cannot read a private repository.
   publish:
+    name: Publish to pub.dev
     needs: validate
+    runs-on: ubuntu-latest
     permissions:
       id-token: write # required for OIDC-based authentication with pub.dev
       contents: read
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    steps:
+      - uses: actions/checkout@v5
+
+      # Sets up the Dart SDK and provisions the OIDC token used for
+      # publishing; the `dart`/`pub` commands are then shadowed by the
+      # Flutter SDK below, which shares the same pub token store.
+      - uses: dart-lang/setup-dart@v1
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Discard files modified by the toolchain
+        run: git checkout -- .
+
+      - name: Publish
+        run: flutter pub publish --force
