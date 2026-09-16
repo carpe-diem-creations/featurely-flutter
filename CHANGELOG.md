@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0
 
 - 8 new locales: Bulgarian (`bg`), Greek (`el`), Finnish (`fi`), Indonesian
   (`id`), Lithuanian (`lt`), Romanian (`ro`), Slovak (`sk`) and Albanian
