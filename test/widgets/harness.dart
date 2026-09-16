@@ -58,6 +58,13 @@ class FakeApi extends FeaturelyApiClient {
   /// Every `sendChatMessage` call as `(body, clientMessageId)`.
   final List<(String, String)> sendCalls = [];
 
+  /// The `resolvedLocale` of the most recent `sendChatMessage` call.
+  String? lastChatResolvedLocale;
+
+  /// The `metadata` of every `sendChatMessage` call, parallel to
+  /// [sendCalls].
+  final List<Map<String, String>?> sendMetadata = [];
+
   /// Every `setChatEmail` argument.
   final List<String?> emailCalls = [];
 
@@ -123,8 +130,11 @@ class FakeApi extends FeaturelyApiClient {
     required String clientMessageId,
     String? deviceLocale,
     String? resolvedLocale,
+    Map<String, String>? metadata,
   }) {
     sendCalls.add((body, clientMessageId));
+    sendMetadata.add(metadata);
+    lastChatResolvedLocale = resolvedLocale;
     return onSendChatMessage?.call(body, clientMessageId) ??
         Future.value(makeChatMessage(
           id: 'srv-$clientMessageId',
@@ -244,6 +254,8 @@ Future<void> pumpSheet(
   FeaturelyTheme? theme,
   Size surface = const Size(390, 844),
   FeaturelySheetRoot root = FeaturelySheetRoot.list,
+  Map<String, String>? chatMetadata,
+  String? chatInitialMessage,
 }) async {
   await tester.binding.setSurfaceSize(surface);
   addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -256,6 +268,8 @@ Future<void> pumpSheet(
           localeTag: resolveLocaleTag(core.options.locale?.toLanguageTag()),
           platform: TargetPlatform.android,
           root: root,
+          chatMetadata: chatMetadata,
+          chatInitialMessage: chatInitialMessage,
         ),
       ),
     ),

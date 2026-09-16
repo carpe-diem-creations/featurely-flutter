@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:featurely/featurely.dart';
 import 'package:featurely/src/api/api_client.dart';
 import 'package:featurely/src/util/uuid.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -37,6 +37,70 @@ void main() {
       environment: FeaturelyEnvironment.live,
     );
   }
+
+  group('Featurely.hasUnreadMessages', () {
+    Future<http.Response> withUnread(http.Request request, int unread) async {
+      if (request.url.path.endsWith('/config')) {
+        return http.Response(
+            jsonEncode({..._config, 'chatEnabled': true}), 200);
+      }
+      return http.Response(
+          jsonEncode({
+            'conversation': {
+              'id': '6f1c1f5e-0000-4000-8000-000000000000',
+              'status': 'open',
+              'contactEmail': null,
+              'unreadCount': unread,
+              'lastMessageAt': '2026-09-01T10:00:00.000Z',
+            }
+          }),
+          200);
+    }
+
+    test('is false before init', () async {
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+
+    test('is true when team messages are unread', () async {
+      await init((request) => withUnread(request, 2));
+      expect(await Featurely.hasUnreadMessages(), isTrue);
+    });
+
+    test('is false when everything is read', () async {
+      await init((request) => withUnread(request, 0));
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+
+    test('is false when the server does not support chat', () async {
+      await init((request) async {
+        if (request.url.path.endsWith('/config')) {
+          return http.Response(jsonEncode(_config), 200);
+        }
+        return withUnread(request, 5);
+      });
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+
+    test('is false when the device has no conversation', () async {
+      await init((request) async {
+        if (request.url.path.endsWith('/config')) {
+          return withUnread(request, 0);
+        }
+        return http.Response(jsonEncode({'conversation': null}), 200);
+      });
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+
+    test('never throws: errors yield false', () async {
+      await init((request) async {
+        if (request.url.path.endsWith('/config')) {
+          return withUnread(request, 0);
+        }
+        throw http.ClientException('offline');
+      });
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+  });
 
   group('Featurely.unreadMessageCount', () {
     test('is 0 before init', () async {
@@ -108,6 +172,96 @@ void main() {
             401);
       });
       expect(await Featurely.unreadMessageCount(), 0);
+    });
+  });
+
+  group('setChatMetadata', () {
+    test('throws a StateError before init', () {
+      expect(
+          () => Featurely.setChatMetadata(const {'a': 'b'}), throwsStateError);
+    });
+
+    testWidgets('is merged with showChat metadata and survives re-init',
+        (tester) async {
+      final sent = <Map<String, dynamic>>[];
+      Future<http.Response> handler(http.Request request) async {
+        final path = request.url.path;
+        if (path.endsWith('/config')) {
+          return http.Response(
+              jsonEncode({..._config, 'chatEnabled': true}), 200);
+        }
+        if (path.endsWith('/conversation')) {
+          return http.Response(jsonEncode({'conversation': null}), 200);
+        }
+        if (path.endsWith('/conversation/messages') &&
+            request.method == 'GET') {
+          return http.Response(
+              jsonEncode({
+                'messages': <Object>[],
+                'olderCursor': null,
+                'newerCursor': null,
+              }),
+              200);
+        }
+        if (path.endsWith('/conversation/messages')) {
+          final body = jsonDecode(request.body) as Map<String, dynamic>;
+          sent.add(body);
+          return http.Response(
+              jsonEncode({
+                'id': 'm${sent.length}',
+                'author': 'user',
+                'body': body['body'],
+                'createdAt': '2026-09-01T10:00:00.000Z',
+                'clientMessageId': body['clientMessageId'],
+              }),
+              201);
+        }
+        return http.Response('', 204);
+      }
+
+      await tester.runAsync(() => init(handler));
+      final input = {'plan': 'free', 'screen': 'Home'};
+      Featurely.setChatMetadata(input);
+      input['plan'] = 'mutated after the call'; // Copied, so no effect.
+      // Re-configuring keeps the app-wide metadata.
+      await tester.runAsync(() => init(handler));
+
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) => TextButton(
+            onPressed: () => Featurely.showChat(
+              context,
+              metadata: const {'screen': 'Checkout', 'orderId': '42'},
+              initialMessage: 'Where is my order?',
+            ),
+            child: const Text('Open chat'),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('Open chat'));
+      await tester.pumpAndSettle();
+
+      // The prefill is in the composer but is sent only on tap.
+      expect(sent, isEmpty);
+      await tester.tap(find.byKey(const ValueKey('featurely-chat-send')));
+      await tester.pumpAndSettle();
+
+      expect(sent.single['body'], 'Where is my order?');
+      expect(sent.single['metadata'], {
+        'orderId': '42',
+        'plan': 'free',
+        'screen': 'Checkout',
+      });
+
+      // null clears the app-wide map; the presentation's own map remains.
+      Featurely.setChatMetadata(null);
+      await tester.enterText(find.byType(TextField), 'Any news?');
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('featurely-chat-send')));
+      await tester.pumpAndSettle();
+      expect(sent.last['metadata'], {'orderId': '42', 'screen': 'Checkout'});
+
+      await tester.pumpWidget(const SizedBox.shrink());
     });
   });
 
@@ -197,6 +351,35 @@ void main() {
         'resolvedLocale': 'de',
       });
       expect(message.clientMessageId, '0d6c1b2a-1111-4111-8111-111111111111');
+    });
+
+    test('sendChatMessage encodes metadata as a flat string map', () async {
+      await client.sendChatMessage(
+        body: 'Hello',
+        clientMessageId: '0d6c1b2a-1111-4111-8111-111111111111',
+        metadata: const {'screen': 'Checkout', 'plan': 'pro'},
+      );
+      expect(jsonDecode(requests.single.body), {
+        'body': 'Hello',
+        'clientMessageId': '0d6c1b2a-1111-4111-8111-111111111111',
+        'metadata': {'screen': 'Checkout', 'plan': 'pro'},
+      });
+    });
+
+    test('sendChatMessage omits null or empty metadata', () async {
+      await client.sendChatMessage(
+        body: 'Hello',
+        clientMessageId: '0d6c1b2a-1111-4111-8111-111111111111',
+      );
+      await client.sendChatMessage(
+        body: 'Hello',
+        clientMessageId: '0d6c1b2a-1111-4111-8111-111111111111',
+        metadata: const {},
+      );
+      for (final request in requests) {
+        expect(
+            (jsonDecode(request.body) as Map).containsKey('metadata'), isFalse);
+      }
     });
 
     test('setChatEmail PUTs the address (null clears); markChatRead POSTs',

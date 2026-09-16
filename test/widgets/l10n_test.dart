@@ -41,6 +41,35 @@ void main() {
     expect(find.text('Neues Feedback'), findsOneWidget);
   });
 
+  for (final locale in const [
+    Locale.fromSubtags(
+        languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
+    Locale('zh', 'TW'),
+    Locale('zh', 'HK'),
+  ]) {
+    testWidgets('$locale renders the Traditional Chinese catalog',
+        (tester) async {
+      final api = FakeApi();
+      await pumpSheet(tester, makeCore(api, locale: locale));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('新增回饋'), findsOneWidget);
+      expect(find.text('新反馈'), findsNothing);
+      final listLocale =
+          Localizations.localeOf(tester.element(find.byType(ListScreen)));
+      expect(listLocale.languageCode, 'zh');
+      expect(listLocale.scriptCode, 'Hant');
+    });
+  }
+
+  testWidgets('zh-CN keeps the Simplified Chinese catalog', (tester) async {
+    final api = FakeApi();
+    await pumpSheet(tester, makeCore(api, locale: const Locale('zh', 'CN')));
+    await tester.pump();
+    await tester.pump();
+    expect(find.text('新反馈'), findsOneWidget);
+  });
+
   testWidgets('long German strings do not overflow the form on a narrow screen',
       (tester) async {
     final api = FakeApi();

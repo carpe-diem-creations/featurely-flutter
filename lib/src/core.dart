@@ -7,7 +7,7 @@ import 'metadata.dart';
 import 'options.dart';
 
 /// The per-configuration runtime the sheet operates on: API client,
-/// identity, session-long config cache, and mutable plan.
+/// identity, session-long config cache, mutable plan and chat metadata.
 ///
 /// Internal — hosts only ever touch the `Featurely` facade. Kept as an
 /// injectable object so widget tests can supply fakes.
@@ -19,6 +19,7 @@ class FeaturelyCore {
     required this.api,
     required this.metadata,
     String? plan,
+    this.chatMetadata,
   }) : plan = plan ?? options.plan;
 
   /// Resolved init options.
@@ -35,6 +36,10 @@ class FeaturelyCore {
 
   /// The host app's plan label, mutable via `Featurely.setPlan`.
   String? plan;
+
+  /// App-wide chat metadata (an unmodifiable copy), mutable via
+  /// `Featurely.setChatMetadata`.
+  Map<String, String>? chatMetadata;
 
   /// Session-cached `GET /config` response.
   SdkConfig? cachedConfig;

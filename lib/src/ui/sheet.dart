@@ -24,6 +24,9 @@ enum FeaturelySheetRoot {
 
 /// Presents the full-height feedback sheet and completes when dismissed.
 /// [root] selects the first screen (the feedback list by default).
+/// [chatMetadata] is this presentation's chat metadata, used only when
+/// [root] is [FeaturelySheetRoot.chat], as is [chatInitialMessage] (the
+/// composer prefill).
 ///
 /// The theme is resolved against the host theme and the locale against the
 /// device (or the init override) at present time; both are fixed for the
@@ -32,6 +35,8 @@ Future<void> showFeaturelySheet(
   BuildContext context,
   FeaturelyCore core, {
   FeaturelySheetRoot root = FeaturelySheetRoot.list,
+  Map<String, String>? chatMetadata,
+  String? chatInitialMessage,
 }) {
   final theme = FeaturelyThemeData.resolve(context, core.options.theme);
   final platform = Theme.of(context).platform;
@@ -55,6 +60,8 @@ Future<void> showFeaturelySheet(
         localeTag: localeTag,
         platform: platform,
         root: root,
+        chatMetadata: chatMetadata,
+        chatInitialMessage: chatInitialMessage,
       ),
     ),
   );
@@ -70,6 +77,8 @@ class FeaturelySheet extends StatefulWidget {
     required this.localeTag,
     required this.platform,
     this.root = FeaturelySheetRoot.list,
+    this.chatMetadata,
+    this.chatInitialMessage,
     super.key,
   });
 
@@ -87,6 +96,12 @@ class FeaturelySheet extends StatefulWidget {
 
   /// The first screen of the internal navigator.
   final FeaturelySheetRoot root;
+
+  /// Per-presentation chat metadata for a [FeaturelySheetRoot.chat] root.
+  final Map<String, String>? chatMetadata;
+
+  /// Composer prefill for a [FeaturelySheetRoot.chat] root.
+  final String? chatInitialMessage;
 
   @override
   State<FeaturelySheet> createState() => _FeaturelySheetState();
@@ -172,7 +187,11 @@ class _FeaturelySheetState extends State<FeaturelySheet> {
                               settings: RouteSettings(name: widget.root.name),
                               builder: (_) => switch (widget.root) {
                                 FeaturelySheetRoot.list => const ListScreen(),
-                                FeaturelySheetRoot.chat => const ChatScreen(),
+                                FeaturelySheetRoot.chat =>
+                                  ChatScreen(
+                                    metadata: widget.chatMetadata,
+                                    initialMessage: widget.chatInitialMessage,
+                                  ),
                               },
                             ),
                           ],

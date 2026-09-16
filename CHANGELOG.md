@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.4.0
+
+- 8 new locales: Bulgarian (`bg`), Greek (`el`), Finnish (`fi`), Indonesian
+  (`id`), Lithuanian (`lt`), Romanian (`ro`), Slovak (`sk`) and Albanian
+  (`sq`) — and Traditional Chinese (`zh-Hant`): 34 in total, matching the
+  Featurely server.
+- Locale resolution now honors script subtags like the server: a `Hant`
+  script, or a script-less `zh` with region TW, HK or MO, resolves to
+  `zh-Hant` (previously `zh`); `zh-Hans-*` and other regions stay `zh`, and
+  unsupported scripts are ignored (`pt-Latn-BR` → `pt-BR`).
+- New `Featurely.hasUnreadMessages()` — `true` when
+  `unreadMessageCount()` is above zero, for a simple badge. Never throws;
+  `false` before `init`, when chat is unavailable, and on any error.
+- `Featurely.showChat(context, initialMessage: text)` prefills the chat
+  composer (cursor at the end, field focused). It is never sent
+  automatically; blank text is ignored, it is capped to the 4 000-character
+  limit, and it is applied once per `showChat` call.
+- **Chat metadata:** new `Featurely.setChatMetadata(map)` attaches app-wide
+  context (e.g. plan, app version) to every chat message sent from then on,
+  and `Featurely.showChat(context, metadata: map)` adds per-presentation
+  context (it wins on key collisions). The team sees it next to the message
+  in the Inbox and the alert email; it is never shown to the user. The SDK
+  trims and caps it to the server's limits (20 entries, 64-character keys,
+  500-character values) instead of failing the send, and a retried message
+  keeps its original metadata. The field is omitted when empty; servers
+  that predate chat metadata ignore it.
+
 ## 0.3.0
 
 **In-App Chat:** a private one-to-one thread between the device and your

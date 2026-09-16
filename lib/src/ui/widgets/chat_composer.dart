@@ -12,8 +12,13 @@ class ChatComposer extends StatefulWidget {
   const ChatComposer({
     required this.onSend,
     this.maxLength = chatMessageMax,
+    this.initialText,
     super.key,
   });
+
+  /// Read once when the composer is created: text to prefill (cursor at the
+  /// end, field focused) while the field is empty. Never sent by itself.
+  final String? Function()? initialText;
 
   /// Called with the raw text; the composer clears itself afterwards.
   final ValueChanged<String> onSend;
@@ -27,10 +32,19 @@ class ChatComposer extends StatefulWidget {
 
 class _ChatComposerState extends State<ChatComposer> {
   final TextEditingController _text = TextEditingController();
+  bool _prefilled = false;
 
   @override
   void initState() {
     super.initState();
+    final initial = widget.initialText?.call();
+    if (initial != null && initial.isNotEmpty && _text.text.isEmpty) {
+      _text.value = TextEditingValue(
+        text: initial,
+        selection: TextSelection.collapsed(offset: initial.length),
+      );
+      _prefilled = true;
+    }
     _text.addListener(_onChanged);
   }
 
@@ -84,6 +98,7 @@ class _ChatComposerState extends State<ChatComposer> {
               Expanded(
                 child: TextField(
                   controller: _text,
+                  autofocus: _prefilled,
                   minLines: 1,
                   maxLines: 5,
                   keyboardType: TextInputType.multiline,

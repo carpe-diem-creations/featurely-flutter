@@ -2,6 +2,7 @@ import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/material.dart';
 
+import '../../chat_metadata.dart';
 import '../../l10n/generated/featurely_localizations.dart';
 import '../controllers/chat_controller.dart';
 import '../scope.dart';
@@ -19,8 +20,16 @@ import '../widgets/state_views.dart';
 /// of a standalone sheet by `Featurely.showChat`. Polls only while this
 /// route is the visible one and the app is resumed.
 class ChatScreen extends StatefulWidget {
-  /// Creates the chat screen.
-  const ChatScreen({super.key});
+  /// Creates the chat screen. [metadata] is per-presentation chat metadata,
+  /// merged over the app-wide `Featurely.setChatMetadata` map on each send.
+  /// [initialMessage] prefills the composer once when the chat opens.
+  const ChatScreen({this.metadata, this.initialMessage, super.key});
+
+  /// Per-presentation chat metadata (null when opened from "Message us").
+  final Map<String, String>? metadata;
+
+  /// Per-presentation composer prefill (null when opened from "Message us").
+  final String? initialMessage;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -38,6 +47,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       api: scope.core.api,
       resolvedLocale: scope.localeTag,
       deviceLocale: PlatformDispatcher.instance.locale.toLanguageTag(),
+      initialMessage: widget.initialMessage,
+      // Read at compose time, so a later setChatMetadata applies to new
+      // messages (retries keep their own snapshot).
+      metadata: () =>
+          effectiveChatMetadata(scope.core.chatMetadata, widget.metadata),
     );
     WidgetsBinding.instance.addObserver(this);
     final lifecycle = WidgetsBinding.instance.lifecycleState;
@@ -172,7 +186,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                 child: InlineErrorBanner(message: strings.sdkCommonRateLimited),
               ),
             Expanded(child: _buildMessages(context)),
-            ChatComposer(onSend: _send),
+            ChatComposer(
+              onSend: _send,
+              // Consumed once: a composer rebuilt after a reload stays empty.
+              initialText: _controller.takeInitialMessage,
+            ),
           ],
         );
     }

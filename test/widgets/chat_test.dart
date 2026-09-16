@@ -1,5 +1,6 @@
 import 'package:featurely/src/api/api_exception.dart';
 import 'package:featurely/src/api/models.dart';
+import 'package:featurely/src/core.dart';
 import 'package:featurely/src/options.dart';
 import 'package:featurely/src/ui/sandbox_strip.dart';
 import 'package:featurely/src/ui/screens/chat_screen.dart';
@@ -23,12 +24,17 @@ const _chatConfig = SdkConfig(
 
 Future<void> _pumpChat(WidgetTester tester, FakeApi api,
     {FeaturelyEnvironment environment = FeaturelyEnvironment.sandbox,
-    Locale? locale}) async {
+    Locale? locale,
+    FeaturelyCore? core,
+    Map<String, String>? chatMetadata,
+    String? initialMessage}) async {
   api.config = _chatConfig;
   await pumpSheet(
     tester,
-    makeCore(api, environment: environment, locale: locale),
+    core ?? makeCore(api, environment: environment, locale: locale),
     root: FeaturelySheetRoot.chat,
+    chatMetadata: chatMetadata,
+    chatInitialMessage: initialMessage,
   );
   await tester.pump();
   await tester.pump();
@@ -301,6 +307,171 @@ void main() {
     expect(find.byType(ChatScreen), findsOneWidget);
     expect(find.byType(SandboxStrip), findsNothing);
     await _unmount(tester);
+  });
+
+  testWidgets('zh-TW renders Traditional and sends resolvedLocale zh-Hant',
+      (tester) async {
+    final api = FakeApi();
+    await _pumpChat(tester, api, locale: const Locale('zh', 'TW'));
+    expect(find.text('訊息'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), '你好');
+    await tester.pump();
+    await tester.tap(_sendButton);
+    await tester.pump();
+    expect(api.lastChatResolvedLocale, 'zh-Hant');
+    await _unmount(tester);
+  });
+
+  group('initial message', () {
+    TextField field(WidgetTester tester) =>
+        tester.widget<TextField>(find.byType(TextField));
+
+    testWidgets('prefills the composer, cursor at the end, without sending',
+        (tester) async {
+      final api = FakeApi();
+      await _pumpChat(tester, api, initialMessage: '  About order #42  ');
+      final controller = field(tester).controller!;
+      expect(controller.text, 'About order #42');
+      expect(controller.selection,
+          const TextSelection.collapsed(offset: 'About order #42'.length));
+      expect(
+        tester
+            .widget<EditableText>(find.byType(EditableText))
+            .focusNode
+            .hasFocus,
+        isTrue,
+      );
+      expect(_sendEnabled(tester), isTrue);
+      expect(api.sendCalls, isEmpty);
+
+      // Editable before sending.
+      await tester.enterText(find.byType(TextField), 'About order #43');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendCalls.single.$1, 'About order #43');
+      // Applied once: not restored after the send.
+      await tester.pump(const Duration(seconds: 1));
+      expect(field(tester).controller!.text, isEmpty);
+      await _unmount(tester);
+    });
+
+    testWidgets('a blank initial message leaves the composer empty',
+        (tester) async {
+      final api = FakeApi();
+      await _pumpChat(tester, api, initialMessage: '   ');
+      expect(field(tester).controller!.text, isEmpty);
+      expect(
+        tester
+            .widget<EditableText>(find.byType(EditableText))
+            .focusNode
+            .hasFocus,
+        isFalse,
+      );
+      expect(_sendEnabled(tester), isFalse);
+      await _unmount(tester);
+    });
+
+    testWidgets('is not re-applied when the chat reloads after an error',
+        (tester) async {
+      final api = FakeApi();
+      await _pumpChat(tester, api, initialMessage: 'Hello');
+      await tester.enterText(find.byType(TextField), '');
+      await tester.pump();
+
+      // A 401 on the next poll drops the chat to its failed-load state.
+      var fail = true;
+      api.onGetChatMessages = (before, after) async {
+        if (fail) {
+          throw FeaturelyApiException(FeaturelyErrorCode.invalidApiKey, 401);
+        }
+        return const ChatMessagesPage(
+            messages: [], olderCursor: null, newerCursor: null);
+      };
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pump();
+      expect(find.text('Retry'), findsOneWidget);
+      fail = false;
+      await tester.tap(find.text('Retry'));
+      await tester.pump();
+      await tester.pump();
+      expect(field(tester).controller!.text, isEmpty);
+      await _unmount(tester);
+    });
+
+    testWidgets('is capped to the message limit', (tester) async {
+      final api = FakeApi();
+      await _pumpChat(tester, api, initialMessage: 'x' * 4100);
+      expect(field(tester).controller!.text, 'x' * chatMessageMax);
+      expect(_sendEnabled(tester), isTrue);
+      expect(find.textContaining('too long'), findsNothing);
+      await _unmount(tester);
+    });
+
+    testWidgets('"Message us" opens an empty composer', (tester) async {
+      final api = FakeApi()..config = _chatConfig;
+      await pumpSheet(tester, makeCore(api),
+          chatInitialMessage: 'ignored for a list root');
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('featurely-message-us')));
+      await tester.pumpAndSettle();
+      expect(field(tester).controller!.text, isEmpty);
+      await _unmount(tester);
+    });
+  });
+
+  group('chat metadata', () {
+    testWidgets('a standalone chat merges its metadata over the global map',
+        (tester) async {
+      final api = FakeApi();
+      final core = makeCore(api)
+        ..chatMetadata = const {'plan': 'free', 'screen': 'Home'};
+      await _pumpChat(tester, api,
+          core: core, chatMetadata: const {'screen': 'Checkout'});
+
+      await tester.enterText(find.byType(TextField), 'Help');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendMetadata.single, {'plan': 'free', 'screen': 'Checkout'});
+
+      // A later global change applies to the next message.
+      core.chatMetadata = const {'plan': 'pro'};
+      await tester.enterText(find.byType(TextField), 'Again');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendMetadata.last, {'plan': 'pro', 'screen': 'Checkout'});
+      await _unmount(tester);
+    });
+
+    testWidgets('"Message us" sends only the global metadata', (tester) async {
+      final api = FakeApi()..config = _chatConfig;
+      final core = makeCore(api)..chatMetadata = const {'plan': 'pro'};
+      await pumpSheet(tester, core,
+          chatMetadata: const {'screen': 'ignored for a list root'});
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('featurely-message-us')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'Hi');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendMetadata.single, {'plan': 'pro'});
+      await _unmount(tester);
+    });
+
+    testWidgets('no metadata sends none', (tester) async {
+      final api = FakeApi();
+      await _pumpChat(tester, api);
+      await tester.enterText(find.byType(TextField), 'Hi');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendMetadata.single, isNull);
+      await _unmount(tester);
+    });
   });
 
   group('"Message us" on the list', () {

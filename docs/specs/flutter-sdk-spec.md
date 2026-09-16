@@ -15,7 +15,7 @@ renders the end-user feedback sheet inside host apps on **iOS and Android** (mob
 only; no web/desktop support).
 
 The SDK is a **guest in the host app**: it inherits the host's accent color, corner
-radius, font, and light/dark mode, ships localized UI in 25 locales, and talks
+radius, font, and light/dark mode, ships localized UI in 34 locales, and talks
 exclusively to the **frozen public API contract** documented in
 `featurely-app/docs/api-v1.md` (referred to below as *the API contract* — read it in
 full before implementing; its identity, pagination, error, and visibility semantics are
@@ -36,7 +36,7 @@ Authoritative sources this spec is derived from:
 - A host app integrates in two calls: `Featurely.init(...)` once at startup and
   `Featurely.show(context)` from any trigger.
 - The sheet feels native and on-brand in any host: any accent hue, any corner radius,
-  light and dark, 25 locales including RTL (`ar`, `he`).
+  light and dark, 34 locales including RTL (`ar`, `he`).
 - Feedback lands in the correct environment 100% of the time; sandbox and live can
   never mix (environment is derived from the API key, never a runtime toggle).
 - The package stays a good guest: minimal, ubiquitous dependencies only; no
@@ -184,8 +184,9 @@ Numbered, testable; each verifiable pass/fail. "The contract" = `docs/api-v1.md`
     user-facing string literals in widget code. Plurals use ICU via `intl`
     (vote/comment counts, "Show N requests", the title counter).
 25. Locale resolution: init `locale` override, else the device locale; fallback chain
-    exact match → language match (`pt-BR` → `pt`, unsupported regionals collapse to
-    base) → `en`, replicating `packages/locales/src/locales.ts` including case- and
+    language-Script → language-REGION → language (`pt-PT` → `pt`, unsupported
+    regionals and scripts collapse to base; script-less `zh-TW`/`HK`/`MO` →
+    `zh-Hant`) → `en`, replicating `packages/locales/src/locales.ts` including case- and
     `_`-separator-insensitivity. The resolved locale is rendered **regardless of the
     host `MaterialApp`'s locale** (the SDK subtree wraps its own `Localizations`
     override) and is sent as `resolvedLocale` on submissions.
@@ -252,7 +253,7 @@ featurely-flutter/
 ├── lib/
 │   ├── featurely.dart            # public exports: Featurely, FeaturelyTheme (only these)
 │   └── src/
-│       ├── featurely_base.dart   # Featurely singleton facade (init/show/login/logout/setPlan)
+│       ├── featurely_base.dart   # Featurely singleton facade (init/show/login/logout/setPlan/chat)
 │       ├── options.dart          # FeaturelyOptions (resolved init config), FeaturelyEnvironment
 │       ├── theme.dart            # FeaturelyTheme + resolution against host Theme
 │       ├── identity/
@@ -263,7 +264,7 @@ featurely-flutter/
 │       │   └── api_exception.dart# error-code enum + unknown-code handling
 │       ├── metadata.dart         # device-metadata capture (package_info/device_info/locale)
 │       ├── l10n/
-│       │   ├── arb/              # featurely_en.arb … featurely_uk.arb (25 files, committed)
+│       │   ├── arb/              # featurely_en.arb … featurely_zh_Hant.arb (34 files, committed)
 │       │   └── generated/       # gen-l10n output (committed, so consumers need no codegen)
 │       └── ui/
 │           ├── sheet.dart        # show(): modal route, internal Navigator, Localizations override
@@ -292,6 +293,14 @@ class Featurely {
   static Future<void> login(String userId);       // idempotent; enforces rotation on account switch
   static Future<void> logout();                   // DELETE /identify → rotate device ID → persist
   static void setPlan(String? plan);              // update plan mid-session (e.g. after upgrade)
+
+  // In-App Chat
+  static Future<void> showChat(BuildContext context,
+      {Map<String, String>? metadata,             // wins over setChatMetadata
+       String? initialMessage});                  // standalone chat sheet; prefills (never sends) the composer once
+  static Future<int> unreadMessageCount();        // never throws; 0 when unavailable
+  static Future<bool> hasUnreadMessages();        // unreadMessageCount() > 0; never throws
+  static void setChatMetadata(Map<String, String>? metadata); // app-wide team-only context on chat messages; null clears
 }
 
 class FeaturelyTheme {
@@ -335,10 +344,10 @@ Everything else is `src/`-private. `show()` awaits sheet dismissal.
 - Updating is a **manual copy/transform** when the canonical catalog changes (no sync
   tooling in v1). Record the source commit hash of `featurely-app` in a comment at the
   top of a `lib/src/l10n/arb/SOURCE` file on each sync.
-- As of this writing only `en` exists upstream; the 24 translations are a
-  `featurely-app` Phase 3 deliverable. **Build against `en` now**; wire all 25 locales
+- As of this writing only `en` exists upstream; the 33 translations are a
+  `featurely-app` Phase 3 deliverable. **Build against `en` now**; wire all 34 locales
   in `supportedLocales` behind the fallback chain so dropping in the translated ARBs
-  is the only step left. Publishing `1.0.0` requires all 25 catalogs; `0.x` may ship
+  is the only step left. Publishing `1.0.0` requires all 34 catalogs; `0.x` may ship
   English-only.
 - Fallback resolution is implemented in `resolveLocale()` in Dart, mirroring
   `locales.ts` exactly (same inputs → same outputs; unit-tested against the same cases).
@@ -470,7 +479,7 @@ Manual QA (example app against local docker `featurely-app`):
 ## DEPLOYMENT / ROLLOUT NOTES
 
 - Versioning: semver from `0.1.0`; CHANGELOG entry per release; `1.0.0` gated on all
-  25 locale catalogs landing and a round of integration against a deployed instance.
+  34 locale catalogs landing and a round of integration against a deployed instance.
 - Publish flow (manual in v1): `flutter analyze` clean → `flutter test` green →
   `dart pub publish --dry-run` clean → `dart pub publish`. Tag `v{version}` in git.
 - pub.dev listing: README doubles as the integration guide; `example/` is the pub

@@ -13,7 +13,7 @@ Featurely web dashboard.
   action.
 - **Native-feeling** — inherits your accent color, corner radius, font, and
   light/dark mode; iOS and Android adaptive details.
-- **25 languages** including RTL (`ar`, `he`), resolved independently of the
+- **34 languages** including RTL (`ar`, `he`), resolved independently of the
   host app's locale.
 - **Automatic sandbox/live separation** — one API key; debug builds report
   to Sandbox (with an unmistakable amber SANDBOX strip), release builds to
@@ -24,7 +24,7 @@ Featurely web dashboard.
 
 ```yaml
 dependencies:
-  featurely: ^0.3.0
+  featurely: ^0.4.0
 ```
 
 Initialize once at startup (idempotent — call it on every launch), then
@@ -84,12 +84,76 @@ await Featurely.showChat(context);
 //    "Message us" action that pushes the chat inside the same sheet.
 ```
 
+To start the user off, prefill the composer — for example from an order
+screen:
+
+```dart
+await Featurely.showChat(
+  context,
+  initialMessage: 'I have a question about order #1234',
+);
+```
+
+The text is only placed in the composer (cursor at the end, field focused);
+it is never sent automatically, and the user can edit or delete it. Blank
+text is ignored, it is capped to the 4 000-character message limit, and it
+is applied once per `showChat` call — it doesn't come back after the user
+sends or clears it. The "Message us" chat opens with an empty composer.
+
+### Chat metadata
+
+Give your team context with each message — the current screen, the plan, an
+order id. Set an app-wide map once (it applies to every message sent from
+then on; `null` clears it), and/or pass a map when you open the chat:
+
+```dart
+Featurely.setChatMetadata({'plan': 'pro', 'appVersion': '2.4.1'});
+
+await Featurely.showChat(
+  context,
+  metadata: {'screen': 'Checkout', 'orderId': '1234'}, // wins on collisions
+);
+```
+
+Metadata is shown to your team only — next to the message in the Inbox and
+in the support alert email. It is never shown to the user and never returned
+by the API, but **don't put secrets in it**. Values are strings; keys are
+trimmed and at most 64 characters, values are truncated to 500 characters,
+and at most 20 entries are sent (the SDK drops or trims anything else rather
+than failing the send). A retried message keeps the metadata it was
+composed with. The "Message us" chat inside the feedback sheet uses the
+app-wide map only.
+
 Show an unread badge on your own button with `unreadMessageCount()` — it
 never throws and returns `0` before `init`, when the device has no
 conversation, when the server doesn't support chat, or on any error:
 
 ```dart
 final unread = await Featurely.unreadMessageCount(); // e.g. on app resume
+```
+
+For a plain dot badge, `hasUnreadMessages()` returns
+`unreadMessageCount() > 0` with the same never-throws semantics (`false`
+wherever the count is `0`). Each call is a network request, so refresh it on
+demand — for example on app resume and after the chat closes:
+
+```dart
+Future<bool> _unread = Featurely.hasUnreadMessages();
+
+// In build():
+FutureBuilder<bool>(
+  future: _unread,
+  builder: (context, snapshot) => Badge(
+    isLabelVisible: snapshot.data ?? false,
+    child: IconButton(
+      icon: const Icon(Icons.chat_bubble_outline),
+      onPressed: () async {
+        await Featurely.showChat(context);
+        setState(() => _unread = Featurely.hasUnreadMessages());
+      },
+    ),
+  ),
+)
 ```
 
 Things to know:
@@ -132,10 +196,12 @@ legible in light and dark.
 
 ## Localization
 
-The sheet ships all 25 Featurely locales and resolves its language from the
+The sheet ships all 34 Featurely locales and resolves its language from the
 device locale (or the `locale:` override passed to `init`), independent of
-your `MaterialApp`'s locale — fallback chain: exact match → base language →
-English. `ar` and `he` render fully right-to-left.
+your `MaterialApp`'s locale — fallback chain: language + script → language +
+region → base language → English. Chinese uses Traditional (`zh-Hant`) for a
+`Hant` script or, without a script, for the regions TW, HK and MO
+(`Locale('zh', 'TW')` → `zh-Hant`); everything else gets Simplified (`zh`). `ar` and `he` render fully right-to-left.
 
 ## Identity: login / logout
 
