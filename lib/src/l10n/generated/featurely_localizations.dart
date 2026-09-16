@@ -479,6 +479,102 @@ abstract class FeaturelyLocalizations {
   /// In en, this message translates to:
   /// **'Too many requests. Try again in a moment.'**
   String get sdkCommonRateLimited;
+
+  /// Placeholder of the chat message composer.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a message…'**
+  String get sdkChatComposerPlaceholder;
+
+  /// Action to change the saved chat contact email.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get sdkChatEmailEdit;
+
+  /// Inline error when the chat contact email is not a valid address.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get sdkChatEmailInvalid;
+
+  /// Placeholder of the chat contact-email field.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email address'**
+  String get sdkChatEmailPlaceholder;
+
+  /// Row inviting the user to leave an email address so team replies are also emailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Get replies by email'**
+  String get sdkChatEmailPrompt;
+
+  /// Button saving the chat contact email.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get sdkChatEmailSave;
+
+  /// Label shown above the saved contact email address (the address itself is shown separately, with an Edit action).
+  ///
+  /// In en, this message translates to:
+  /// **'Email for replies'**
+  String get sdkChatEmailSaved;
+
+  /// Greeting shown on the chat screen before any message exists. Fixed text, not configurable per project.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi there! Send us a message and our team will get back to you here.'**
+  String get sdkChatEmptyGreeting;
+
+  /// Button at the top of the chat that fetches older messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Load earlier messages'**
+  String get sdkChatLoadEarlier;
+
+  /// Toolbar action on the feedback list that opens the chat screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Message us'**
+  String get sdkChatMessageUs;
+
+  /// State label under a chat message that failed to send; tapping it retries.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent — Tap to retry'**
+  String get sdkChatNotSentRetry;
+
+  /// Send button of the chat composer (also its accessibility label).
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get sdkChatSend;
+
+  /// State label under a chat message that is still being sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending…'**
+  String get sdkChatSending;
+
+  /// Label on messages written by the app's team.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get sdkChatTeamLabel;
+
+  /// Navigation title of the In-App Chat screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get sdkChatTitle;
+
+  /// Inline error when a chat message exceeds the length limit.
+  ///
+  /// In en, this message translates to:
+  /// **'This message is too long. The limit is {max} characters.'**
+  String sdkChatTooLong(int max);
 }
 
 class _FeaturelyLocalizationsDelegate

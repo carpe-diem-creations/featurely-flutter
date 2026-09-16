@@ -55,5 +55,21 @@
   "sdkFormAttachError": "यह इमेज अटैच नहीं हो सकी। कोई दूसरी आज़माएँ।",
   "sdkFormEmailError": "मान्य ईमेल पता दर्ज करें।",
   "sdkDetailCommentsDisabled": "टिप्पणियाँ बंद कर दी गई हैं।",
-  "sdkCommonRateLimited": "बहुत सारे अनुरोध। थोड़ी देर में फिर कोशिश करें।"
+  "sdkCommonRateLimited": "बहुत सारे अनुरोध। थोड़ी देर में फिर कोशिश करें।",
+  "sdkChatComposerPlaceholder": "संदेश लिखें…",
+  "sdkChatEmailEdit": "बदलें",
+  "sdkChatEmailInvalid": "एक मान्य ईमेल पता दर्ज करें।",
+  "sdkChatEmailPlaceholder": "आपका ईमेल पता",
+  "sdkChatEmailPrompt": "जवाब ईमेल पर पाएं",
+  "sdkChatEmailSave": "सहेजें",
+  "sdkChatEmailSaved": "जवाबों के लिए ईमेल",
+  "sdkChatEmptyGreeting": "नमस्ते! हमें एक संदेश भेजें, हमारी टीम आपको यहीं जवाब देगी।",
+  "sdkChatLoadEarlier": "पुराने संदेश लोड करें",
+  "sdkChatMessageUs": "हमें संदेश भेजें",
+  "sdkChatNotSentRetry": "नहीं भेजा गया — दोबारा कोशिश करने के लिए टैप करें",
+  "sdkChatSend": "भेजें",
+  "sdkChatSending": "भेजा जा रहा है…",
+  "sdkChatTeamLabel": "टीम",
+  "sdkChatTitle": "संदेश",
+  "sdkChatTooLong": "यह संदेश बहुत लंबा है। सीमा {max} अक्षर है।"
 }

@@ -18,6 +18,7 @@ class FeaturelyScope extends InheritedWidget {
     required this.configSnapshot,
     required this.listController,
     required super.child,
+    this.hostVisible = true,
     super.key,
   });
 
@@ -43,6 +44,11 @@ class FeaturelyScope extends InheritedWidget {
   /// screens of this presentation.
   final FeedbackListController listController;
 
+  /// Whether the route hosting the whole sheet is the current one (false
+  /// while the host app covers the sheet with another route). Chat polling
+  /// stops while this is false.
+  final bool hostVisible;
+
   /// `{appName}` for strings, from config (empty-string-safe fallback).
   String get appName => config.value?.projectName ?? '';
 
@@ -60,5 +66,6 @@ class FeaturelyScope extends InheritedWidget {
       core != oldWidget.core ||
       theme != oldWidget.theme ||
       localeTag != oldWidget.localeTag ||
-      configSnapshot != oldWidget.configSnapshot;
+      configSnapshot != oldWidget.configSnapshot ||
+      hostVisible != oldWidget.hostVisible;
 }

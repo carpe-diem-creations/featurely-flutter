@@ -85,6 +85,7 @@ class FeaturelyCore {
       descriptionMax: cached.descriptionMax,
       commentMax: cached.commentMax,
       attachmentMaxBytes: cached.attachmentMaxBytes,
+      chatEnabled: cached.chatEnabled,
     );
   }
 

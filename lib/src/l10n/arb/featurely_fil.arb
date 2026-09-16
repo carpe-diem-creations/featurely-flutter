@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Hindi ma-attach ang larawang iyon. Sumubok ng iba.",
   "sdkFormEmailError": "Maglagay ng wastong email address.",
   "sdkDetailCommentsDisabled": "Naka-off ang mga komento.",
-  "sdkCommonRateLimited": "Masyadong maraming request. Subukan ulit mamaya."
+  "sdkCommonRateLimited": "Masyadong maraming request. Subukan ulit mamaya.",
+  "sdkChatComposerPlaceholder": "Sumulat ng mensahe…",
+  "sdkChatEmailEdit": "I-edit",
+  "sdkChatEmailInvalid": "Maglagay ng wastong email address.",
+  "sdkChatEmailPlaceholder": "Iyong email address",
+  "sdkChatEmailPrompt": "Tumanggap ng mga tugon sa email",
+  "sdkChatEmailSave": "I-save",
+  "sdkChatEmailSaved": "Email para sa mga tugon",
+  "sdkChatEmptyGreeting": "Hi! Magpadala sa amin ng mensahe at sasagutin ka ng aming team dito.",
+  "sdkChatLoadEarlier": "I-load ang mga naunang mensahe",
+  "sdkChatMessageUs": "Magmensahe sa amin",
+  "sdkChatNotSentRetry": "Hindi naipadala — I-tap para subukang muli",
+  "sdkChatSend": "Ipadala",
+  "sdkChatSending": "Ipinapadala…",
+  "sdkChatTeamLabel": "Team",
+  "sdkChatTitle": "Mga Mensahe",
+  "sdkChatTooLong": "Masyadong mahaba ang mensaheng ito. Ang limit ay {max} na character."
 }

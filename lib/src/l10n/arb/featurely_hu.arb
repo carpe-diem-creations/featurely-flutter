@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Nem sikerült csatolni ezt a képet. Próbálj meg egy másikat.",
   "sdkFormEmailError": "Adj meg egy érvényes e-mail-címet.",
   "sdkDetailCommentsDisabled": "A hozzászólások ki lettek kapcsolva.",
-  "sdkCommonRateLimited": "Túl sok kérés. Próbáld újra kicsit később."
+  "sdkCommonRateLimited": "Túl sok kérés. Próbáld újra kicsit később.",
+  "sdkChatComposerPlaceholder": "Írj üzenetet…",
+  "sdkChatEmailEdit": "Szerkesztés",
+  "sdkChatEmailInvalid": "Adj meg egy érvényes e-mail-címet.",
+  "sdkChatEmailPlaceholder": "Az e-mail-címed",
+  "sdkChatEmailPrompt": "Válaszok e-mailben",
+  "sdkChatEmailSave": "Mentés",
+  "sdkChatEmailSaved": "E-mail a válaszokhoz",
+  "sdkChatEmptyGreeting": "Szia! Küldj nekünk üzenetet, és a csapatunk itt válaszol.",
+  "sdkChatLoadEarlier": "Korábbi üzenetek betöltése",
+  "sdkChatMessageUs": "Írj nekünk",
+  "sdkChatNotSentRetry": "Nem sikerült elküldeni — Koppints az újrapróbáláshoz",
+  "sdkChatSend": "Küldés",
+  "sdkChatSending": "Küldés…",
+  "sdkChatTeamLabel": "Csapat",
+  "sdkChatTitle": "Üzenetek",
+  "sdkChatTooLong": "Ez az üzenet túl hosszú. A korlát {max} karakter."
 }

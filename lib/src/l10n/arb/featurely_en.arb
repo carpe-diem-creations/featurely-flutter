@@ -288,5 +288,75 @@
   "sdkCommonRateLimited": "Too many requests. Try again in a moment.",
   "@sdkCommonRateLimited": {
     "description": "Notice for 429 rate_limited responses on user-initiated actions. [SDK-local extension key — not in the canonical catalog yet]"
+  },
+  "sdkChatComposerPlaceholder": "Write a message…",
+  "@sdkChatComposerPlaceholder": {
+    "description": "Placeholder of the chat message composer."
+  },
+  "sdkChatEmailEdit": "Edit",
+  "@sdkChatEmailEdit": {
+    "description": "Action to change the saved chat contact email."
+  },
+  "sdkChatEmailInvalid": "Enter a valid email address.",
+  "@sdkChatEmailInvalid": {
+    "description": "Inline error when the chat contact email is not a valid address."
+  },
+  "sdkChatEmailPlaceholder": "Your email address",
+  "@sdkChatEmailPlaceholder": {
+    "description": "Placeholder of the chat contact-email field."
+  },
+  "sdkChatEmailPrompt": "Get replies by email",
+  "@sdkChatEmailPrompt": {
+    "description": "Row inviting the user to leave an email address so team replies are also emailed."
+  },
+  "sdkChatEmailSave": "Save",
+  "@sdkChatEmailSave": {
+    "description": "Button saving the chat contact email."
+  },
+  "sdkChatEmailSaved": "Email for replies",
+  "@sdkChatEmailSaved": {
+    "description": "Label shown above the saved contact email address (the address itself is shown separately, with an Edit action)."
+  },
+  "sdkChatEmptyGreeting": "Hi there! Send us a message and our team will get back to you here.",
+  "@sdkChatEmptyGreeting": {
+    "description": "Greeting shown on the chat screen before any message exists. Fixed text, not configurable per project."
+  },
+  "sdkChatLoadEarlier": "Load earlier messages",
+  "@sdkChatLoadEarlier": {
+    "description": "Button at the top of the chat that fetches older messages."
+  },
+  "sdkChatMessageUs": "Message us",
+  "@sdkChatMessageUs": {
+    "description": "Toolbar action on the feedback list that opens the chat screen."
+  },
+  "sdkChatNotSentRetry": "Not sent — Tap to retry",
+  "@sdkChatNotSentRetry": {
+    "description": "State label under a chat message that failed to send; tapping it retries."
+  },
+  "sdkChatSend": "Send",
+  "@sdkChatSend": {
+    "description": "Send button of the chat composer (also its accessibility label)."
+  },
+  "sdkChatSending": "Sending…",
+  "@sdkChatSending": {
+    "description": "State label under a chat message that is still being sent."
+  },
+  "sdkChatTeamLabel": "Team",
+  "@sdkChatTeamLabel": {
+    "description": "Label on messages written by the app's team."
+  },
+  "sdkChatTitle": "Messages",
+  "@sdkChatTitle": {
+    "description": "Navigation title of the In-App Chat screen."
+  },
+  "sdkChatTooLong": "This message is too long. The limit is {max} characters.",
+  "@sdkChatTooLong": {
+    "description": "Inline error when a chat message exceeds the length limit.",
+    "placeholders": {
+      "max": {
+        "type": "int",
+        "example": "4000"
+      }
+    }
   }
 }

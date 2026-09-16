@@ -222,4 +222,55 @@ class FeaturelyLocalizationsVi extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'Quá nhiều yêu cầu. Hãy thử lại sau giây lát.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Viết tin nhắn…';
+
+  @override
+  String get sdkChatEmailEdit => 'Sửa';
+
+  @override
+  String get sdkChatEmailInvalid => 'Hãy nhập địa chỉ email hợp lệ.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'Địa chỉ email của bạn';
+
+  @override
+  String get sdkChatEmailPrompt => 'Nhận phản hồi qua email';
+
+  @override
+  String get sdkChatEmailSave => 'Lưu';
+
+  @override
+  String get sdkChatEmailSaved => 'Email nhận phản hồi';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Xin chào! Hãy gửi tin nhắn cho chúng tôi, đội ngũ sẽ trả lời bạn tại đây.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Tải tin nhắn cũ hơn';
+
+  @override
+  String get sdkChatMessageUs => 'Nhắn cho chúng tôi';
+
+  @override
+  String get sdkChatNotSentRetry => 'Chưa gửi được — Nhấn để thử lại';
+
+  @override
+  String get sdkChatSend => 'Gửi';
+
+  @override
+  String get sdkChatSending => 'Đang gửi…';
+
+  @override
+  String get sdkChatTeamLabel => 'Đội ngũ';
+
+  @override
+  String get sdkChatTitle => 'Tin nhắn';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Tin nhắn này quá dài. Giới hạn là $max ký tự.';
+  }
 }

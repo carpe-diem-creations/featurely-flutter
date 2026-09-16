@@ -217,4 +217,54 @@ class FeaturelyLocalizationsZh extends FeaturelyLocalizations {
 
   @override
   String get sdkCommonRateLimited => '请求过多，请稍后再试。';
+
+  @override
+  String get sdkChatComposerPlaceholder => '输入消息…';
+
+  @override
+  String get sdkChatEmailEdit => '编辑';
+
+  @override
+  String get sdkChatEmailInvalid => '请输入有效的邮箱地址。';
+
+  @override
+  String get sdkChatEmailPlaceholder => '你的邮箱地址';
+
+  @override
+  String get sdkChatEmailPrompt => '通过邮件接收回复';
+
+  @override
+  String get sdkChatEmailSave => '保存';
+
+  @override
+  String get sdkChatEmailSaved => '接收回复的邮箱';
+
+  @override
+  String get sdkChatEmptyGreeting => '你好！给我们发条消息，我们的团队会在这里回复你。';
+
+  @override
+  String get sdkChatLoadEarlier => '加载更早的消息';
+
+  @override
+  String get sdkChatMessageUs => '联系我们';
+
+  @override
+  String get sdkChatNotSentRetry => '未发送 — 轻点重试';
+
+  @override
+  String get sdkChatSend => '发送';
+
+  @override
+  String get sdkChatSending => '正在发送…';
+
+  @override
+  String get sdkChatTeamLabel => '团队';
+
+  @override
+  String get sdkChatTitle => '消息';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return '消息过长，上限为 $max 个字符。';
+  }
 }

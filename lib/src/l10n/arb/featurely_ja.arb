@@ -55,5 +55,21 @@
   "sdkFormAttachError": "この画像を添付できませんでした。別の画像をお試しください。",
   "sdkFormEmailError": "有効なメールアドレスを入力してください。",
   "sdkDetailCommentsDisabled": "コメントは無効になっています。",
-  "sdkCommonRateLimited": "リクエストが多すぎます。しばらくしてからもう一度お試しください。"
+  "sdkCommonRateLimited": "リクエストが多すぎます。しばらくしてからもう一度お試しください。",
+  "sdkChatComposerPlaceholder": "メッセージを入力…",
+  "sdkChatEmailEdit": "編集",
+  "sdkChatEmailInvalid": "有効なメールアドレスを入力してください。",
+  "sdkChatEmailPlaceholder": "メールアドレス",
+  "sdkChatEmailPrompt": "返信をメールで受け取る",
+  "sdkChatEmailSave": "保存",
+  "sdkChatEmailSaved": "返信先メールアドレス",
+  "sdkChatEmptyGreeting": "こんにちは！メッセージをお送りください。チームがこちらでお返事します。",
+  "sdkChatLoadEarlier": "以前のメッセージを読み込む",
+  "sdkChatMessageUs": "お問い合わせ",
+  "sdkChatNotSentRetry": "送信できませんでした — タップして再試行",
+  "sdkChatSend": "送信",
+  "sdkChatSending": "送信中…",
+  "sdkChatTeamLabel": "チーム",
+  "sdkChatTitle": "メッセージ",
+  "sdkChatTooLong": "メッセージが長すぎます。上限は{max}文字です。"
 }

@@ -55,5 +55,21 @@
   "sdkFormAttachError": "تعذّر إرفاق هذه الصورة. جرّب صورة أخرى.",
   "sdkFormEmailError": "أدخل عنوان بريد إلكتروني صالحًا.",
   "sdkDetailCommentsDisabled": "تم إيقاف التعليقات.",
-  "sdkCommonRateLimited": "طلبات كثيرة جدًا. حاول مرة أخرى بعد قليل."
+  "sdkCommonRateLimited": "طلبات كثيرة جدًا. حاول مرة أخرى بعد قليل.",
+  "sdkChatComposerPlaceholder": "اكتب رسالة…",
+  "sdkChatEmailEdit": "تعديل",
+  "sdkChatEmailInvalid": "أدخل عنوان بريد إلكتروني صالحًا.",
+  "sdkChatEmailPlaceholder": "عنوان بريدك الإلكتروني",
+  "sdkChatEmailPrompt": "تلقَّ الردود عبر البريد الإلكتروني",
+  "sdkChatEmailSave": "حفظ",
+  "sdkChatEmailSaved": "البريد الإلكتروني للردود",
+  "sdkChatEmptyGreeting": "مرحبًا! أرسل لنا رسالة وسيرد عليك فريقنا هنا.",
+  "sdkChatLoadEarlier": "تحميل الرسائل السابقة",
+  "sdkChatMessageUs": "راسلنا",
+  "sdkChatNotSentRetry": "لم تُرسل — انقر لإعادة المحاولة",
+  "sdkChatSend": "إرسال",
+  "sdkChatSending": "جارٍ الإرسال…",
+  "sdkChatTeamLabel": "الفريق",
+  "sdkChatTitle": "الرسائل",
+  "sdkChatTooLong": "هذه الرسالة طويلة جدًا. الحد الأقصى هو {max} حرف."
 }

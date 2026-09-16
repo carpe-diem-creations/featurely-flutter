@@ -10,14 +10,29 @@ import '../theme.dart';
 import 'controllers/list_controller.dart';
 import 'sandbox_strip.dart';
 import 'scope.dart';
+import 'screens/chat_screen.dart';
 import 'screens/list_screen.dart';
 
+/// Which screen a sheet presentation starts on.
+enum FeaturelySheetRoot {
+  /// The feedback list (`Featurely.show`).
+  list,
+
+  /// The In-App Chat screen (`Featurely.showChat`).
+  chat,
+}
+
 /// Presents the full-height feedback sheet and completes when dismissed.
+/// [root] selects the first screen (the feedback list by default).
 ///
 /// The theme is resolved against the host theme and the locale against the
 /// device (or the init override) at present time; both are fixed for the
 /// lifetime of this presentation.
-Future<void> showFeaturelySheet(BuildContext context, FeaturelyCore core) {
+Future<void> showFeaturelySheet(
+  BuildContext context,
+  FeaturelyCore core, {
+  FeaturelySheetRoot root = FeaturelySheetRoot.list,
+}) {
   final theme = FeaturelyThemeData.resolve(context, core.options.theme);
   final platform = Theme.of(context).platform;
   final localeTag = resolveLocaleTag(
@@ -39,6 +54,7 @@ Future<void> showFeaturelySheet(BuildContext context, FeaturelyCore core) {
         theme: theme,
         localeTag: localeTag,
         platform: platform,
+        root: root,
       ),
     ),
   );
@@ -53,6 +69,7 @@ class FeaturelySheet extends StatefulWidget {
     required this.theme,
     required this.localeTag,
     required this.platform,
+    this.root = FeaturelySheetRoot.list,
     super.key,
   });
 
@@ -67,6 +84,9 @@ class FeaturelySheet extends StatefulWidget {
 
   /// Host platform, for adaptive details.
   final TargetPlatform platform;
+
+  /// The first screen of the internal navigator.
+  final FeaturelySheetRoot root;
 
   @override
   State<FeaturelySheet> createState() => _FeaturelySheetState();
@@ -87,7 +107,7 @@ class _FeaturelySheetState extends State<FeaturelySheet> {
     widget.core.config().then((config) {
       if (mounted) _config.value = config;
     });
-    _listController.loadFirst();
+    if (widget.root == FeaturelySheetRoot.list) _listController.loadFirst();
   }
 
   @override
@@ -100,6 +120,9 @@ class _FeaturelySheetState extends State<FeaturelySheet> {
   @override
   Widget build(BuildContext context) {
     final locale = localeForTag(widget.localeTag);
+    // Registers a dependency so the scope learns when the host covers the
+    // sheet's own route (chat polling pauses then).
+    final hostVisible = ModalRoute.of(context)?.isCurrent ?? true;
     final direction =
         isRtlLocale(widget.localeTag) ? TextDirection.rtl : TextDirection.ltr;
     return Localizations(
@@ -118,6 +141,7 @@ class _FeaturelySheetState extends State<FeaturelySheet> {
               config: _config,
               configSnapshot: configValue,
               listController: _listController,
+              hostVisible: hostVisible,
               child: child!,
             ),
             child: ClipRRect(
@@ -145,7 +169,11 @@ class _FeaturelySheetState extends State<FeaturelySheet> {
                           key: _navigatorKey,
                           onGenerateInitialRoutes: (navigator, initialRoute) => [
                             MaterialPageRoute<void>(
-                              builder: (_) => const ListScreen(),
+                              settings: RouteSettings(name: widget.root.name),
+                              builder: (_) => switch (widget.root) {
+                                FeaturelySheetRoot.list => const ListScreen(),
+                                FeaturelySheetRoot.chat => const ChatScreen(),
+                              },
                             ),
                           ],
                         ),

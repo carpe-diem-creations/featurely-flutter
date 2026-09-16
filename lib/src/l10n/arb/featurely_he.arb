@@ -55,5 +55,21 @@
   "sdkFormAttachError": "לא ניתן לצרף את התמונה הזו. נסו תמונה אחרת.",
   "sdkFormEmailError": "הזינו כתובת אימייל תקינה.",
   "sdkDetailCommentsDisabled": "התגובות כובו.",
-  "sdkCommonRateLimited": "יותר מדי בקשות. נסו שוב בעוד רגע."
+  "sdkCommonRateLimited": "יותר מדי בקשות. נסו שוב בעוד רגע.",
+  "sdkChatComposerPlaceholder": "כתיבת הודעה…",
+  "sdkChatEmailEdit": "עריכה",
+  "sdkChatEmailInvalid": "יש להזין כתובת מייל תקינה.",
+  "sdkChatEmailPlaceholder": "כתובת המייל שלך",
+  "sdkChatEmailPrompt": "קבלת תשובות במייל",
+  "sdkChatEmailSave": "שמירה",
+  "sdkChatEmailSaved": "מייל לתשובות",
+  "sdkChatEmptyGreeting": "היי! שלחו לנו הודעה והצוות שלנו יחזור אליכם כאן.",
+  "sdkChatLoadEarlier": "טעינת הודעות קודמות",
+  "sdkChatMessageUs": "כתבו לנו",
+  "sdkChatNotSentRetry": "לא נשלח — הקישו לניסיון חוזר",
+  "sdkChatSend": "שליחה",
+  "sdkChatSending": "שולח…",
+  "sdkChatTeamLabel": "צוות",
+  "sdkChatTitle": "הודעות",
+  "sdkChatTooLong": "ההודעה ארוכה מדי. המגבלה היא {max} תווים."
 }

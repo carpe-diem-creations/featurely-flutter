@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Billedet kunne ikke vedhæftes. Prøv et andet.",
   "sdkFormEmailError": "Indtast en gyldig e-mailadresse.",
   "sdkDetailCommentsDisabled": "Kommentarer er slået fra.",
-  "sdkCommonRateLimited": "For mange anmodninger. Prøv igen om lidt."
+  "sdkCommonRateLimited": "For mange anmodninger. Prøv igen om lidt.",
+  "sdkChatComposerPlaceholder": "Skriv en besked…",
+  "sdkChatEmailEdit": "Rediger",
+  "sdkChatEmailInvalid": "Indtast en gyldig mailadresse.",
+  "sdkChatEmailPlaceholder": "Din mailadresse",
+  "sdkChatEmailPrompt": "Få svar på mail",
+  "sdkChatEmailSave": "Gem",
+  "sdkChatEmailSaved": "Mail til svar",
+  "sdkChatEmptyGreeting": "Hej! Send os en besked, så svarer vores team dig her.",
+  "sdkChatLoadEarlier": "Indlæs tidligere beskeder",
+  "sdkChatMessageUs": "Skriv til os",
+  "sdkChatNotSentRetry": "Ikke sendt — Tryk for at prøve igen",
+  "sdkChatSend": "Send",
+  "sdkChatSending": "Sender…",
+  "sdkChatTeamLabel": "Team",
+  "sdkChatTitle": "Beskeder",
+  "sdkChatTooLong": "Beskeden er for lang. Grænsen er {max} tegn."
 }

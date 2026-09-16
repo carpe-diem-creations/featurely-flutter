@@ -115,6 +115,44 @@ class Featurely {
     return showFeaturelySheet(context, core);
   }
 
+  /// Presents the In-App Chat as a standalone full-height sheet (the same
+  /// theming, localization and SANDBOX strip as [show]) and completes when
+  /// it is dismissed. Throws a [StateError] when called before [init].
+  ///
+  /// Chat is a private one-to-one thread between this device and your team;
+  /// replies arrive by polling while the screen is open (and by email when
+  /// the user left an address). The thread belongs to the device ID, so
+  /// [logout] starts a fresh, empty chat. Requires a Featurely server that
+  /// reports `chatEnabled` — against an older server the screen shows its
+  /// failed-load state, so gate your own entry point on a server you know
+  /// supports chat. The feedback sheet opened by [show] offers a
+  /// "Message us" action automatically when the server supports it.
+  static Future<void> showChat(BuildContext context) {
+    final core = _requireCore('showChat');
+    return showFeaturelySheet(context, core, root: FeaturelySheetRoot.chat);
+  }
+
+  /// The number of team chat messages this device hasn't read yet — for a
+  /// badge on your own chat button.
+  ///
+  /// Never throws: returns `0` before [init], when the device has no
+  /// conversation, when the server doesn't support chat (`chatEnabled`
+  /// false or absent), and on any error. Each call makes a network request
+  /// (config is cached per session), so call it on demand — e.g. on app
+  /// resume — rather than in a tight loop.
+  static Future<int> unreadMessageCount() async {
+    final core = _core;
+    if (core == null) return 0;
+    try {
+      final config = await core.config();
+      if (!config.chatEnabled) return 0;
+      final conversation = await core.api.getConversation();
+      return conversation?.unreadCount ?? 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
   /// Links the device to [userId] via `POST /identify`. Idempotent; calling
   /// with a new id while another user is linked performs the logout
   /// rotation first (the SDK enforces account switching). Link failures are

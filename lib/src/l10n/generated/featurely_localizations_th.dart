@@ -220,4 +220,55 @@ class FeaturelyLocalizationsTh extends FeaturelyLocalizations {
 
   @override
   String get sdkCommonRateLimited => 'คำขอมากเกินไป ลองอีกครั้งในอีกสักครู่';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'พิมพ์ข้อความ…';
+
+  @override
+  String get sdkChatEmailEdit => 'แก้ไข';
+
+  @override
+  String get sdkChatEmailInvalid => 'กรุณากรอกที่อยู่อีเมลที่ถูกต้อง';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'ที่อยู่อีเมลของคุณ';
+
+  @override
+  String get sdkChatEmailPrompt => 'รับคำตอบทางอีเมล';
+
+  @override
+  String get sdkChatEmailSave => 'บันทึก';
+
+  @override
+  String get sdkChatEmailSaved => 'อีเมลสำหรับรับคำตอบ';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'สวัสดี! ส่งข้อความถึงเราได้เลย ทีมของเราจะตอบกลับคุณที่นี่';
+
+  @override
+  String get sdkChatLoadEarlier => 'โหลดข้อความก่อนหน้า';
+
+  @override
+  String get sdkChatMessageUs => 'ส่งข้อความถึงเรา';
+
+  @override
+  String get sdkChatNotSentRetry => 'ส่งไม่สำเร็จ — แตะเพื่อลองอีกครั้ง';
+
+  @override
+  String get sdkChatSend => 'ส่ง';
+
+  @override
+  String get sdkChatSending => 'กำลังส่ง…';
+
+  @override
+  String get sdkChatTeamLabel => 'ทีม';
+
+  @override
+  String get sdkChatTitle => 'ข้อความ';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'ข้อความนี้ยาวเกินไป จำกัดไม่เกิน $max ตัวอักษร';
+  }
 }

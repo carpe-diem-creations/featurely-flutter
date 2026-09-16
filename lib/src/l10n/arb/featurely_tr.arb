@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Bu görsel eklenemedi. Başka bir tane dene.",
   "sdkFormEmailError": "Geçerli bir e-posta adresi gir.",
   "sdkDetailCommentsDisabled": "Yorumlar kapatıldı.",
-  "sdkCommonRateLimited": "Çok fazla istek. Birazdan tekrar dene."
+  "sdkCommonRateLimited": "Çok fazla istek. Birazdan tekrar dene.",
+  "sdkChatComposerPlaceholder": "Bir mesaj yaz…",
+  "sdkChatEmailEdit": "Düzenle",
+  "sdkChatEmailInvalid": "Geçerli bir e-posta adresi gir.",
+  "sdkChatEmailPlaceholder": "E-posta adresin",
+  "sdkChatEmailPrompt": "Yanıtları e-postayla al",
+  "sdkChatEmailSave": "Kaydet",
+  "sdkChatEmailSaved": "Yanıtlar için e-posta",
+  "sdkChatEmptyGreeting": "Merhaba! Bize bir mesaj gönder, ekibimiz sana buradan dönüş yapsın.",
+  "sdkChatLoadEarlier": "Önceki mesajları yükle",
+  "sdkChatMessageUs": "Bize yaz",
+  "sdkChatNotSentRetry": "Gönderilemedi — Yeniden denemek için dokun",
+  "sdkChatSend": "Gönder",
+  "sdkChatSending": "Gönderiliyor…",
+  "sdkChatTeamLabel": "Ekip",
+  "sdkChatTitle": "Mesajlar",
+  "sdkChatTooLong": "Bu mesaj çok uzun. Sınır {max} karakter."
 }

@@ -179,6 +179,69 @@ class FeaturelyApiClient {
         throw _errorFor(response);
       });
 
+  /// `GET /conversation` — this device's conversation, or null when it has
+  /// never written. Never creates anything server-side.
+  Future<ChatConversation?> getConversation() =>
+      _reporting('getConversation', () async {
+        final json = await _getJson('/conversation');
+        final conversation = json['conversation'];
+        return conversation is Map<String, dynamic>
+            ? ChatConversation.fromJson(conversation)
+            : null;
+      });
+
+  /// `GET /conversation/messages` — one ascending page. [before] and
+  /// [after] are opaque cursors from a previous page and mutually
+  /// exclusive; neither returns the newest page.
+  Future<ChatMessagesPage> getChatMessages({
+    String? before,
+    String? after,
+    int? limit,
+  }) {
+    assert(before == null || after == null, 'before and after are exclusive');
+    return _reporting('getChatMessages', () async {
+      final json = await _getJson('/conversation/messages', {
+        if (before != null) 'before': before,
+        if (after != null) 'after': after,
+        if (limit != null) 'limit': '$limit',
+      });
+      return ChatMessagesPage.fromJson(json);
+    });
+  }
+
+  /// `POST /conversation/messages` — send a message. Idempotent on
+  /// [clientMessageId] (a replay answers 200 with the stored message), so a
+  /// manual retry must reuse the same id. Never auto-retried.
+  Future<ChatMessage> sendChatMessage({
+    required String body,
+    required String clientMessageId,
+    String? deviceLocale,
+    String? resolvedLocale,
+  }) =>
+      _reporting('sendChatMessage', () async =>
+          ChatMessage.fromJson(await _sendJson(
+            'POST',
+            '/conversation/messages',
+            body: {
+              'body': body,
+              'clientMessageId': clientMessageId,
+              if (deviceLocale != null) 'deviceLocale': deviceLocale,
+              if (resolvedLocale != null) 'resolvedLocale': resolvedLocale,
+            },
+            expect: 201,
+            alsoAccept: 200,
+          )));
+
+  /// `PUT /conversation/email` — store (or, with null, clear) the address
+  /// team replies are emailed to.
+  Future<void> setChatEmail(String? email) => _reporting('setChatEmail', () =>
+      _sendJson('PUT', '/conversation/email',
+          body: {'email': email}, expect: 204));
+
+  /// `POST /conversation/read` — mark every team message so far as read.
+  Future<void> markChatRead() => _reporting('markChatRead',
+      () => _sendJson('POST', '/conversation/read', expect: 204));
+
   /// Closes the underlying HTTP client.
   void dispose() => _http.close();
 
@@ -212,6 +275,7 @@ class FeaturelyApiClient {
     String path, {
     Map<String, Object?>? body,
     required int expect,
+    int? alsoAccept,
   }) async {
     final headers = await authHeaders();
     final uri = _uri(path);
@@ -226,7 +290,7 @@ class FeaturelyApiClient {
     } catch (error) {
       throw FeaturelyNetworkException(error);
     }
-    if (response.statusCode == expect) {
+    if (response.statusCode == expect || response.statusCode == alsoAccept) {
       return response.body.isEmpty
           ? const <String, dynamic>{}
           : _decodeMap(response.body);

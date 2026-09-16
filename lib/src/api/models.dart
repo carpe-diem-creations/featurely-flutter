@@ -270,6 +270,7 @@ class SdkConfig {
     required this.descriptionMax,
     required this.commentMax,
     required this.attachmentMaxBytes,
+    this.chatEnabled = false,
   });
 
   /// Lenient decode with defaults.
@@ -284,6 +285,7 @@ class SdkConfig {
       commentMax: (limits['commentMax'] as num?)?.toInt() ?? 5000,
       attachmentMaxBytes:
           (limits['attachmentMaxBytes'] as num?)?.toInt() ?? 5242880,
+      chatEnabled: json['chatEnabled'] as bool? ?? false,
     );
   }
 
@@ -295,7 +297,8 @@ class SdkConfig {
         titleMax = 60,
         descriptionMax = 10000,
         commentMax = 5000,
-        attachmentMaxBytes = 5242880;
+        attachmentMaxBytes = 5242880,
+        chatEnabled = false;
 
   /// `project.name` — supplies `{appName}` in strings.
   final String projectName;
@@ -314,4 +317,158 @@ class SdkConfig {
 
   /// Authoritative screenshot size limit for client-side validation.
   final int attachmentMaxBytes;
+
+  /// Whether the server supports In-App Chat. Absent (older servers) decodes
+  /// to false, which hides every chat entry point.
+  final bool chatEnabled;
+}
+
+/// The maximum chat message length (trimmed, UTF-16 code units — the same
+/// measure the server applies).
+const int chatMessageMax = 4000;
+
+/// Who wrote a chat message.
+enum ChatAuthor {
+  /// This device's end user.
+  user('user'),
+
+  /// The app's team.
+  team('team');
+
+  const ChatAuthor(this.wire);
+
+  /// The wire value.
+  final String wire;
+
+  /// Lenient decode; unknown values default to [team] so they render on the
+  /// leading side rather than masquerading as the user's own words.
+  static ChatAuthor decode(Object? value) => values.firstWhere(
+        (author) => author.wire == value,
+        orElse: () => team,
+      );
+}
+
+/// Conversation status.
+enum ConversationStatus {
+  /// Awaiting the team (or ongoing).
+  open('open'),
+
+  /// Resolved by the team; a new user message reopens it.
+  closed('closed');
+
+  const ConversationStatus(this.wire);
+
+  /// The wire value.
+  final String wire;
+
+  /// Lenient decode; unknown values default to [open].
+  static ConversationStatus decode(Object? value) => values.firstWhere(
+        (status) => status.wire == value,
+        orElse: () => open,
+      );
+}
+
+/// A public chat message — exactly `{id, author, body, createdAt,
+/// clientMessageId}`. Team messages never carry a name or email.
+class ChatMessage {
+  /// Creates a message.
+  const ChatMessage({
+    required this.id,
+    required this.author,
+    required this.body,
+    required this.createdAt,
+    this.clientMessageId,
+  });
+
+  /// Lenient decode.
+  factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
+        id: json['id'] as String? ?? '',
+        author: ChatAuthor.decode(json['author']),
+        body: json['body'] as String? ?? '',
+        createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
+            DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+        clientMessageId: json['clientMessageId'] as String?,
+      );
+
+  /// Server-generated id.
+  final String id;
+
+  /// Author kind.
+  final ChatAuthor author;
+
+  /// Plain-text body.
+  final String body;
+
+  /// Creation time (UTC).
+  final DateTime createdAt;
+
+  /// The client-generated UUID; set only on this device's own messages.
+  final String? clientMessageId;
+}
+
+/// The device's single conversation (`GET /conversation`).
+class ChatConversation {
+  /// Creates a conversation.
+  const ChatConversation({
+    required this.id,
+    required this.status,
+    required this.contactEmail,
+    required this.unreadCount,
+    required this.lastMessageAt,
+  });
+
+  /// Lenient decode.
+  factory ChatConversation.fromJson(Map<String, dynamic> json) =>
+      ChatConversation(
+        id: json['id'] as String? ?? '',
+        status: ConversationStatus.decode(json['status']),
+        contactEmail: json['contactEmail'] as String?,
+        unreadCount: (json['unreadCount'] as num?)?.toInt() ?? 0,
+        lastMessageAt: DateTime.tryParse(json['lastMessageAt'] as String? ?? ''),
+      );
+
+  /// Server-generated id.
+  final String id;
+
+  /// Open or closed.
+  final ConversationStatus status;
+
+  /// The address team replies are emailed to, if any.
+  final String? contactEmail;
+
+  /// Team messages newer than this device's last read marker.
+  final int unreadCount;
+
+  /// Time of the latest message, if any.
+  final DateTime? lastMessageAt;
+}
+
+/// One page of chat messages (ascending) plus both opaque paging cursors.
+class ChatMessagesPage {
+  /// Creates a page.
+  const ChatMessagesPage({
+    required this.messages,
+    required this.olderCursor,
+    required this.newerCursor,
+  });
+
+  /// Lenient decode.
+  factory ChatMessagesPage.fromJson(Map<String, dynamic> json) =>
+      ChatMessagesPage(
+        messages: ((json['messages'] as List<dynamic>?) ?? const [])
+            .whereType<Map<String, dynamic>>()
+            .map(ChatMessage.fromJson)
+            .toList(),
+        olderCursor: json['olderCursor'] as String?,
+        newerCursor: json['newerCursor'] as String?,
+      );
+
+  /// Messages, oldest first.
+  final List<ChatMessage> messages;
+
+  /// Pass as `before` to fetch older messages; null when none exist.
+  final String? olderCursor;
+
+  /// Pass as `after` to poll; null only when the device has no messages.
+  final String? newerCursor;
 }

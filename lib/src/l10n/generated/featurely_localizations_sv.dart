@@ -226,4 +226,55 @@ class FeaturelyLocalizationsSv extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'För många förfrågningar. Försök igen om en stund.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Skriv ett meddelande…';
+
+  @override
+  String get sdkChatEmailEdit => 'Redigera';
+
+  @override
+  String get sdkChatEmailInvalid => 'Ange en giltig mejladress.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'Din mejladress';
+
+  @override
+  String get sdkChatEmailPrompt => 'Få svar via mejl';
+
+  @override
+  String get sdkChatEmailSave => 'Spara';
+
+  @override
+  String get sdkChatEmailSaved => 'Mejl för svar';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Hej! Skicka ett meddelande så svarar vårt team dig här.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Läs in tidigare meddelanden';
+
+  @override
+  String get sdkChatMessageUs => 'Skriv till oss';
+
+  @override
+  String get sdkChatNotSentRetry => 'Inte skickat — Tryck för att försöka igen';
+
+  @override
+  String get sdkChatSend => 'Skicka';
+
+  @override
+  String get sdkChatSending => 'Skickar…';
+
+  @override
+  String get sdkChatTeamLabel => 'Team';
+
+  @override
+  String get sdkChatTitle => 'Meddelanden';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Meddelandet är för långt. Gränsen är $max tecken.';
+  }
 }

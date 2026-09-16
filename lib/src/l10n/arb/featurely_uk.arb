@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Не вдалося прикріпити це зображення. Спробуйте інше.",
   "sdkFormEmailError": "Введіть дійсну адресу електронної пошти.",
   "sdkDetailCommentsDisabled": "Коментарі вимкнено.",
-  "sdkCommonRateLimited": "Забагато запитів. Спробуйте ще раз за мить."
+  "sdkCommonRateLimited": "Забагато запитів. Спробуйте ще раз за мить.",
+  "sdkChatComposerPlaceholder": "Напиши повідомлення…",
+  "sdkChatEmailEdit": "Редагувати",
+  "sdkChatEmailInvalid": "Введи коректну електронну адресу.",
+  "sdkChatEmailPlaceholder": "Твоя електронна адреса",
+  "sdkChatEmailPrompt": "Отримувати відповіді поштою",
+  "sdkChatEmailSave": "Зберегти",
+  "sdkChatEmailSaved": "Пошта для відповідей",
+  "sdkChatEmptyGreeting": "Привіт! Напиши нам, і наша команда відповість тобі тут.",
+  "sdkChatLoadEarlier": "Завантажити попередні повідомлення",
+  "sdkChatMessageUs": "Написати нам",
+  "sdkChatNotSentRetry": "Не надіслано — Торкнись, щоб повторити",
+  "sdkChatSend": "Надіслати",
+  "sdkChatSending": "Надсилання…",
+  "sdkChatTeamLabel": "Команда",
+  "sdkChatTitle": "Повідомлення",
+  "sdkChatTooLong": "Повідомлення задовге. Ліміт — {max} символів."
 }
