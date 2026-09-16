@@ -10,6 +10,9 @@
   script, or a script-less `zh` with region TW, HK or MO, resolves to
   `zh-Hant` (previously `zh`); `zh-Hans-*` and other regions stay `zh`, and
   unsupported scripts are ignored (`pt-Latn-BR` → `pt-BR`).
+- New `Featurely.hasUnreadMessages()` — `true` when
+  `unreadMessageCount()` is above zero, for a simple badge. Never throws;
+  `false` before `init`, when chat is unavailable, and on any error.
 - `Featurely.showChat(context, initialMessage: text)` prefills the chat
   composer (cursor at the end, field focused). It is never sent
   automatically; blank text is ignored, it is capped to the 4 000-character

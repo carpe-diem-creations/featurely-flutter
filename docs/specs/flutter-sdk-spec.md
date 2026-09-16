@@ -299,6 +299,7 @@ class Featurely {
       {Map<String, String>? metadata,             // wins over setChatMetadata
        String? initialMessage});                  // standalone chat sheet; prefills (never sends) the composer once
   static Future<int> unreadMessageCount();        // never throws; 0 when unavailable
+  static Future<bool> hasUnreadMessages();        // unreadMessageCount() > 0; never throws
   static void setChatMetadata(Map<String, String>? metadata); // app-wide team-only context on chat messages; null clears
 }
 

@@ -38,6 +38,70 @@ void main() {
     );
   }
 
+  group('Featurely.hasUnreadMessages', () {
+    Future<http.Response> withUnread(http.Request request, int unread) async {
+      if (request.url.path.endsWith('/config')) {
+        return http.Response(
+            jsonEncode({..._config, 'chatEnabled': true}), 200);
+      }
+      return http.Response(
+          jsonEncode({
+            'conversation': {
+              'id': '6f1c1f5e-0000-4000-8000-000000000000',
+              'status': 'open',
+              'contactEmail': null,
+              'unreadCount': unread,
+              'lastMessageAt': '2026-09-01T10:00:00.000Z',
+            }
+          }),
+          200);
+    }
+
+    test('is false before init', () async {
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+
+    test('is true when team messages are unread', () async {
+      await init((request) => withUnread(request, 2));
+      expect(await Featurely.hasUnreadMessages(), isTrue);
+    });
+
+    test('is false when everything is read', () async {
+      await init((request) => withUnread(request, 0));
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+
+    test('is false when the server does not support chat', () async {
+      await init((request) async {
+        if (request.url.path.endsWith('/config')) {
+          return http.Response(jsonEncode(_config), 200);
+        }
+        return withUnread(request, 5);
+      });
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+
+    test('is false when the device has no conversation', () async {
+      await init((request) async {
+        if (request.url.path.endsWith('/config')) {
+          return withUnread(request, 0);
+        }
+        return http.Response(jsonEncode({'conversation': null}), 200);
+      });
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+
+    test('never throws: errors yield false', () async {
+      await init((request) async {
+        if (request.url.path.endsWith('/config')) {
+          return withUnread(request, 0);
+        }
+        throw http.ClientException('offline');
+      });
+      expect(await Featurely.hasUnreadMessages(), isFalse);
+    });
+  });
+
   group('Featurely.unreadMessageCount', () {
     test('is 0 before init', () async {
       expect(await Featurely.unreadMessageCount(), 0);

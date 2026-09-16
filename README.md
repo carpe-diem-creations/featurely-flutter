@@ -132,6 +132,30 @@ conversation, when the server doesn't support chat, or on any error:
 final unread = await Featurely.unreadMessageCount(); // e.g. on app resume
 ```
 
+For a plain dot badge, `hasUnreadMessages()` returns
+`unreadMessageCount() > 0` with the same never-throws semantics (`false`
+wherever the count is `0`). Each call is a network request, so refresh it on
+demand — for example on app resume and after the chat closes:
+
+```dart
+Future<bool> _unread = Featurely.hasUnreadMessages();
+
+// In build():
+FutureBuilder<bool>(
+  future: _unread,
+  builder: (context, snapshot) => Badge(
+    isLabelVisible: snapshot.data ?? false,
+    child: IconButton(
+      icon: const Icon(Icons.chat_bubble_outline),
+      onPressed: () async {
+        await Featurely.showChat(context);
+        setState(() => _unread = Featurely.hasUnreadMessages());
+      },
+    ),
+  ),
+)
+```
+
 Things to know:
 
 - **One thread per device.** The conversation belongs to the SDK's device

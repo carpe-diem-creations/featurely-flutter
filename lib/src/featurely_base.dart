@@ -179,6 +179,35 @@ class Featurely {
     }
   }
 
+  /// Whether this device has team chat messages it hasn't read — for a
+  /// simple dot badge on your own chat button. Equivalent to
+  /// `await unreadMessageCount() > 0`, with the same semantics: never
+  /// throws, and returns `false` before [init], when the device has no
+  /// conversation, when the server doesn't support chat, and on any error.
+  /// Each call makes a network request, so call it on demand:
+  ///
+  /// ```dart
+  /// Future<bool> _unread = Featurely.hasUnreadMessages();
+  ///
+  /// // In build():
+  /// FutureBuilder<bool>(
+  ///   future: _unread,
+  ///   builder: (context, snapshot) => Badge(
+  ///     isLabelVisible: snapshot.data ?? false,
+  ///     child: IconButton(
+  ///       icon: const Icon(Icons.chat_bubble_outline),
+  ///       onPressed: () async {
+  ///         await Featurely.showChat(context);
+  ///         // Refresh once the chat is closed (and e.g. on app resume).
+  ///         setState(() => _unread = Featurely.hasUnreadMessages());
+  ///       },
+  ///     ),
+  ///   ),
+  /// )
+  /// ```
+  static Future<bool> hasUnreadMessages() async =>
+      (await unreadMessageCount()) > 0;
+
   /// Links the device to [userId] via `POST /identify`. Idempotent; calling
   /// with a new id while another user is linked performs the logout
   /// rotation first (the SDK enforces account switching). Link failures are
