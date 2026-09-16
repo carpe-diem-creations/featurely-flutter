@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- 8 new locales: Bulgarian (`bg`), Greek (`el`), Finnish (`fi`), Indonesian
+  (`id`), Lithuanian (`lt`), Romanian (`ro`), Slovak (`sk`) and Albanian
+  (`sq`) — 33 in total, matching the Featurely server.
+
 ## 0.3.0
 
 **In-App Chat:** a private one-to-one thread between the device and your

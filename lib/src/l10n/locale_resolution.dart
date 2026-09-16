@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-/// The 25 locales the SDK ships, as canonical tags (matching the upstream
+/// The 33 locales the SDK ships, as canonical tags (matching the upstream
 /// `packages/locales/src/locales.ts`).
 const List<String> supportedLocaleTags = [
   'en', 'es', 'tr', 'ja', 'de', 'fr', 'it', 'ar', 'he', 'fil', 'pt', 'pt-BR',
   'hi', 'ru', 'sv', 'nl', 'zh', 'hu', 'vi', 'th', 'pl', 'nb', 'da', 'ko',
-  'uk', //
+  'uk', 'bg', 'el', 'fi', 'id', 'lt', 'ro', 'sk', 'sq', //
 ];
 
 /// Locales rendered right-to-left.

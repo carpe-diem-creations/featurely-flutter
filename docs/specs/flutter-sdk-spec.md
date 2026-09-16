@@ -15,7 +15,7 @@ renders the end-user feedback sheet inside host apps on **iOS and Android** (mob
 only; no web/desktop support).
 
 The SDK is a **guest in the host app**: it inherits the host's accent color, corner
-radius, font, and light/dark mode, ships localized UI in 25 locales, and talks
+radius, font, and light/dark mode, ships localized UI in 33 locales, and talks
 exclusively to the **frozen public API contract** documented in
 `featurely-app/docs/api-v1.md` (referred to below as *the API contract* — read it in
 full before implementing; its identity, pagination, error, and visibility semantics are
@@ -36,7 +36,7 @@ Authoritative sources this spec is derived from:
 - A host app integrates in two calls: `Featurely.init(...)` once at startup and
   `Featurely.show(context)` from any trigger.
 - The sheet feels native and on-brand in any host: any accent hue, any corner radius,
-  light and dark, 25 locales including RTL (`ar`, `he`).
+  light and dark, 33 locales including RTL (`ar`, `he`).
 - Feedback lands in the correct environment 100% of the time; sandbox and live can
   never mix (environment is derived from the API key, never a runtime toggle).
 - The package stays a good guest: minimal, ubiquitous dependencies only; no
@@ -263,7 +263,7 @@ featurely-flutter/
 │       │   └── api_exception.dart# error-code enum + unknown-code handling
 │       ├── metadata.dart         # device-metadata capture (package_info/device_info/locale)
 │       ├── l10n/
-│       │   ├── arb/              # featurely_en.arb … featurely_uk.arb (25 files, committed)
+│       │   ├── arb/              # featurely_en.arb … featurely_sq.arb (33 files, committed)
 │       │   └── generated/       # gen-l10n output (committed, so consumers need no codegen)
 │       └── ui/
 │           ├── sheet.dart        # show(): modal route, internal Navigator, Localizations override
@@ -335,10 +335,10 @@ Everything else is `src/`-private. `show()` awaits sheet dismissal.
 - Updating is a **manual copy/transform** when the canonical catalog changes (no sync
   tooling in v1). Record the source commit hash of `featurely-app` in a comment at the
   top of a `lib/src/l10n/arb/SOURCE` file on each sync.
-- As of this writing only `en` exists upstream; the 24 translations are a
-  `featurely-app` Phase 3 deliverable. **Build against `en` now**; wire all 25 locales
+- As of this writing only `en` exists upstream; the 32 translations are a
+  `featurely-app` Phase 3 deliverable. **Build against `en` now**; wire all 33 locales
   in `supportedLocales` behind the fallback chain so dropping in the translated ARBs
-  is the only step left. Publishing `1.0.0` requires all 25 catalogs; `0.x` may ship
+  is the only step left. Publishing `1.0.0` requires all 33 catalogs; `0.x` may ship
   English-only.
 - Fallback resolution is implemented in `resolveLocale()` in Dart, mirroring
   `locales.ts` exactly (same inputs → same outputs; unit-tested against the same cases).
@@ -470,7 +470,7 @@ Manual QA (example app against local docker `featurely-app`):
 ## DEPLOYMENT / ROLLOUT NOTES
 
 - Versioning: semver from `0.1.0`; CHANGELOG entry per release; `1.0.0` gated on all
-  25 locale catalogs landing and a round of integration against a deployed instance.
+  33 locale catalogs landing and a round of integration against a deployed instance.
 - Publish flow (manual in v1): `flutter analyze` clean → `flutter test` green →
   `dart pub publish --dry-run` clean → `dart pub publish`. Tag `v{version}` in git.
 - pub.dev listing: README doubles as the integration guide; `example/` is the pub

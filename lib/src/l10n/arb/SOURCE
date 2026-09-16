@@ -11,6 +11,15 @@
 # featurely-app commit b8b3e0a (In-App Chat). All other sdk.* keys were verified unchanged apart
 # from the `#` normalization below.
 #
+# Incremental sync 2026-09-16 (Locales): 8 new locales — bg, el, fi, id, lt,
+# ro, sk and sq — were vendored from packages/locales/catalog/<locale>.arb on
+# the featurely-app commit 77790d0 (feat(locales): add bg, el, fi, id, lt, ro,
+# sk and sq), cross-checked key-for-key against
+# packages/locales/exports/flutter/app_<locale>.arb, with the transform below
+# applied unchanged. SUPPORTED_LOCALES is now 33 (the original 25, then bg, el,
+# fi, id, lt, ro, sk, sq). The SDK-local extension keys listed below were
+# authored for these 8 locales in the style of their new upstream catalogs.
+#
 # Transform (manual, per the SDK spec — no sync tooling in v1):
 #   - only `sdk.*` keys are copied (email.* keys are server-side);
 #   - key names are camelCased mechanically: strip the dots, capitalize each
@@ -32,5 +41,5 @@
 #                                  page was full and more results exist)
 #
 # To re-sync after a canonical catalog change: repeat the transform above for
-# all 25 locales, re-add the extension keys (until upstreamed), update the
+# all 33 locales, re-add the extension keys (until upstreamed), update the
 # commit hash and date here, then run `flutter gen-l10n`.

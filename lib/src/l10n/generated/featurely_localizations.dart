@@ -6,23 +6,31 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'featurely_localizations_ar.dart';
+import 'featurely_localizations_bg.dart';
 import 'featurely_localizations_da.dart';
 import 'featurely_localizations_de.dart';
+import 'featurely_localizations_el.dart';
 import 'featurely_localizations_en.dart';
 import 'featurely_localizations_es.dart';
+import 'featurely_localizations_fi.dart';
 import 'featurely_localizations_fil.dart';
 import 'featurely_localizations_fr.dart';
 import 'featurely_localizations_he.dart';
 import 'featurely_localizations_hi.dart';
 import 'featurely_localizations_hu.dart';
+import 'featurely_localizations_id.dart';
 import 'featurely_localizations_it.dart';
 import 'featurely_localizations_ja.dart';
 import 'featurely_localizations_ko.dart';
+import 'featurely_localizations_lt.dart';
 import 'featurely_localizations_nb.dart';
 import 'featurely_localizations_nl.dart';
 import 'featurely_localizations_pl.dart';
 import 'featurely_localizations_pt.dart';
+import 'featurely_localizations_ro.dart';
 import 'featurely_localizations_ru.dart';
+import 'featurely_localizations_sk.dart';
+import 'featurely_localizations_sq.dart';
 import 'featurely_localizations_sv.dart';
 import 'featurely_localizations_th.dart';
 import 'featurely_localizations_tr.dart';
@@ -118,24 +126,32 @@ abstract class FeaturelyLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
+    Locale('bg'),
     Locale('da'),
     Locale('de'),
+    Locale('el'),
     Locale('en'),
     Locale('es'),
+    Locale('fi'),
     Locale('fil'),
     Locale('fr'),
     Locale('he'),
     Locale('hi'),
     Locale('hu'),
+    Locale('id'),
     Locale('it'),
     Locale('ja'),
     Locale('ko'),
+    Locale('lt'),
     Locale('nb'),
     Locale('nl'),
     Locale('pl'),
     Locale('pt'),
     Locale('pt', 'BR'),
+    Locale('ro'),
     Locale('ru'),
+    Locale('sk'),
+    Locale('sq'),
     Locale('sv'),
     Locale('th'),
     Locale('tr'),
@@ -590,23 +606,31 @@ class _FeaturelyLocalizationsDelegate
   @override
   bool isSupported(Locale locale) => <String>[
         'ar',
+        'bg',
         'da',
         'de',
+        'el',
         'en',
         'es',
+        'fi',
         'fil',
         'fr',
         'he',
         'hi',
         'hu',
+        'id',
         'it',
         'ja',
         'ko',
+        'lt',
         'nb',
         'nl',
         'pl',
         'pt',
+        'ro',
         'ru',
+        'sk',
+        'sq',
         'sv',
         'th',
         'tr',
@@ -636,14 +660,20 @@ FeaturelyLocalizations lookupFeaturelyLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'ar':
       return FeaturelyLocalizationsAr();
+    case 'bg':
+      return FeaturelyLocalizationsBg();
     case 'da':
       return FeaturelyLocalizationsDa();
     case 'de':
       return FeaturelyLocalizationsDe();
+    case 'el':
+      return FeaturelyLocalizationsEl();
     case 'en':
       return FeaturelyLocalizationsEn();
     case 'es':
       return FeaturelyLocalizationsEs();
+    case 'fi':
+      return FeaturelyLocalizationsFi();
     case 'fil':
       return FeaturelyLocalizationsFil();
     case 'fr':
@@ -654,12 +684,16 @@ FeaturelyLocalizations lookupFeaturelyLocalizations(Locale locale) {
       return FeaturelyLocalizationsHi();
     case 'hu':
       return FeaturelyLocalizationsHu();
+    case 'id':
+      return FeaturelyLocalizationsId();
     case 'it':
       return FeaturelyLocalizationsIt();
     case 'ja':
       return FeaturelyLocalizationsJa();
     case 'ko':
       return FeaturelyLocalizationsKo();
+    case 'lt':
+      return FeaturelyLocalizationsLt();
     case 'nb':
       return FeaturelyLocalizationsNb();
     case 'nl':
@@ -668,8 +702,14 @@ FeaturelyLocalizations lookupFeaturelyLocalizations(Locale locale) {
       return FeaturelyLocalizationsPl();
     case 'pt':
       return FeaturelyLocalizationsPt();
+    case 'ro':
+      return FeaturelyLocalizationsRo();
     case 'ru':
       return FeaturelyLocalizationsRu();
+    case 'sk':
+      return FeaturelyLocalizationsSk();
+    case 'sq':
+      return FeaturelyLocalizationsSq();
     case 'sv':
       return FeaturelyLocalizationsSv();
     case 'th':

@@ -13,7 +13,7 @@ Featurely web dashboard.
   action.
 - **Native-feeling** — inherits your accent color, corner radius, font, and
   light/dark mode; iOS and Android adaptive details.
-- **25 languages** including RTL (`ar`, `he`), resolved independently of the
+- **33 languages** including RTL (`ar`, `he`), resolved independently of the
   host app's locale.
 - **Automatic sandbox/live separation** — one API key; debug builds report
   to Sandbox (with an unmistakable amber SANDBOX strip), release builds to
@@ -132,7 +132,7 @@ legible in light and dark.
 
 ## Localization
 
-The sheet ships all 25 Featurely locales and resolves its language from the
+The sheet ships all 33 Featurely locales and resolves its language from the
 device locale (or the `locale:` override passed to `init`), independent of
 your `MaterialApp`'s locale — fallback chain: exact match → base language →
 English. `ar` and `he` render fully right-to-left.
