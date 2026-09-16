@@ -212,11 +212,15 @@ class FeaturelyApiClient {
   /// `POST /conversation/messages` — send a message. Idempotent on
   /// [clientMessageId] (a replay answers 200 with the stored message), so a
   /// manual retry must reuse the same id. Never auto-retried.
+  ///
+  /// [metadata] is host-app context shown to the team only; the field is
+  /// omitted when it is null or empty.
   Future<ChatMessage> sendChatMessage({
     required String body,
     required String clientMessageId,
     String? deviceLocale,
     String? resolvedLocale,
+    Map<String, String>? metadata,
   }) =>
       _reporting('sendChatMessage', () async =>
           ChatMessage.fromJson(await _sendJson(
@@ -227,6 +231,7 @@ class FeaturelyApiClient {
               'clientMessageId': clientMessageId,
               if (deviceLocale != null) 'deviceLocale': deviceLocale,
               if (resolvedLocale != null) 'resolvedLocale': resolvedLocale,
+              if (metadata != null && metadata.isNotEmpty) 'metadata': metadata,
             },
             expect: 201,
             alsoAccept: 200,

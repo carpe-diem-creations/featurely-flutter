@@ -1,5 +1,6 @@
 import 'package:featurely/src/api/api_exception.dart';
 import 'package:featurely/src/api/models.dart';
+import 'package:featurely/src/core.dart';
 import 'package:featurely/src/options.dart';
 import 'package:featurely/src/ui/sandbox_strip.dart';
 import 'package:featurely/src/ui/screens/chat_screen.dart';
@@ -23,12 +24,15 @@ const _chatConfig = SdkConfig(
 
 Future<void> _pumpChat(WidgetTester tester, FakeApi api,
     {FeaturelyEnvironment environment = FeaturelyEnvironment.sandbox,
-    Locale? locale}) async {
+    Locale? locale,
+    FeaturelyCore? core,
+    Map<String, String>? chatMetadata}) async {
   api.config = _chatConfig;
   await pumpSheet(
     tester,
-    makeCore(api, environment: environment, locale: locale),
+    core ?? makeCore(api, environment: environment, locale: locale),
     root: FeaturelySheetRoot.chat,
+    chatMetadata: chatMetadata,
   );
   await tester.pump();
   await tester.pump();
@@ -301,6 +305,60 @@ void main() {
     expect(find.byType(ChatScreen), findsOneWidget);
     expect(find.byType(SandboxStrip), findsNothing);
     await _unmount(tester);
+  });
+
+  group('chat metadata', () {
+    testWidgets('a standalone chat merges its metadata over the global map',
+        (tester) async {
+      final api = FakeApi();
+      final core = makeCore(api)
+        ..chatMetadata = const {'plan': 'free', 'screen': 'Home'};
+      await _pumpChat(tester, api,
+          core: core, chatMetadata: const {'screen': 'Checkout'});
+
+      await tester.enterText(find.byType(TextField), 'Help');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendMetadata.single, {'plan': 'free', 'screen': 'Checkout'});
+
+      // A later global change applies to the next message.
+      core.chatMetadata = const {'plan': 'pro'};
+      await tester.enterText(find.byType(TextField), 'Again');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendMetadata.last, {'plan': 'pro', 'screen': 'Checkout'});
+      await _unmount(tester);
+    });
+
+    testWidgets('"Message us" sends only the global metadata', (tester) async {
+      final api = FakeApi()..config = _chatConfig;
+      final core = makeCore(api)..chatMetadata = const {'plan': 'pro'};
+      await pumpSheet(tester, core,
+          chatMetadata: const {'screen': 'ignored for a list root'});
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('featurely-message-us')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'Hi');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendMetadata.single, {'plan': 'pro'});
+      await _unmount(tester);
+    });
+
+    testWidgets('no metadata sends none', (tester) async {
+      final api = FakeApi();
+      await _pumpChat(tester, api);
+      await tester.enterText(find.byType(TextField), 'Hi');
+      await tester.pump();
+      await tester.tap(_sendButton);
+      await tester.pump();
+      expect(api.sendMetadata.single, isNull);
+      await _unmount(tester);
+    });
   });
 
   group('"Message us" on the list', () {

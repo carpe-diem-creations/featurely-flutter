@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:featurely/src/api/api_exception.dart';
 import 'package:featurely/src/api/models.dart';
+import 'package:featurely/src/chat_metadata.dart';
 import 'package:featurely/src/ui/controllers/chat_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -30,11 +31,16 @@ void chatTest(String description, Future<void> Function(WidgetTester) body) {
   });
 }
 
-ChatController _controller(FakeApi api, {List<String>? ids}) {
+ChatController _controller(
+  FakeApi api, {
+  List<String>? ids,
+  Map<String, String>? Function()? metadata,
+}) {
   var n = 0;
   final controller = ChatController(
     api: api,
     resolvedLocale: 'en',
+    metadata: metadata,
     idGenerator: ids == null ? null : () => ids[n++],
   );
   _live.add(controller);
@@ -133,6 +139,77 @@ void main() {
     expect(api.sendCalls.map((c) => c.$2), [cid, cid]);
     expect(controller.entries.single.delivery, ChatDelivery.sent);
     expect(controller.entries.single.message.id, 'm1');
+  });
+
+  group('metadata', () {
+    chatTest('the provider result is sent with the message', (tester) async {
+      final api = FakeApi();
+      final controller = _controller(api,
+          metadata: () => effectiveChatMetadata(
+                const {'plan': 'pro', 'screen': 'Home'},
+                const {'screen': 'Checkout'},
+              ))
+        ..setVisible(true);
+      await controller.load();
+      await controller.send('Hello');
+      expect(api.sendMetadata.single, {'plan': 'pro', 'screen': 'Checkout'});
+    });
+
+    chatTest('empty metadata is sent as none', (tester) async {
+      final api = FakeApi();
+      final controller = _controller(api,
+          metadata: () => effectiveChatMetadata(const {'k': '  '}, const {}))
+        ..setVisible(true);
+      await controller.load();
+      await controller.send('Hello');
+      expect(api.sendMetadata.single, isNull);
+    });
+
+    chatTest('a retry re-sends the metadata snapshotted at compose time',
+        (tester) async {
+      final api = FakeApi();
+      var fail = true;
+      api.onSendChatMessage = (body, cid) async {
+        if (fail) throw FeaturelyNetworkException();
+        return makeChatMessage(id: 'm1', body: body, clientMessageId: cid);
+      };
+      Map<String, String>? global = const {'plan': 'free'};
+      const cid = '44444444-4444-4444-8444-444444444444';
+      const cid2 = '55555555-5555-4555-8555-555555555555';
+      final controller = _controller(api,
+          ids: [cid, cid2],
+          metadata: () =>
+              effectiveChatMetadata(global, const {'screen': 'Checkout'}))
+        ..setVisible(true);
+      await controller.load();
+
+      await controller.send('Hello');
+      expect(controller.entries.single.delivery, ChatDelivery.failed);
+
+      global = const {'plan': 'pro'};
+      fail = false;
+      await controller.retry(cid);
+      await _settle(tester);
+      expect(api.sendMetadata, [
+        {'plan': 'free', 'screen': 'Checkout'},
+        {'plan': 'free', 'screen': 'Checkout'},
+      ]);
+
+      // A new message picks up the changed global map.
+      await controller.send('Next');
+      expect(api.sendMetadata.last, {'plan': 'pro', 'screen': 'Checkout'});
+    });
+
+    chatTest('a throwing provider never blocks the send', (tester) async {
+      final api = FakeApi();
+      final controller =
+          _controller(api, metadata: () => throw StateError('boom'))
+            ..setVisible(true);
+      await controller.load();
+      await controller.send('Hello');
+      expect(api.sendCalls, hasLength(1));
+      expect(api.sendMetadata.single, isNull);
+    });
   });
 
   chatTest('empty and over-long messages are not sent', (tester) async {

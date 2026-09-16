@@ -5,6 +5,15 @@
 - 8 new locales: Bulgarian (`bg`), Greek (`el`), Finnish (`fi`), Indonesian
   (`id`), Lithuanian (`lt`), Romanian (`ro`), Slovak (`sk`) and Albanian
   (`sq`) — 33 in total, matching the Featurely server.
+- **Chat metadata:** new `Featurely.setChatMetadata(map)` attaches app-wide
+  context (e.g. plan, app version) to every chat message sent from then on,
+  and `Featurely.showChat(context, metadata: map)` adds per-presentation
+  context (it wins on key collisions). The team sees it next to the message
+  in the Inbox and the alert email; it is never shown to the user. The SDK
+  trims and caps it to the server's limits (20 entries, 64-character keys,
+  500-character values) instead of failing the send, and a retried message
+  keeps its original metadata. The field is omitted when empty; servers
+  that predate chat metadata ignore it.
 
 ## 0.3.0
 

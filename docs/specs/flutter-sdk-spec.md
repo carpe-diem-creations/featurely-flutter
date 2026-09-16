@@ -252,7 +252,7 @@ featurely-flutter/
 ├── lib/
 │   ├── featurely.dart            # public exports: Featurely, FeaturelyTheme (only these)
 │   └── src/
-│       ├── featurely_base.dart   # Featurely singleton facade (init/show/login/logout/setPlan)
+│       ├── featurely_base.dart   # Featurely singleton facade (init/show/login/logout/setPlan/chat)
 │       ├── options.dart          # FeaturelyOptions (resolved init config), FeaturelyEnvironment
 │       ├── theme.dart            # FeaturelyTheme + resolution against host Theme
 │       ├── identity/
@@ -292,6 +292,12 @@ class Featurely {
   static Future<void> login(String userId);       // idempotent; enforces rotation on account switch
   static Future<void> logout();                   // DELETE /identify → rotate device ID → persist
   static void setPlan(String? plan);              // update plan mid-session (e.g. after upgrade)
+
+  // In-App Chat
+  static Future<void> showChat(BuildContext context,
+      {Map<String, String>? metadata});           // standalone chat sheet; metadata wins over setChatMetadata
+  static Future<int> unreadMessageCount();        // never throws; 0 when unavailable
+  static void setChatMetadata(Map<String, String>? metadata); // app-wide team-only context on chat messages; null clears
 }
 
 class FeaturelyTheme {

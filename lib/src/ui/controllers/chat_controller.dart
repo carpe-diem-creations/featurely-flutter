@@ -36,7 +36,11 @@ enum ChatDelivery {
 @immutable
 class ChatEntry {
   /// Creates an entry.
-  const ChatEntry({required this.message, required this.delivery});
+  const ChatEntry({
+    required this.message,
+    required this.delivery,
+    this.metadata,
+  });
 
   /// The message (for optimistic rows, [ChatMessage.id] is empty and
   /// [ChatMessage.clientMessageId] identifies the row).
@@ -44,6 +48,10 @@ class ChatEntry {
 
   /// Delivery state.
   final ChatDelivery delivery;
+
+  /// For local rows: the metadata snapshotted when the message was
+  /// composed, re-sent unchanged by a retry.
+  final Map<String, String>? metadata;
 
   /// Whether this row is still local (sending or failed).
   bool get isLocal => delivery != ChatDelivery.sent;
@@ -70,11 +78,13 @@ enum ChatEmailError {
 /// the controller.
 class ChatController extends ChangeNotifier {
   /// Creates the controller. [resolvedLocale] / [deviceLocale] are sent with
-  /// each message so reply emails are localized.
+  /// each message so reply emails are localized. [metadata] is read once per
+  /// composed message; its result is sent with that message and its retries.
   ChatController({
     required this.api,
     this.resolvedLocale,
     this.deviceLocale,
+    this.metadata,
     this.pollInterval = const Duration(seconds: 5),
     this.rateLimitPause = const Duration(seconds: 30),
     String Function()? idGenerator,
@@ -88,6 +98,10 @@ class ChatController extends ChangeNotifier {
 
   /// The device locale tag, sent as `deviceLocale`.
   final String? deviceLocale;
+
+  /// Supplies the effective host-app metadata for a new message (already
+  /// cleaned; null or empty sends none).
+  final Map<String, String>? Function()? metadata;
 
   /// Delay between polls while visible and foregrounded.
   final Duration pollInterval;
@@ -258,10 +272,11 @@ class ChatController extends ChangeNotifier {
         clientMessageId: _idGenerator(),
       ),
       delivery: ChatDelivery.sending,
+      metadata: _snapshotMetadata(),
     );
     _local.add(entry);
     _notify();
-    await _deliver(entry.message);
+    await _deliver(entry);
   }
 
   /// Re-sends the failed message [clientMessageId] with the same id (the
@@ -269,13 +284,26 @@ class ChatController extends ChangeNotifier {
   Future<void> retry(String clientMessageId) async {
     final index = _localIndex(clientMessageId);
     if (index < 0 || _local[index].delivery != ChatDelivery.failed) return;
-    final message = _local[index].message;
-    _local[index] = ChatEntry(message: message, delivery: ChatDelivery.sending);
+    final entry = ChatEntry(
+      message: _local[index].message,
+      delivery: ChatDelivery.sending,
+      metadata: _local[index].metadata,
+    );
+    _local[index] = entry;
     _notify();
-    await _deliver(message);
+    await _deliver(entry);
   }
 
-  Future<void> _deliver(ChatMessage pending) async {
+  Map<String, String>? _snapshotMetadata() {
+    try {
+      return metadata?.call();
+    } catch (_) {
+      return null; // Metadata must never block a send.
+    }
+  }
+
+  Future<void> _deliver(ChatEntry entry) async {
+    final pending = entry.message;
     final clientMessageId = pending.clientMessageId!;
     try {
       final stored = await api.sendChatMessage(
@@ -283,6 +311,7 @@ class ChatController extends ChangeNotifier {
         clientMessageId: clientMessageId,
         deviceLocale: deviceLocale,
         resolvedLocale: resolvedLocale,
+        metadata: entry.metadata,
       );
       if (_disposed) return;
       _local.removeWhere((e) => e.message.clientMessageId == clientMessageId);
@@ -295,8 +324,11 @@ class ChatController extends ChangeNotifier {
       if (_disposed) return;
       final index = _localIndex(clientMessageId);
       if (index >= 0) {
-        _local[index] =
-            ChatEntry(message: pending, delivery: ChatDelivery.failed);
+        _local[index] = ChatEntry(
+          message: pending,
+          delivery: ChatDelivery.failed,
+          metadata: entry.metadata,
+        );
       }
       if (error is FeaturelyApiException) {
         if (error.code == FeaturelyErrorCode.rateLimited) {

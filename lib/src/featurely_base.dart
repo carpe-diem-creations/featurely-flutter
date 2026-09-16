@@ -15,7 +15,8 @@ import 'ui/sheet.dart';
 ///
 /// Call [init] once at startup, then [show] from any trigger. Optionally
 /// wire [login]/[logout] to the host app's own auth so a user's votes
-/// follow them across devices, and [setPlan] when their plan changes.
+/// follow them across devices, [setPlan] when their plan changes, and
+/// [setChatMetadata] to give your team context on chat messages.
 class Featurely {
   Featurely._();
 
@@ -92,6 +93,8 @@ class Featurely {
       ),
       metadata: DeviceMetadata(override: debugMetadataOverride),
       plan: plan,
+      // Not an init option: survives re-configuration like the identity.
+      chatMetadata: previous?.chatMetadata,
     );
     // The config cache is per app session; keep it when the backend didn't
     // change so later opens reuse it.
@@ -127,9 +130,23 @@ class Featurely {
   /// failed-load state, so gate your own entry point on a server you know
   /// supports chat. The feedback sheet opened by [show] offers a
   /// "Message us" action automatically when the server supports it.
-  static Future<void> showChat(BuildContext context) {
+  ///
+  /// [metadata] is context for the team about this presentation (e.g.
+  /// `{'screen': 'Checkout', 'orderId': '1234'}`), attached to every message
+  /// sent from it on top of the app-wide [setChatMetadata] map — on a key
+  /// collision, [metadata] wins. It follows the same rules and limits as
+  /// [setChatMetadata].
+  static Future<void> showChat(
+    BuildContext context, {
+    Map<String, String>? metadata,
+  }) {
     final core = _requireCore('showChat');
-    return showFeaturelySheet(context, core, root: FeaturelySheetRoot.chat);
+    return showFeaturelySheet(
+      context,
+      core,
+      root: FeaturelySheetRoot.chat,
+      chatMetadata: metadata == null ? null : Map.unmodifiable(metadata),
+    );
   }
 
   /// The number of team chat messages this device hasn't read yet — for a
@@ -168,6 +185,26 @@ class Featurely {
   /// Updates the plan label sent with future submissions (e.g. after an
   /// upgrade mid-session).
   static void setPlan(String? plan) => _requireCore('setPlan').plan = plan;
+
+  /// Sets app-wide context attached to every chat message sent from now on
+  /// (e.g. `{'plan': 'pro', 'appVersion': '2.4.1'}`); `null` clears it.
+  /// Messages already sent — including a failed one the user retries — keep
+  /// the metadata they were composed with. Survives a later [init].
+  ///
+  /// The map is shown to your team next to the message in the dashboard
+  /// Inbox and in the support alert email. It is never shown to the user
+  /// and never returned by the API — but don't put secrets in it.
+  ///
+  /// Values are plain strings. Keys and values are trimmed; entries with a
+  /// blank key or value, or a key longer than 64 characters, are dropped;
+  /// values are truncated to 500 characters; at most 20 entries are sent
+  /// (the first 20 by sorted key). Invalid input never throws. The map is
+  /// copied, so later changes to it have no effect. Merged with the
+  /// per-presentation `metadata` of [showChat] (which wins on collisions);
+  /// the feedback sheet's "Message us" chat uses this map alone.
+  static void setChatMetadata(Map<String, String>? metadata) =>
+      _requireCore('setChatMetadata').chatMetadata =
+          metadata == null ? null : Map.unmodifiable(metadata);
 
   static FeaturelyCore _requireCore(String method) {
     final core = _core;

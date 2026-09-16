@@ -84,6 +84,30 @@ await Featurely.showChat(context);
 //    "Message us" action that pushes the chat inside the same sheet.
 ```
 
+### Chat metadata
+
+Give your team context with each message — the current screen, the plan, an
+order id. Set an app-wide map once (it applies to every message sent from
+then on; `null` clears it), and/or pass a map when you open the chat:
+
+```dart
+Featurely.setChatMetadata({'plan': 'pro', 'appVersion': '2.4.1'});
+
+await Featurely.showChat(
+  context,
+  metadata: {'screen': 'Checkout', 'orderId': '1234'}, // wins on collisions
+);
+```
+
+Metadata is shown to your team only — next to the message in the Inbox and
+in the support alert email. It is never shown to the user and never returned
+by the API, but **don't put secrets in it**. Values are strings; keys are
+trimmed and at most 64 characters, values are truncated to 500 characters,
+and at most 20 entries are sent (the SDK drops or trims anything else rather
+than failing the send). A retried message keeps the metadata it was
+composed with. The "Message us" chat inside the feedback sheet uses the
+app-wide map only.
+
 Show an unread badge on your own button with `unreadMessageCount()` — it
 never throws and returns `0` before `init`, when the device has no
 conversation, when the server doesn't support chat, or on any error:

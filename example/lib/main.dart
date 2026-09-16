@@ -202,6 +202,7 @@ class _ExampleAppState extends State<ExampleApp> {
                 onChanged: (value) {
                   plan = value;
                   Featurely.setPlan(value);
+                  Featurely.setChatMetadata({if (value != null) 'plan': value});
                 },
               ),
             ],

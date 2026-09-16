@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:featurely/featurely.dart';
 import 'package:featurely/src/api/api_client.dart';
 import 'package:featurely/src/util/uuid.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -111,6 +111,94 @@ void main() {
     });
   });
 
+  group('setChatMetadata', () {
+    test('throws a StateError before init', () {
+      expect(
+          () => Featurely.setChatMetadata(const {'a': 'b'}), throwsStateError);
+    });
+
+    testWidgets('is merged with showChat metadata and survives re-init',
+        (tester) async {
+      final sent = <Map<String, dynamic>>[];
+      Future<http.Response> handler(http.Request request) async {
+        final path = request.url.path;
+        if (path.endsWith('/config')) {
+          return http.Response(
+              jsonEncode({..._config, 'chatEnabled': true}), 200);
+        }
+        if (path.endsWith('/conversation')) {
+          return http.Response(jsonEncode({'conversation': null}), 200);
+        }
+        if (path.endsWith('/conversation/messages') &&
+            request.method == 'GET') {
+          return http.Response(
+              jsonEncode({
+                'messages': <Object>[],
+                'olderCursor': null,
+                'newerCursor': null,
+              }),
+              200);
+        }
+        if (path.endsWith('/conversation/messages')) {
+          final body = jsonDecode(request.body) as Map<String, dynamic>;
+          sent.add(body);
+          return http.Response(
+              jsonEncode({
+                'id': 'm${sent.length}',
+                'author': 'user',
+                'body': body['body'],
+                'createdAt': '2026-09-01T10:00:00.000Z',
+                'clientMessageId': body['clientMessageId'],
+              }),
+              201);
+        }
+        return http.Response('', 204);
+      }
+
+      await tester.runAsync(() => init(handler));
+      final input = {'plan': 'free', 'screen': 'Home'};
+      Featurely.setChatMetadata(input);
+      input['plan'] = 'mutated after the call'; // Copied, so no effect.
+      // Re-configuring keeps the app-wide metadata.
+      await tester.runAsync(() => init(handler));
+
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) => TextButton(
+            onPressed: () => Featurely.showChat(
+              context,
+              metadata: const {'screen': 'Checkout', 'orderId': '42'},
+            ),
+            child: const Text('Open chat'),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('Open chat'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'Where is my order?');
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('featurely-chat-send')));
+      await tester.pumpAndSettle();
+
+      expect(sent.single['metadata'], {
+        'orderId': '42',
+        'plan': 'free',
+        'screen': 'Checkout',
+      });
+
+      // null clears the app-wide map; the presentation's own map remains.
+      Featurely.setChatMetadata(null);
+      await tester.enterText(find.byType(TextField), 'Any news?');
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('featurely-chat-send')));
+      await tester.pumpAndSettle();
+      expect(sent.last['metadata'], {'orderId': '42', 'screen': 'Checkout'});
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+  });
+
   test('showChat before init throws a StateError', () {
     expect(
       () => Featurely.showChat(_FakeContext()),
@@ -197,6 +285,35 @@ void main() {
         'resolvedLocale': 'de',
       });
       expect(message.clientMessageId, '0d6c1b2a-1111-4111-8111-111111111111');
+    });
+
+    test('sendChatMessage encodes metadata as a flat string map', () async {
+      await client.sendChatMessage(
+        body: 'Hello',
+        clientMessageId: '0d6c1b2a-1111-4111-8111-111111111111',
+        metadata: const {'screen': 'Checkout', 'plan': 'pro'},
+      );
+      expect(jsonDecode(requests.single.body), {
+        'body': 'Hello',
+        'clientMessageId': '0d6c1b2a-1111-4111-8111-111111111111',
+        'metadata': {'screen': 'Checkout', 'plan': 'pro'},
+      });
+    });
+
+    test('sendChatMessage omits null or empty metadata', () async {
+      await client.sendChatMessage(
+        body: 'Hello',
+        clientMessageId: '0d6c1b2a-1111-4111-8111-111111111111',
+      );
+      await client.sendChatMessage(
+        body: 'Hello',
+        clientMessageId: '0d6c1b2a-1111-4111-8111-111111111111',
+        metadata: const {},
+      );
+      for (final request in requests) {
+        expect(
+            (jsonDecode(request.body) as Map).containsKey('metadata'), isFalse);
+      }
     });
 
     test('setChatEmail PUTs the address (null clears); markChatRead POSTs',

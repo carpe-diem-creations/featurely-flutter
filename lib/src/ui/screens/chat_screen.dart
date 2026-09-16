@@ -2,6 +2,7 @@ import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/material.dart';
 
+import '../../chat_metadata.dart';
 import '../../l10n/generated/featurely_localizations.dart';
 import '../controllers/chat_controller.dart';
 import '../scope.dart';
@@ -19,8 +20,12 @@ import '../widgets/state_views.dart';
 /// of a standalone sheet by `Featurely.showChat`. Polls only while this
 /// route is the visible one and the app is resumed.
 class ChatScreen extends StatefulWidget {
-  /// Creates the chat screen.
-  const ChatScreen({super.key});
+  /// Creates the chat screen. [metadata] is per-presentation chat metadata,
+  /// merged over the app-wide `Featurely.setChatMetadata` map on each send.
+  const ChatScreen({this.metadata, super.key});
+
+  /// Per-presentation chat metadata (null when opened from "Message us").
+  final Map<String, String>? metadata;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -38,6 +43,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       api: scope.core.api,
       resolvedLocale: scope.localeTag,
       deviceLocale: PlatformDispatcher.instance.locale.toLanguageTag(),
+      // Read at compose time, so a later setChatMetadata applies to new
+      // messages (retries keep their own snapshot).
+      metadata: () =>
+          effectiveChatMetadata(scope.core.chatMetadata, widget.metadata),
     );
     WidgetsBinding.instance.addObserver(this);
     final lifecycle = WidgetsBinding.instance.lifecycleState;
