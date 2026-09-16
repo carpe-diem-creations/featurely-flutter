@@ -227,4 +227,56 @@ class FeaturelyLocalizationsFil extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'Masyadong maraming request. Subukan ulit mamaya.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Sumulat ng mensahe…';
+
+  @override
+  String get sdkChatEmailEdit => 'I-edit';
+
+  @override
+  String get sdkChatEmailInvalid => 'Maglagay ng wastong email address.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'Iyong email address';
+
+  @override
+  String get sdkChatEmailPrompt => 'Tumanggap ng mga tugon sa email';
+
+  @override
+  String get sdkChatEmailSave => 'I-save';
+
+  @override
+  String get sdkChatEmailSaved => 'Email para sa mga tugon';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Hi! Magpadala sa amin ng mensahe at sasagutin ka ng aming team dito.';
+
+  @override
+  String get sdkChatLoadEarlier => 'I-load ang mga naunang mensahe';
+
+  @override
+  String get sdkChatMessageUs => 'Magmensahe sa amin';
+
+  @override
+  String get sdkChatNotSentRetry =>
+      'Hindi naipadala — I-tap para subukang muli';
+
+  @override
+  String get sdkChatSend => 'Ipadala';
+
+  @override
+  String get sdkChatSending => 'Ipinapadala…';
+
+  @override
+  String get sdkChatTeamLabel => 'Team';
+
+  @override
+  String get sdkChatTitle => 'Mga Mensahe';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Masyadong mahaba ang mensaheng ito. Ang limit ay $max na character.';
+  }
 }

@@ -43,6 +43,27 @@ class FakeApi extends FeaturelyApiClient {
   Future<FeedbackComment> Function(String id, String body)? onAddComment;
   Future<FeedbackItem> Function()? onSubmit;
 
+  // In-App Chat. Defaults model a never-seen device.
+  Future<ChatConversation?> Function()? onGetConversation;
+  Future<ChatMessagesPage> Function(String? before, String? after)?
+      onGetChatMessages;
+  Future<ChatMessage> Function(String body, String clientMessageId)?
+      onSendChatMessage;
+  Future<void> Function(String? email)? onSetChatEmail;
+  Future<void> Function()? onMarkChatRead;
+
+  /// Every `getChatMessages` call as `(before, after)`.
+  final List<(String?, String?)> chatMessageCalls = [];
+
+  /// Every `sendChatMessage` call as `(body, clientMessageId)`.
+  final List<(String, String)> sendCalls = [];
+
+  /// Every `setChatEmail` argument.
+  final List<String?> emailCalls = [];
+
+  /// Number of `markChatRead` calls.
+  int readCalls = 0;
+
   /// The metadata map of the most recent [submitFeedback] call.
   Map<String, String>? lastSubmissionMetadata;
 
@@ -76,6 +97,53 @@ class FakeApi extends FeaturelyApiClient {
   @override
   Future<FeedbackComment> addComment(String id, String body) =>
       onAddComment!.call(id, body);
+
+  @override
+  Future<ChatConversation?> getConversation() =>
+      onGetConversation?.call() ?? Future.value();
+
+  @override
+  Future<ChatMessagesPage> getChatMessages({
+    String? before,
+    String? after,
+    int? limit,
+  }) {
+    chatMessageCalls.add((before, after));
+    return onGetChatMessages?.call(before, after) ??
+        Future.value(ChatMessagesPage(
+          messages: const [],
+          olderCursor: null,
+          newerCursor: after,
+        ));
+  }
+
+  @override
+  Future<ChatMessage> sendChatMessage({
+    required String body,
+    required String clientMessageId,
+    String? deviceLocale,
+    String? resolvedLocale,
+  }) {
+    sendCalls.add((body, clientMessageId));
+    return onSendChatMessage?.call(body, clientMessageId) ??
+        Future.value(makeChatMessage(
+          id: 'srv-$clientMessageId',
+          body: body,
+          clientMessageId: clientMessageId,
+        ));
+  }
+
+  @override
+  Future<void> setChatEmail(String? email) {
+    emailCalls.add(email);
+    return onSetChatEmail?.call(email) ?? Future.value();
+  }
+
+  @override
+  Future<void> markChatRead() {
+    readCalls++;
+    return onMarkChatRead?.call() ?? Future.value();
+  }
 
   @override
   Future<FeedbackItem> submitFeedback({
@@ -115,6 +183,32 @@ FeedbackItem makeItem({
       createdAt: DateTime.utc(2026, 7, 14, 8, 21),
     );
 
+/// A chat message fixture.
+ChatMessage makeChatMessage({
+  required String id,
+  String body = 'Hello',
+  ChatAuthor author = ChatAuthor.user,
+  String? clientMessageId,
+  DateTime? createdAt,
+}) =>
+    ChatMessage(
+      id: id,
+      author: author,
+      body: body,
+      createdAt: createdAt ?? DateTime.utc(2026, 9, 1, 10),
+      clientMessageId: clientMessageId,
+    );
+
+/// A conversation fixture.
+ChatConversation makeConversation({int unread = 0, String? email}) =>
+    ChatConversation(
+      id: 'conv-1',
+      status: ConversationStatus.open,
+      contactEmail: email,
+      unreadCount: unread,
+      lastMessageAt: DateTime.utc(2026, 9, 1, 10),
+    );
+
 /// Builds a [FeaturelyCore] over [api].
 FeaturelyCore makeCore(
   FakeApi api, {
@@ -149,6 +243,7 @@ Future<void> pumpSheet(
   FeaturelyCore core, {
   FeaturelyTheme? theme,
   Size surface = const Size(390, 844),
+  FeaturelySheetRoot root = FeaturelySheetRoot.list,
 }) async {
   await tester.binding.setSurfaceSize(surface);
   addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -160,6 +255,7 @@ Future<void> pumpSheet(
           theme: FeaturelyThemeData.resolve(context, theme),
           localeTag: resolveLocaleTag(core.options.locale?.toLanguageTag()),
           platform: TargetPlatform.android,
+          root: root,
         ),
       ),
     ),

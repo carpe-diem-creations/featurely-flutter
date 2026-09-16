@@ -235,4 +235,55 @@ class FeaturelyLocalizationsRu extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'Слишком много запросов. Попробуйте снова чуть позже.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Напиши сообщение…';
+
+  @override
+  String get sdkChatEmailEdit => 'Изменить';
+
+  @override
+  String get sdkChatEmailInvalid => 'Введи корректный адрес электронной почты.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'Твой адрес электронной почты';
+
+  @override
+  String get sdkChatEmailPrompt => 'Получать ответы по почте';
+
+  @override
+  String get sdkChatEmailSave => 'Сохранить';
+
+  @override
+  String get sdkChatEmailSaved => 'Почта для ответов';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Привет! Напиши нам, и наша команда ответит тебе здесь.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Загрузить предыдущие сообщения';
+
+  @override
+  String get sdkChatMessageUs => 'Написать нам';
+
+  @override
+  String get sdkChatNotSentRetry => 'Не отправлено — Нажми, чтобы повторить';
+
+  @override
+  String get sdkChatSend => 'Отправить';
+
+  @override
+  String get sdkChatSending => 'Отправка…';
+
+  @override
+  String get sdkChatTeamLabel => 'Команда';
+
+  @override
+  String get sdkChatTitle => 'Сообщения';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Сообщение слишком длинное. Лимит — $max символов.';
+  }
 }

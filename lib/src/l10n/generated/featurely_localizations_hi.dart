@@ -226,4 +226,56 @@ class FeaturelyLocalizationsHi extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'बहुत सारे अनुरोध। थोड़ी देर में फिर कोशिश करें।';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'संदेश लिखें…';
+
+  @override
+  String get sdkChatEmailEdit => 'बदलें';
+
+  @override
+  String get sdkChatEmailInvalid => 'एक मान्य ईमेल पता दर्ज करें।';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'आपका ईमेल पता';
+
+  @override
+  String get sdkChatEmailPrompt => 'जवाब ईमेल पर पाएं';
+
+  @override
+  String get sdkChatEmailSave => 'सहेजें';
+
+  @override
+  String get sdkChatEmailSaved => 'जवाबों के लिए ईमेल';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'नमस्ते! हमें एक संदेश भेजें, हमारी टीम आपको यहीं जवाब देगी।';
+
+  @override
+  String get sdkChatLoadEarlier => 'पुराने संदेश लोड करें';
+
+  @override
+  String get sdkChatMessageUs => 'हमें संदेश भेजें';
+
+  @override
+  String get sdkChatNotSentRetry =>
+      'नहीं भेजा गया — दोबारा कोशिश करने के लिए टैप करें';
+
+  @override
+  String get sdkChatSend => 'भेजें';
+
+  @override
+  String get sdkChatSending => 'भेजा जा रहा है…';
+
+  @override
+  String get sdkChatTeamLabel => 'टीम';
+
+  @override
+  String get sdkChatTitle => 'संदेश';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'यह संदेश बहुत लंबा है। सीमा $max अक्षर है।';
+  }
 }

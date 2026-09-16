@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.3.0
+
+**In-App Chat:** a private one-to-one thread between the device and your
+team, answered from the dashboard Inbox. Needs a Featurely server that
+reports `chatEnabled` in `GET /config`; older servers keep working with chat
+hidden.
+
+- New `Featurely.showChat(context)` presents the chat as a standalone sheet.
+- New `Featurely.unreadMessageCount()` returns the number of unread team
+  messages for a host-app badge. It never throws and returns `0` when chat
+  is unavailable.
+- The feedback sheet shows a "Message us" action (when the server supports
+  chat) that opens the chat inside the same sheet.
+- The chat has optimistic sends with tap-to-retry, "Load earlier" history,
+  an optional "Get replies by email" row, 5 s polling while the chat is on
+  screen and the app is in the foreground (paused for 30 s after a `429`),
+  and read markers. It also shows the SANDBOX strip and supports RTL.
+- The thread is tied to the device ID, so `logout()` starts a fresh chat.
+- `FeaturelyErrorCode` gains `invalidMessage` and `conversationNotFound`.
+- 16 new `sdk.chat.*` strings in all 25 locales.
+
 ## 0.2.3
 
 - Releases are now published to pub.dev automatically from CI when a

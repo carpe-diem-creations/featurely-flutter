@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Dieses Bild konnte nicht angehängt werden. Versuche ein anderes.",
   "sdkFormEmailError": "Gib eine gültige E-Mail-Adresse ein.",
   "sdkDetailCommentsDisabled": "Kommentare wurden deaktiviert.",
-  "sdkCommonRateLimited": "Zu viele Anfragen. Versuche es gleich noch einmal."
+  "sdkCommonRateLimited": "Zu viele Anfragen. Versuche es gleich noch einmal.",
+  "sdkChatComposerPlaceholder": "Nachricht schreiben…",
+  "sdkChatEmailEdit": "Bearbeiten",
+  "sdkChatEmailInvalid": "Gib eine gültige E-Mail-Adresse ein.",
+  "sdkChatEmailPlaceholder": "Deine E-Mail-Adresse",
+  "sdkChatEmailPrompt": "Antworten per E-Mail erhalten",
+  "sdkChatEmailSave": "Speichern",
+  "sdkChatEmailSaved": "E-Mail für Antworten",
+  "sdkChatEmptyGreeting": "Hallo! Schick uns eine Nachricht – unser Team antwortet dir hier.",
+  "sdkChatLoadEarlier": "Ältere Nachrichten laden",
+  "sdkChatMessageUs": "Schreib uns",
+  "sdkChatNotSentRetry": "Nicht gesendet — Tippen zum Wiederholen",
+  "sdkChatSend": "Senden",
+  "sdkChatSending": "Wird gesendet…",
+  "sdkChatTeamLabel": "Team",
+  "sdkChatTitle": "Nachrichten",
+  "sdkChatTooLong": "Diese Nachricht ist zu lang. Das Limit liegt bei {max} Zeichen."
 }

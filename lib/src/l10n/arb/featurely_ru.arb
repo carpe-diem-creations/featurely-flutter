@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Не удалось прикрепить это изображение. Попробуйте другое.",
   "sdkFormEmailError": "Введите действительный адрес электронной почты.",
   "sdkDetailCommentsDisabled": "Комментарии отключены.",
-  "sdkCommonRateLimited": "Слишком много запросов. Попробуйте снова чуть позже."
+  "sdkCommonRateLimited": "Слишком много запросов. Попробуйте снова чуть позже.",
+  "sdkChatComposerPlaceholder": "Напиши сообщение…",
+  "sdkChatEmailEdit": "Изменить",
+  "sdkChatEmailInvalid": "Введи корректный адрес электронной почты.",
+  "sdkChatEmailPlaceholder": "Твой адрес электронной почты",
+  "sdkChatEmailPrompt": "Получать ответы по почте",
+  "sdkChatEmailSave": "Сохранить",
+  "sdkChatEmailSaved": "Почта для ответов",
+  "sdkChatEmptyGreeting": "Привет! Напиши нам, и наша команда ответит тебе здесь.",
+  "sdkChatLoadEarlier": "Загрузить предыдущие сообщения",
+  "sdkChatMessageUs": "Написать нам",
+  "sdkChatNotSentRetry": "Не отправлено — Нажми, чтобы повторить",
+  "sdkChatSend": "Отправить",
+  "sdkChatSending": "Отправка…",
+  "sdkChatTeamLabel": "Команда",
+  "sdkChatTitle": "Сообщения",
+  "sdkChatTooLong": "Сообщение слишком длинное. Лимит — {max} символов."
 }

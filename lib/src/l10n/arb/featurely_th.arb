@@ -55,5 +55,21 @@
   "sdkFormAttachError": "แนบรูปภาพนี้ไม่ได้ ลองรูปอื่นดู",
   "sdkFormEmailError": "กรอกอีเมลที่ถูกต้อง",
   "sdkDetailCommentsDisabled": "การแสดงความคิดเห็นถูกปิดไว้",
-  "sdkCommonRateLimited": "คำขอมากเกินไป ลองอีกครั้งในอีกสักครู่"
+  "sdkCommonRateLimited": "คำขอมากเกินไป ลองอีกครั้งในอีกสักครู่",
+  "sdkChatComposerPlaceholder": "พิมพ์ข้อความ…",
+  "sdkChatEmailEdit": "แก้ไข",
+  "sdkChatEmailInvalid": "กรุณากรอกที่อยู่อีเมลที่ถูกต้อง",
+  "sdkChatEmailPlaceholder": "ที่อยู่อีเมลของคุณ",
+  "sdkChatEmailPrompt": "รับคำตอบทางอีเมล",
+  "sdkChatEmailSave": "บันทึก",
+  "sdkChatEmailSaved": "อีเมลสำหรับรับคำตอบ",
+  "sdkChatEmptyGreeting": "สวัสดี! ส่งข้อความถึงเราได้เลย ทีมของเราจะตอบกลับคุณที่นี่",
+  "sdkChatLoadEarlier": "โหลดข้อความก่อนหน้า",
+  "sdkChatMessageUs": "ส่งข้อความถึงเรา",
+  "sdkChatNotSentRetry": "ส่งไม่สำเร็จ — แตะเพื่อลองอีกครั้ง",
+  "sdkChatSend": "ส่ง",
+  "sdkChatSending": "กำลังส่ง…",
+  "sdkChatTeamLabel": "ทีม",
+  "sdkChatTitle": "ข้อความ",
+  "sdkChatTooLong": "ข้อความนี้ยาวเกินไป จำกัดไม่เกิน {max} ตัวอักษร"
 }

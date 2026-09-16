@@ -241,4 +241,55 @@ class FeaturelyLocalizationsAr extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'طلبات كثيرة جدًا. حاول مرة أخرى بعد قليل.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'اكتب رسالة…';
+
+  @override
+  String get sdkChatEmailEdit => 'تعديل';
+
+  @override
+  String get sdkChatEmailInvalid => 'أدخل عنوان بريد إلكتروني صالحًا.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'عنوان بريدك الإلكتروني';
+
+  @override
+  String get sdkChatEmailPrompt => 'تلقَّ الردود عبر البريد الإلكتروني';
+
+  @override
+  String get sdkChatEmailSave => 'حفظ';
+
+  @override
+  String get sdkChatEmailSaved => 'البريد الإلكتروني للردود';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'مرحبًا! أرسل لنا رسالة وسيرد عليك فريقنا هنا.';
+
+  @override
+  String get sdkChatLoadEarlier => 'تحميل الرسائل السابقة';
+
+  @override
+  String get sdkChatMessageUs => 'راسلنا';
+
+  @override
+  String get sdkChatNotSentRetry => 'لم تُرسل — انقر لإعادة المحاولة';
+
+  @override
+  String get sdkChatSend => 'إرسال';
+
+  @override
+  String get sdkChatSending => 'جارٍ الإرسال…';
+
+  @override
+  String get sdkChatTeamLabel => 'الفريق';
+
+  @override
+  String get sdkChatTitle => 'الرسائل';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'هذه الرسالة طويلة جدًا. الحد الأقصى هو $max حرف.';
+  }
 }

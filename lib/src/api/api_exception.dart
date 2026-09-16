@@ -34,11 +34,19 @@ enum FeaturelyErrorCode {
   /// 400 — the screenshot exceeds the instance's upload limit.
   attachmentTooLarge('attachment_too_large'),
 
+  /// 400 — chat message not 1–4 000 characters after trimming, or its
+  /// `clientMessageId` is not a UUID.
+  invalidMessage('invalid_message'),
+
   /// 403 — the project has commenting turned off.
   commentsDisabled('comments_disabled'),
 
   /// 404 — no such item for this key (any of the contract's cases).
   notFound('not_found'),
+
+  /// 404 — the chat conversation does not exist (dashboard-facing; listed
+  /// for completeness).
+  conversationNotFound('conversation_not_found'),
 
   /// 429 — a rate limit was exceeded; honor `retry-after`.
   rateLimited('rate_limited'),

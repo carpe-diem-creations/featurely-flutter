@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Kan die afbeelding niet toevoegen. Probeer een andere.",
   "sdkFormEmailError": "Voer een geldig e-mailadres in.",
   "sdkDetailCommentsDisabled": "Reacties zijn uitgeschakeld.",
-  "sdkCommonRateLimited": "Te veel verzoeken. Probeer het zo weer."
+  "sdkCommonRateLimited": "Te veel verzoeken. Probeer het zo weer.",
+  "sdkChatComposerPlaceholder": "Schrijf een bericht…",
+  "sdkChatEmailEdit": "Bewerken",
+  "sdkChatEmailInvalid": "Voer een geldig e-mailadres in.",
+  "sdkChatEmailPlaceholder": "Je e-mailadres",
+  "sdkChatEmailPrompt": "Antwoorden per e-mail ontvangen",
+  "sdkChatEmailSave": "Opslaan",
+  "sdkChatEmailSaved": "E-mail voor antwoorden",
+  "sdkChatEmptyGreeting": "Hoi! Stuur ons een bericht, dan reageert ons team hier.",
+  "sdkChatLoadEarlier": "Eerdere berichten laden",
+  "sdkChatMessageUs": "Stuur ons een bericht",
+  "sdkChatNotSentRetry": "Niet verstuurd — Tik om opnieuw te proberen",
+  "sdkChatSend": "Versturen",
+  "sdkChatSending": "Versturen…",
+  "sdkChatTeamLabel": "Team",
+  "sdkChatTitle": "Berichten",
+  "sdkChatTooLong": "Dit bericht is te lang. De limiet is {max} tekens."
 }

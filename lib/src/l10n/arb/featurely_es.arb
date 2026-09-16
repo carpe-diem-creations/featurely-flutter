@@ -55,5 +55,21 @@
   "sdkFormAttachError": "No se pudo adjuntar esa imagen. Prueba con otra.",
   "sdkFormEmailError": "Introduce una dirección de correo válida.",
   "sdkDetailCommentsDisabled": "Los comentarios están desactivados.",
-  "sdkCommonRateLimited": "Demasiadas solicitudes. Inténtalo de nuevo en un momento."
+  "sdkCommonRateLimited": "Demasiadas solicitudes. Inténtalo de nuevo en un momento.",
+  "sdkChatComposerPlaceholder": "Escribe un mensaje…",
+  "sdkChatEmailEdit": "Editar",
+  "sdkChatEmailInvalid": "Introduce un correo electrónico válido.",
+  "sdkChatEmailPlaceholder": "Tu correo electrónico",
+  "sdkChatEmailPrompt": "Recibir respuestas por correo",
+  "sdkChatEmailSave": "Guardar",
+  "sdkChatEmailSaved": "Correo para respuestas",
+  "sdkChatEmptyGreeting": "¡Hola! Envíanos un mensaje y nuestro equipo te responderá aquí.",
+  "sdkChatLoadEarlier": "Cargar mensajes anteriores",
+  "sdkChatMessageUs": "Escríbenos",
+  "sdkChatNotSentRetry": "No enviado — Toca para reintentar",
+  "sdkChatSend": "Enviar",
+  "sdkChatSending": "Enviando…",
+  "sdkChatTeamLabel": "Equipo",
+  "sdkChatTitle": "Mensajes",
+  "sdkChatTooLong": "Este mensaje es demasiado largo. El límite es de {max} caracteres."
 }

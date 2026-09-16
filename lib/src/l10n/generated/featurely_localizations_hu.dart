@@ -227,4 +227,56 @@ class FeaturelyLocalizationsHu extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'Túl sok kérés. Próbáld újra kicsit később.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Írj üzenetet…';
+
+  @override
+  String get sdkChatEmailEdit => 'Szerkesztés';
+
+  @override
+  String get sdkChatEmailInvalid => 'Adj meg egy érvényes e-mail-címet.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'Az e-mail-címed';
+
+  @override
+  String get sdkChatEmailPrompt => 'Válaszok e-mailben';
+
+  @override
+  String get sdkChatEmailSave => 'Mentés';
+
+  @override
+  String get sdkChatEmailSaved => 'E-mail a válaszokhoz';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Szia! Küldj nekünk üzenetet, és a csapatunk itt válaszol.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Korábbi üzenetek betöltése';
+
+  @override
+  String get sdkChatMessageUs => 'Írj nekünk';
+
+  @override
+  String get sdkChatNotSentRetry =>
+      'Nem sikerült elküldeni — Koppints az újrapróbáláshoz';
+
+  @override
+  String get sdkChatSend => 'Küldés';
+
+  @override
+  String get sdkChatSending => 'Küldés…';
+
+  @override
+  String get sdkChatTeamLabel => 'Csapat';
+
+  @override
+  String get sdkChatTitle => 'Üzenetek';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Ez az üzenet túl hosszú. A korlát $max karakter.';
+  }
 }

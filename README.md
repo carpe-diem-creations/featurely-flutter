@@ -3,10 +3,14 @@
 In-app feedback for Flutter apps, backed by a self-hosted
 [Featurely](https://github.com/carpe-diem-creations) instance: end users
 browse feature requests and issue reports, vote, comment, and submit new
-feedback (with an optional screenshot and email) — your team triages
-everything in the Featurely web dashboard.
+feedback (with an optional screenshot and email), and message your team
+privately through In-App Chat — your team triages and replies from the
+Featurely web dashboard.
 
 - **Two-line integration** — `init` once, `show` anywhere.
+- **In-App Chat** — a private one-to-one thread with your team, as a
+  standalone sheet (`showChat`) or from the feedback sheet's "Message us"
+  action.
 - **Native-feeling** — inherits your accent color, corner radius, font, and
   light/dark mode; iOS and Android adaptive details.
 - **25 languages** including RTL (`ar`, `he`), resolved independently of the
@@ -20,7 +24,7 @@ everything in the Featurely web dashboard.
 
 ```yaml
 dependencies:
-  featurely: ^0.2.0
+  featurely: ^0.3.0
 ```
 
 Initialize once at startup (idempotent — call it on every launch), then
@@ -61,6 +65,51 @@ await Featurely.init(
 Sandbox sessions render an amber SANDBOX strip across the top of the sheet
 so QA always knows which mode they're in. It is never a user-facing runtime
 toggle.
+
+## In-App Chat
+
+End users can message your team privately; the team answers from the
+dashboard **Inbox**. Replies show up in the open chat within a few seconds
+(the SDK polls every 5 s while the chat is on screen and the app is in the
+foreground), and are also emailed when the user left an address via the
+optional "Get replies by email" row.
+
+Two entry points:
+
+```dart
+// 1. A standalone chat sheet, from your own "Contact us" button:
+await Featurely.showChat(context);
+
+// 2. Automatically: the feedback sheet opened by Featurely.show shows a
+//    "Message us" action that pushes the chat inside the same sheet.
+```
+
+Show an unread badge on your own button with `unreadMessageCount()` — it
+never throws and returns `0` before `init`, when the device has no
+conversation, when the server doesn't support chat, or on any error:
+
+```dart
+final unread = await Featurely.unreadMessageCount(); // e.g. on app resume
+```
+
+Things to know:
+
+- **One thread per device.** The conversation belongs to the SDK's device
+  ID, not to `login(userId)`, so it never follows a user across devices.
+  `logout()` (and logging in as a different user) rotates the device ID and
+  starts a fresh, empty chat; the old thread stays in your Inbox.
+- **Don't collect secrets in chat.** Anyone holding the device ID can read
+  that device's thread, the same trust level as votes.
+- Messages are plain text, up to 4 000 characters. Messages that fail to
+  send show "Not sent — Tap to retry" and are kept only while the chat is
+  open. A retry never double-posts.
+- Chat needs a Featurely server that reports `chatEnabled` in
+  `GET /api/v1/config`. Against older servers the "Message us" action is
+  hidden and `unreadMessageCount()` returns `0`; gate your own
+  `showChat` button accordingly, since on those servers the chat screen
+  can only show its failed-load state.
+- The chat uses the same theming, localization (including RTL) and SANDBOX
+  strip as the feedback sheet.
 
 ## Theming
 
@@ -154,4 +203,5 @@ knobs, a locale override, and login/logout buttons.
 - Flutter `>=3.27.0`, Dart `^3.6.0`
 - Android & iOS (no web/desktop)
 - A Featurely instance serving the frozen `/api/v1` contract (any server
-  version — the SDK decodes leniently and never breaks on additive changes)
+  version — the SDK decodes leniently and never breaks on additive changes).
+  In-App Chat needs a server that reports `chatEnabled`.

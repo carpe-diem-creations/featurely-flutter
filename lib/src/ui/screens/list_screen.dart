@@ -9,6 +9,7 @@ import '../widgets/skeleton.dart';
 import '../widgets/state_views.dart';
 import '../widgets/status_pill.dart';
 import '../widgets/vote_box.dart';
+import 'chat_screen.dart';
 import 'detail_screen.dart';
 import 'filter_sheet.dart';
 import 'form_screen.dart';
@@ -57,6 +58,15 @@ class _ListScreenState extends State<ListScreen> {
     );
   }
 
+  void _openChat() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        settings: const RouteSettings(name: 'chat'),
+        builder: (_) => const ChatScreen(),
+      ),
+    );
+  }
+
   void _openDetail(FeedbackItem item) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => DetailScreen(item: item)),
@@ -68,6 +78,8 @@ class _ListScreenState extends State<ListScreen> {
     final scope = FeaturelyScope.of(context);
     final strings = FeaturelyLocalizations.of(context);
     final theme = scope.theme;
+    // Chat entry points exist only on servers that report chatEnabled.
+    final chatEnabled = scope.config.value?.chatEnabled ?? false;
     return Material(
       color: theme.background,
       child: SafeArea(
@@ -86,6 +98,9 @@ class _ListScreenState extends State<ListScreen> {
                         onTap: () =>
                             Navigator.of(context, rootNavigator: true).pop(),
                       ),
+                      // Balances the extra trailing action so the title
+                      // stays centered.
+                      if (chatEnabled) const SizedBox(width: 48),
                       Expanded(
                         child: Text(
                           strings.sdkListTitle,
@@ -97,6 +112,15 @@ class _ListScreenState extends State<ListScreen> {
                           ),
                         ),
                       ),
+                      if (chatEnabled) ...[
+                        CircleIconButton(
+                          key: const ValueKey('featurely-message-us'),
+                          icon: Icons.forum_outlined,
+                          semanticLabel: strings.sdkChatMessageUs,
+                          onTap: _openChat,
+                        ),
+                        const SizedBox(width: 8),
+                      ],
                       ListenableBuilder(
                         listenable: scope.listController,
                         builder: (context, _) => CircleIconButton(

@@ -227,6 +227,57 @@ class FeaturelyLocalizationsPt extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'Demasiados pedidos. Tenta novamente dentro de momentos.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Escreve uma mensagem…';
+
+  @override
+  String get sdkChatEmailEdit => 'Editar';
+
+  @override
+  String get sdkChatEmailInvalid => 'Introduz um endereço de email válido.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'O teu endereço de email';
+
+  @override
+  String get sdkChatEmailPrompt => 'Receber respostas por email';
+
+  @override
+  String get sdkChatEmailSave => 'Guardar';
+
+  @override
+  String get sdkChatEmailSaved => 'Email para respostas';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Olá! Envia-nos uma mensagem e a nossa equipa responde-te aqui.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Carregar mensagens anteriores';
+
+  @override
+  String get sdkChatMessageUs => 'Envia-nos uma mensagem';
+
+  @override
+  String get sdkChatNotSentRetry => 'Não enviada — Toca para tentar novamente';
+
+  @override
+  String get sdkChatSend => 'Enviar';
+
+  @override
+  String get sdkChatSending => 'A enviar…';
+
+  @override
+  String get sdkChatTeamLabel => 'Equipa';
+
+  @override
+  String get sdkChatTitle => 'Mensagens';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Esta mensagem é demasiado longa. O limite é de $max caracteres.';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -451,4 +502,55 @@ class FeaturelyLocalizationsPtBr extends FeaturelyLocalizationsPt {
   @override
   String get sdkCommonRateLimited =>
       'Muitas solicitações. Tente novamente em instantes.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Escreva uma mensagem…';
+
+  @override
+  String get sdkChatEmailEdit => 'Editar';
+
+  @override
+  String get sdkChatEmailInvalid => 'Informe um endereço de e-mail válido.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'Seu endereço de e-mail';
+
+  @override
+  String get sdkChatEmailPrompt => 'Receber respostas por e-mail';
+
+  @override
+  String get sdkChatEmailSave => 'Salvar';
+
+  @override
+  String get sdkChatEmailSaved => 'E-mail para respostas';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Oi! Mande uma mensagem e nossa equipe vai te responder por aqui.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Carregar mensagens anteriores';
+
+  @override
+  String get sdkChatMessageUs => 'Fale com a gente';
+
+  @override
+  String get sdkChatNotSentRetry => 'Não enviada — Toque para tentar de novo';
+
+  @override
+  String get sdkChatSend => 'Enviar';
+
+  @override
+  String get sdkChatSending => 'Enviando…';
+
+  @override
+  String get sdkChatTeamLabel => 'Equipe';
+
+  @override
+  String get sdkChatTitle => 'Mensagens';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Esta mensagem é longa demais. O limite é de $max caracteres.';
+  }
 }

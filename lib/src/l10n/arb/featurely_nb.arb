@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Kunne ikke legge ved dette bildet. Prøv et annet.",
   "sdkFormEmailError": "Skriv inn en gyldig e-postadresse.",
   "sdkDetailCommentsDisabled": "Kommentarer er slått av.",
-  "sdkCommonRateLimited": "For mange forespørsler. Prøv igjen om litt."
+  "sdkCommonRateLimited": "For mange forespørsler. Prøv igjen om litt.",
+  "sdkChatComposerPlaceholder": "Skriv en melding…",
+  "sdkChatEmailEdit": "Rediger",
+  "sdkChatEmailInvalid": "Skriv inn en gyldig e-postadresse.",
+  "sdkChatEmailPlaceholder": "E-postadressen din",
+  "sdkChatEmailPrompt": "Få svar på e-post",
+  "sdkChatEmailSave": "Lagre",
+  "sdkChatEmailSaved": "E-post for svar",
+  "sdkChatEmptyGreeting": "Hei! Send oss en melding, så svarer teamet vårt deg her.",
+  "sdkChatLoadEarlier": "Last inn tidligere meldinger",
+  "sdkChatMessageUs": "Send oss en melding",
+  "sdkChatNotSentRetry": "Ikke sendt — Trykk for å prøve igjen",
+  "sdkChatSend": "Send",
+  "sdkChatSending": "Sender…",
+  "sdkChatTeamLabel": "Team",
+  "sdkChatTitle": "Meldinger",
+  "sdkChatTooLong": "Meldingen er for lang. Grensen er {max} tegn."
 }

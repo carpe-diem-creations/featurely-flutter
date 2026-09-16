@@ -224,4 +224,56 @@ class FeaturelyLocalizationsTr extends FeaturelyLocalizations {
 
   @override
   String get sdkCommonRateLimited => 'Çok fazla istek. Birazdan tekrar dene.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Bir mesaj yaz…';
+
+  @override
+  String get sdkChatEmailEdit => 'Düzenle';
+
+  @override
+  String get sdkChatEmailInvalid => 'Geçerli bir e-posta adresi gir.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'E-posta adresin';
+
+  @override
+  String get sdkChatEmailPrompt => 'Yanıtları e-postayla al';
+
+  @override
+  String get sdkChatEmailSave => 'Kaydet';
+
+  @override
+  String get sdkChatEmailSaved => 'Yanıtlar için e-posta';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Merhaba! Bize bir mesaj gönder, ekibimiz sana buradan dönüş yapsın.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Önceki mesajları yükle';
+
+  @override
+  String get sdkChatMessageUs => 'Bize yaz';
+
+  @override
+  String get sdkChatNotSentRetry =>
+      'Gönderilemedi — Yeniden denemek için dokun';
+
+  @override
+  String get sdkChatSend => 'Gönder';
+
+  @override
+  String get sdkChatSending => 'Gönderiliyor…';
+
+  @override
+  String get sdkChatTeamLabel => 'Ekip';
+
+  @override
+  String get sdkChatTitle => 'Mesajlar';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Bu mesaj çok uzun. Sınır $max karakter.';
+  }
 }

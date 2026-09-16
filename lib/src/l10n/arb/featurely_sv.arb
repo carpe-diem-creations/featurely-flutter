@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Det gick inte att bifoga bilden. Prova en annan.",
   "sdkFormEmailError": "Ange en giltig e-postadress.",
   "sdkDetailCommentsDisabled": "Kommentarer har stängts av.",
-  "sdkCommonRateLimited": "För många förfrågningar. Försök igen om en stund."
+  "sdkCommonRateLimited": "För många förfrågningar. Försök igen om en stund.",
+  "sdkChatComposerPlaceholder": "Skriv ett meddelande…",
+  "sdkChatEmailEdit": "Redigera",
+  "sdkChatEmailInvalid": "Ange en giltig mejladress.",
+  "sdkChatEmailPlaceholder": "Din mejladress",
+  "sdkChatEmailPrompt": "Få svar via mejl",
+  "sdkChatEmailSave": "Spara",
+  "sdkChatEmailSaved": "Mejl för svar",
+  "sdkChatEmptyGreeting": "Hej! Skicka ett meddelande så svarar vårt team dig här.",
+  "sdkChatLoadEarlier": "Läs in tidigare meddelanden",
+  "sdkChatMessageUs": "Skriv till oss",
+  "sdkChatNotSentRetry": "Inte skickat — Tryck för att försöka igen",
+  "sdkChatSend": "Skicka",
+  "sdkChatSending": "Skickar…",
+  "sdkChatTeamLabel": "Team",
+  "sdkChatTitle": "Meddelanden",
+  "sdkChatTooLong": "Meddelandet är för långt. Gränsen är {max} tecken."
 }

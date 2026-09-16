@@ -6,6 +6,11 @@
 #   commit: 6fb58ba7091ee66a1341c689ce446451adce866a
 #   synced: 2026-08-10
 #
+# Incremental sync 2026-09-16 (In-App Chat): the 16 `sdk.chat.*` keys were
+# copied from packages/locales/exports/flutter/app_<locale>.arb on the
+# featurely-app commit b8b3e0a (In-App Chat). All other sdk.* keys were verified unchanged apart
+# from the `#` normalization below.
+#
 # Transform (manual, per the SDK spec — no sync tooling in v1):
 #   - only `sdk.*` keys are copied (email.* keys are server-side);
 #   - key names are camelCased mechanically: strip the dots, capitalize each

@@ -226,4 +226,55 @@ class FeaturelyLocalizationsEn extends FeaturelyLocalizations {
   @override
   String get sdkCommonRateLimited =>
       'Too many requests. Try again in a moment.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Write a message…';
+
+  @override
+  String get sdkChatEmailEdit => 'Edit';
+
+  @override
+  String get sdkChatEmailInvalid => 'Enter a valid email address.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'Your email address';
+
+  @override
+  String get sdkChatEmailPrompt => 'Get replies by email';
+
+  @override
+  String get sdkChatEmailSave => 'Save';
+
+  @override
+  String get sdkChatEmailSaved => 'Email for replies';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Hi there! Send us a message and our team will get back to you here.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Load earlier messages';
+
+  @override
+  String get sdkChatMessageUs => 'Message us';
+
+  @override
+  String get sdkChatNotSentRetry => 'Not sent — Tap to retry';
+
+  @override
+  String get sdkChatSend => 'Send';
+
+  @override
+  String get sdkChatSending => 'Sending…';
+
+  @override
+  String get sdkChatTeamLabel => 'Team';
+
+  @override
+  String get sdkChatTitle => 'Messages';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'This message is too long. The limit is $max characters.';
+  }
 }

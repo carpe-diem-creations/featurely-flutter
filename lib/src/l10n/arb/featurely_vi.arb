@@ -55,5 +55,21 @@
   "sdkFormAttachError": "Không thể đính kèm ảnh này. Hãy thử ảnh khác.",
   "sdkFormEmailError": "Nhập địa chỉ email hợp lệ.",
   "sdkDetailCommentsDisabled": "Bình luận đã bị tắt.",
-  "sdkCommonRateLimited": "Quá nhiều yêu cầu. Hãy thử lại sau giây lát."
+  "sdkCommonRateLimited": "Quá nhiều yêu cầu. Hãy thử lại sau giây lát.",
+  "sdkChatComposerPlaceholder": "Viết tin nhắn…",
+  "sdkChatEmailEdit": "Sửa",
+  "sdkChatEmailInvalid": "Hãy nhập địa chỉ email hợp lệ.",
+  "sdkChatEmailPlaceholder": "Địa chỉ email của bạn",
+  "sdkChatEmailPrompt": "Nhận phản hồi qua email",
+  "sdkChatEmailSave": "Lưu",
+  "sdkChatEmailSaved": "Email nhận phản hồi",
+  "sdkChatEmptyGreeting": "Xin chào! Hãy gửi tin nhắn cho chúng tôi, đội ngũ sẽ trả lời bạn tại đây.",
+  "sdkChatLoadEarlier": "Tải tin nhắn cũ hơn",
+  "sdkChatMessageUs": "Nhắn cho chúng tôi",
+  "sdkChatNotSentRetry": "Chưa gửi được — Nhấn để thử lại",
+  "sdkChatSend": "Gửi",
+  "sdkChatSending": "Đang gửi…",
+  "sdkChatTeamLabel": "Đội ngũ",
+  "sdkChatTitle": "Tin nhắn",
+  "sdkChatTooLong": "Tin nhắn này quá dài. Giới hạn là {max} ký tự."
 }

@@ -225,4 +225,56 @@ class FeaturelyLocalizationsNl extends FeaturelyLocalizations {
 
   @override
   String get sdkCommonRateLimited => 'Te veel verzoeken. Probeer het zo weer.';
+
+  @override
+  String get sdkChatComposerPlaceholder => 'Schrijf een bericht…';
+
+  @override
+  String get sdkChatEmailEdit => 'Bewerken';
+
+  @override
+  String get sdkChatEmailInvalid => 'Voer een geldig e-mailadres in.';
+
+  @override
+  String get sdkChatEmailPlaceholder => 'Je e-mailadres';
+
+  @override
+  String get sdkChatEmailPrompt => 'Antwoorden per e-mail ontvangen';
+
+  @override
+  String get sdkChatEmailSave => 'Opslaan';
+
+  @override
+  String get sdkChatEmailSaved => 'E-mail voor antwoorden';
+
+  @override
+  String get sdkChatEmptyGreeting =>
+      'Hoi! Stuur ons een bericht, dan reageert ons team hier.';
+
+  @override
+  String get sdkChatLoadEarlier => 'Eerdere berichten laden';
+
+  @override
+  String get sdkChatMessageUs => 'Stuur ons een bericht';
+
+  @override
+  String get sdkChatNotSentRetry =>
+      'Niet verstuurd — Tik om opnieuw te proberen';
+
+  @override
+  String get sdkChatSend => 'Versturen';
+
+  @override
+  String get sdkChatSending => 'Versturen…';
+
+  @override
+  String get sdkChatTeamLabel => 'Team';
+
+  @override
+  String get sdkChatTitle => 'Berichten';
+
+  @override
+  String sdkChatTooLong(int max) {
+    return 'Dit bericht is te lang. De limiet is $max tekens.';
+  }
 }
