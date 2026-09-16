@@ -20,6 +20,15 @@
 # fi, id, lt, ro, sk, sq). The SDK-local extension keys listed below were
 # authored for these 8 locales in the style of their new upstream catalogs.
 #
+# Incremental sync 2026-09-16 (Traditional Chinese): featurely_zh_Hant.arb
+# (@@locale zh_Hant) was vendored from packages/locales/catalog/zh-Hant.arb on
+# the featurely-app commit 94945cd (feat(locales): add Traditional Chinese
+# (zh-Hant)), cross-checked against exports/flutter/app_zh_Hant.arb, with the
+# transform below applied unchanged; the SDK-local extension keys were
+# authored in its Taiwan-standard style. SUPPORTED_LOCALES is now 34
+# ('zh-Hant' last), and resolveLocale honors script subtags (mirrored in
+# lib/src/l10n/locale_resolution.dart).
+#
 # Transform (manual, per the SDK spec — no sync tooling in v1):
 #   - only `sdk.*` keys are copied (email.* keys are server-side);
 #   - key names are camelCased mechanically: strip the dots, capitalize each
@@ -41,5 +50,5 @@
 #                                  page was full and more results exist)
 #
 # To re-sync after a canonical catalog change: repeat the transform above for
-# all 33 locales, re-add the extension keys (until upstreamed), update the
+# all 34 locales, re-add the extension keys (until upstreamed), update the
 # commit hash and date here, then run `flutter gen-l10n`.

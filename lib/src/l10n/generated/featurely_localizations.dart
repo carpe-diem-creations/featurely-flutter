@@ -157,7 +157,8 @@ abstract class FeaturelyLocalizations {
     Locale('tr'),
     Locale('uk'),
     Locale('vi'),
-    Locale('zh')
+    Locale('zh'),
+    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')
   ];
 
   /// Title of the SDK sheet's root screen.
@@ -644,6 +645,18 @@ class _FeaturelyLocalizationsDelegate
 }
 
 FeaturelyLocalizations lookupFeaturelyLocalizations(Locale locale) {
+  // Lookup logic when language+script codes are specified.
+  switch (locale.languageCode) {
+    case 'zh':
+      {
+        switch (locale.scriptCode) {
+          case 'Hant':
+            return FeaturelyLocalizationsZhHant();
+        }
+        break;
+      }
+  }
+
   // Lookup logic when language+country codes are specified.
   switch (locale.languageCode) {
     case 'pt':

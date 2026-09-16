@@ -36,7 +36,9 @@ class _ExampleAppState extends State<ExampleApp> {
     Color(0xFF0E9888),
     Color(0xFF7C3AED),
   ];
-  static const locales = <String?>[null, 'en', 'de', 'pt-BR', 'ar', 'ja'];
+  static const locales = <String?>[
+    null, 'en', 'de', 'pt-BR', 'ar', 'ja', 'zh-TW', //
+  ];
 
   Color accent = accents.first;
   double radius = 12;

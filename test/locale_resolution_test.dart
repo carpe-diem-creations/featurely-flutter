@@ -56,13 +56,79 @@ void main() {
     test('extra subtags ignored beyond region', () {
       expect(resolveLocaleTag('zh-Hans-CN'), 'zh');
     });
+
+    test('mirrors resolve.test.ts: exact, case and separator cases', () {
+      expect(resolveLocaleTag('ar'), 'ar');
+      expect(resolveLocaleTag('JA'), 'ja');
+      expect(resolveLocaleTag('es-419'), 'es');
+      expect(resolveLocaleTag('de-AT'), 'de');
+      expect(resolveLocaleTag('not a locale'), 'en');
+    });
+
+    test('resolves Chinese by script, then by Traditional-writing region', () {
+      expect(resolveLocaleTag('zh-Hant'), 'zh-Hant');
+      expect(resolveLocaleTag('zh_hant_HK'), 'zh-Hant');
+      expect(resolveLocaleTag('zh-Hant-TW'), 'zh-Hant');
+      expect(resolveLocaleTag('zh-TW'), 'zh-Hant');
+      expect(resolveLocaleTag('zh-HK'), 'zh-Hant');
+      expect(resolveLocaleTag('zh-MO'), 'zh-Hant');
+      expect(resolveLocaleTag('zh-Hans'), 'zh');
+      expect(resolveLocaleTag('zh-Hans-TW'), 'zh');
+      expect(resolveLocaleTag('zh-Hans-CN'), 'zh');
+      expect(resolveLocaleTag('zh-SG'), 'zh');
+      expect(resolveLocaleTag('zh'), 'zh');
+      expect(resolveLocaleTag('ZH-HANT'), 'zh-Hant');
+    });
+
+    test('ignores scripts it has no catalog for', () {
+      expect(resolveLocaleTag('sr-Latn-RS'), 'en');
+      expect(resolveLocaleTag('pt-Latn-BR'), 'pt-BR');
+      expect(resolveLocaleTag('uz-Cyrl'), 'en');
+    });
+
+    test('a script after the region is not a script', () {
+      expect(resolveLocaleTag('zh-CN-Hant'), 'zh');
+    });
+
+    test('Flutter Locale objects resolve via toLanguageTag', () {
+      String resolve(Locale locale) => resolveLocaleTag(locale.toLanguageTag());
+      expect(
+        resolve(const Locale.fromSubtags(
+            languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW')),
+        'zh-Hant',
+      );
+      expect(
+        resolve(const Locale.fromSubtags(
+            languageCode: 'zh', scriptCode: 'Hans', countryCode: 'HK')),
+        'zh',
+      );
+      expect(resolve(const Locale('zh', 'TW')), 'zh-Hant');
+      expect(resolve(const Locale('zh', 'HK')), 'zh-Hant');
+      expect(resolve(const Locale('zh', 'CN')), 'zh');
+      expect(resolve(const Locale('pt', 'BR')), 'pt-BR');
+    });
   });
 
-  test('ships the 33 upstream locales in upstream order', () {
-    expect(supportedLocaleTags, hasLength(33));
-    expect(supportedLocaleTags.toSet(), hasLength(33));
+  test('ships the 34 upstream locales in upstream order', () {
+    expect(supportedLocaleTags, hasLength(34));
+    expect(supportedLocaleTags.toSet(), hasLength(34));
     expect(supportedLocaleTags.sublist(25),
-        ['bg', 'el', 'fi', 'id', 'lt', 'ro', 'sk', 'sq']);
+        ['bg', 'el', 'fi', 'id', 'lt', 'ro', 'sk', 'sq', 'zh-Hant']);
+  });
+
+  test('zh-Hant loads the Traditional catalog, zh the Simplified one',
+      () async {
+    final hant = localeForTag('zh-Hant');
+    expect(hant.languageCode, 'zh');
+    expect(hant.scriptCode, 'Hant');
+    expect(hant.countryCode, isNull);
+    expect(hant.toLanguageTag(), 'zh-Hant');
+    final traditional = await FeaturelyLocalizations.delegate.load(hant);
+    expect(traditional.sdkListNewFeedback, '新增回饋');
+    expect(traditional.sdkListComments(2), '2 則留言');
+    final simplified =
+        await FeaturelyLocalizations.delegate.load(localeForTag('zh'));
+    expect(simplified.sdkListNewFeedback, isNot('新增回饋'));
   });
 
   test('every supported tag has a generated catalog', () async {
@@ -105,5 +171,6 @@ void main() {
     expect(localeForTag('pt-BR').languageCode, 'pt');
     expect(localeForTag('pt-BR').countryCode, 'BR');
     expect(localeForTag('ja').countryCode, isNull);
+    expect(localeForTag('pt-BR').scriptCode, isNull);
   });
 }

@@ -4,7 +4,12 @@
 
 - 8 new locales: Bulgarian (`bg`), Greek (`el`), Finnish (`fi`), Indonesian
   (`id`), Lithuanian (`lt`), Romanian (`ro`), Slovak (`sk`) and Albanian
-  (`sq`) — 33 in total, matching the Featurely server.
+  (`sq`) — and Traditional Chinese (`zh-Hant`): 34 in total, matching the
+  Featurely server.
+- Locale resolution now honors script subtags like the server: a `Hant`
+  script, or a script-less `zh` with region TW, HK or MO, resolves to
+  `zh-Hant` (previously `zh`); `zh-Hans-*` and other regions stay `zh`, and
+  unsupported scripts are ignored (`pt-Latn-BR` → `pt-BR`).
 - **Chat metadata:** new `Featurely.setChatMetadata(map)` attaches app-wide
   context (e.g. plan, app version) to every chat message sent from then on,
   and `Featurely.showChat(context, metadata: map)` adds per-presentation

@@ -307,6 +307,19 @@ void main() {
     await _unmount(tester);
   });
 
+  testWidgets('zh-TW renders Traditional and sends resolvedLocale zh-Hant',
+      (tester) async {
+    final api = FakeApi();
+    await _pumpChat(tester, api, locale: const Locale('zh', 'TW'));
+    expect(find.text('訊息'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), '你好');
+    await tester.pump();
+    await tester.tap(_sendButton);
+    await tester.pump();
+    expect(api.lastChatResolvedLocale, 'zh-Hant');
+    await _unmount(tester);
+  });
+
   group('chat metadata', () {
     testWidgets('a standalone chat merges its metadata over the global map',
         (tester) async {
