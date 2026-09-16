@@ -296,7 +296,8 @@ class Featurely {
 
   // In-App Chat
   static Future<void> showChat(BuildContext context,
-      {Map<String, String>? metadata});           // standalone chat sheet; metadata wins over setChatMetadata
+      {Map<String, String>? metadata,             // wins over setChatMetadata
+       String? initialMessage});                  // standalone chat sheet; prefills (never sends) the composer once
   static Future<int> unreadMessageCount();        // never throws; 0 when unavailable
   static void setChatMetadata(Map<String, String>? metadata); // app-wide team-only context on chat messages; null clears
 }

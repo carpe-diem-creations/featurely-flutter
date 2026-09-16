@@ -22,10 +22,14 @@ import '../widgets/state_views.dart';
 class ChatScreen extends StatefulWidget {
   /// Creates the chat screen. [metadata] is per-presentation chat metadata,
   /// merged over the app-wide `Featurely.setChatMetadata` map on each send.
-  const ChatScreen({this.metadata, super.key});
+  /// [initialMessage] prefills the composer once when the chat opens.
+  const ChatScreen({this.metadata, this.initialMessage, super.key});
 
   /// Per-presentation chat metadata (null when opened from "Message us").
   final Map<String, String>? metadata;
+
+  /// Per-presentation composer prefill (null when opened from "Message us").
+  final String? initialMessage;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -43,6 +47,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       api: scope.core.api,
       resolvedLocale: scope.localeTag,
       deviceLocale: PlatformDispatcher.instance.locale.toLanguageTag(),
+      initialMessage: widget.initialMessage,
       // Read at compose time, so a later setChatMetadata applies to new
       // messages (retries keep their own snapshot).
       metadata: () =>
@@ -181,7 +186,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                 child: InlineErrorBanner(message: strings.sdkCommonRateLimited),
               ),
             Expanded(child: _buildMessages(context)),
-            ChatComposer(onSend: _send),
+            ChatComposer(
+              onSend: _send,
+              // Consumed once: a composer rebuilt after a reload stays empty.
+              initialText: _controller.takeInitialMessage,
+            ),
           ],
         );
     }

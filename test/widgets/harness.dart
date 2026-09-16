@@ -255,6 +255,7 @@ Future<void> pumpSheet(
   Size surface = const Size(390, 844),
   FeaturelySheetRoot root = FeaturelySheetRoot.list,
   Map<String, String>? chatMetadata,
+  String? chatInitialMessage,
 }) async {
   await tester.binding.setSurfaceSize(surface);
   addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -268,6 +269,7 @@ Future<void> pumpSheet(
           platform: TargetPlatform.android,
           root: root,
           chatMetadata: chatMetadata,
+          chatInitialMessage: chatInitialMessage,
         ),
       ),
     ),

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../../api/api_client.dart';
 import '../../api/api_exception.dart';
 import '../../api/models.dart';
+import '../../util/text.dart';
 import '../../util/uuid.dart';
 
 /// The chat screen's load phase.
@@ -80,15 +81,18 @@ class ChatController extends ChangeNotifier {
   /// Creates the controller. [resolvedLocale] / [deviceLocale] are sent with
   /// each message so reply emails are localized. [metadata] is read once per
   /// composed message; its result is sent with that message and its retries.
+  /// [initialMessage] prefills the composer once (see [takeInitialMessage]).
   ChatController({
     required this.api,
     this.resolvedLocale,
     this.deviceLocale,
     this.metadata,
+    String? initialMessage,
     this.pollInterval = const Duration(seconds: 5),
     this.rateLimitPause = const Duration(seconds: 30),
     String Function()? idGenerator,
-  }) : _idGenerator = idGenerator ?? generateUuidV4;
+  })  : _idGenerator = idGenerator ?? generateUuidV4,
+        _initialMessage = initialMessage;
 
   /// The API client.
   final FeaturelyApiClient api;
@@ -110,6 +114,8 @@ class ChatController extends ChangeNotifier {
   final Duration rateLimitPause;
 
   final String Function() _idGenerator;
+
+  String? _initialMessage;
 
   ChatPhase _phase = ChatPhase.loading;
   List<ChatMessage> _confirmed = [];
@@ -177,6 +183,16 @@ class ChatController extends ChangeNotifier {
   /// The cursor the next poll will send.
   @visibleForTesting
   String? get newerCursor => _newerCursor;
+
+  /// The composer prefill, returned at most once per controller (so once
+  /// per presentation): trimmed, capped to [chatMessageMax], and null when
+  /// blank or already taken. Never sent automatically.
+  String? takeInitialMessage() {
+    final text = _initialMessage?.trim();
+    _initialMessage = null;
+    if (text == null || text.isEmpty) return null;
+    return truncateUtf16(text, chatMessageMax);
+  }
 
   bool get _shouldPoll =>
       !_disposed && _visible && _foreground && _phase == ChatPhase.loaded;

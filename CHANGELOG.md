@@ -10,6 +10,10 @@
   script, or a script-less `zh` with region TW, HK or MO, resolves to
   `zh-Hant` (previously `zh`); `zh-Hans-*` and other regions stay `zh`, and
   unsupported scripts are ignored (`pt-Latn-BR` → `pt-BR`).
+- `Featurely.showChat(context, initialMessage: text)` prefills the chat
+  composer (cursor at the end, field focused). It is never sent
+  automatically; blank text is ignored, it is capped to the 4 000-character
+  limit, and it is applied once per `showChat` call.
 - **Chat metadata:** new `Featurely.setChatMetadata(map)` attaches app-wide
   context (e.g. plan, app version) to every chat message sent from then on,
   and `Featurely.showChat(context, metadata: map)` adds per-presentation

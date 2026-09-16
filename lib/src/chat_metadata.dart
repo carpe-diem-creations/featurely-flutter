@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'util/text.dart';
+
 /// The most entries a chat message's `metadata` may hold.
 const int chatMetadataMaxEntries = 20;
 
@@ -58,20 +60,11 @@ Map<String, String> _clean(Map<String, String>? metadata) {
           'characters');
       continue;
     }
-    final value = _truncate(metadata[rawKey]!.trim());
+    final value = truncateUtf16(metadata[rawKey]!.trim(), chatMetadataValueMax);
     if (value.isEmpty) continue; // The server drops blank values too.
     result[key] = value;
   }
   return result;
-}
-
-String _truncate(String value) {
-  if (value.length <= chatMetadataValueMax) return value;
-  var end = chatMetadataValueMax;
-  // Don't leave half of a surrogate pair at the cut.
-  final last = value.codeUnitAt(end - 1);
-  if (last >= 0xD800 && last <= 0xDBFF) end--;
-  return value.substring(0, end);
 }
 
 void _debugLog(String message) {

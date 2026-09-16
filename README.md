@@ -84,6 +84,22 @@ await Featurely.showChat(context);
 //    "Message us" action that pushes the chat inside the same sheet.
 ```
 
+To start the user off, prefill the composer — for example from an order
+screen:
+
+```dart
+await Featurely.showChat(
+  context,
+  initialMessage: 'I have a question about order #1234',
+);
+```
+
+The text is only placed in the composer (cursor at the end, field focused);
+it is never sent automatically, and the user can edit or delete it. Blank
+text is ignored, it is capped to the 4 000-character message limit, and it
+is applied once per `showChat` call — it doesn't come back after the user
+sends or clears it. The "Message us" chat opens with an empty composer.
+
 ### Chat metadata
 
 Give your team context with each message — the current screen, the plan, an

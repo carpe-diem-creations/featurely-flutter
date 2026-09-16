@@ -168,6 +168,7 @@ void main() {
             onPressed: () => Featurely.showChat(
               context,
               metadata: const {'screen': 'Checkout', 'orderId': '42'},
+              initialMessage: 'Where is my order?',
             ),
             child: const Text('Open chat'),
           ),
@@ -176,11 +177,12 @@ void main() {
       await tester.tap(find.text('Open chat'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField), 'Where is my order?');
-      await tester.pump();
+      // The prefill is in the composer but is sent only on tap.
+      expect(sent, isEmpty);
       await tester.tap(find.byKey(const ValueKey('featurely-chat-send')));
       await tester.pumpAndSettle();
 
+      expect(sent.single['body'], 'Where is my order?');
       expect(sent.single['metadata'], {
         'orderId': '42',
         'plan': 'free',

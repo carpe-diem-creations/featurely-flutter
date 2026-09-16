@@ -136,9 +136,17 @@ class Featurely {
   /// sent from it on top of the app-wide [setChatMetadata] map — on a key
   /// collision, [metadata] wins. It follows the same rules and limits as
   /// [setChatMetadata].
+  ///
+  /// [initialMessage] prefills the message composer when the chat opens
+  /// (e.g. `'I have a question about order #1234'`), with the cursor at the
+  /// end. It is never sent automatically — the user can edit or delete it
+  /// first. It is trimmed, ignored when blank, capped to the 4 000-character
+  /// message limit, and applied once per call: it doesn't reappear after
+  /// the user sends or clears it.
   static Future<void> showChat(
     BuildContext context, {
     Map<String, String>? metadata,
+    String? initialMessage,
   }) {
     final core = _requireCore('showChat');
     return showFeaturelySheet(
@@ -146,6 +154,7 @@ class Featurely {
       core,
       root: FeaturelySheetRoot.chat,
       chatMetadata: metadata == null ? null : Map.unmodifiable(metadata),
+      chatInitialMessage: initialMessage,
     );
   }
 

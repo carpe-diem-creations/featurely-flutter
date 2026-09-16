@@ -141,6 +141,45 @@ void main() {
     expect(controller.entries.single.message.id, 'm1');
   });
 
+  group('initial message', () {
+    ChatController make(String? initial) {
+      final controller =
+          ChatController(api: FakeApi(), initialMessage: initial);
+      _live.add(controller);
+      return controller;
+    }
+
+    chatTest('is trimmed and taken once', (tester) async {
+      final controller = make('  Hi there  ');
+      expect(controller.takeInitialMessage(), 'Hi there');
+      expect(controller.takeInitialMessage(), isNull);
+    });
+
+    chatTest('blank or absent yields null', (tester) async {
+      expect(make(null).takeInitialMessage(), isNull);
+      expect(make('').takeInitialMessage(), isNull);
+      expect(make(' \n\t ').takeInitialMessage(), isNull);
+    });
+
+    chatTest('is capped to chatMessageMax without splitting emoji',
+        (tester) async {
+      expect(make('y' * (chatMessageMax + 50)).takeInitialMessage(),
+          'y' * chatMessageMax);
+      final emoji = '${'a' * (chatMessageMax - 1)}😀';
+      expect(make(emoji).takeInitialMessage(), 'a' * (chatMessageMax - 1));
+    });
+
+    chatTest('is never sent by itself', (tester) async {
+      final api = FakeApi();
+      final controller = ChatController(api: api, initialMessage: 'Hi');
+      _live.add(controller);
+      controller.setVisible(true);
+      await controller.load();
+      await tester.pump(const Duration(seconds: 6));
+      expect(api.sendCalls, isEmpty);
+    });
+  });
+
   group('metadata', () {
     chatTest('the provider result is sent with the message', (tester) async {
       final api = FakeApi();
