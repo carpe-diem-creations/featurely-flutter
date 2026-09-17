@@ -275,7 +275,13 @@ class FeaturelyLocalizationsFi extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Viestit';
 
   @override
+  String get sdkChatToday => 'Tänään';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Viesti on liian pitkä. Enimmäispituus on $max merkkiä.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Eilen';
 }

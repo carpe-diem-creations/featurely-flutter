@@ -71,5 +71,7 @@
   "sdkChatSending": "Siunčiama…",
   "sdkChatTeamLabel": "Komanda",
   "sdkChatTitle": "Žinutės",
-  "sdkChatTooLong": "Ši žinutė per ilga. Leidžiama iki {max} simbolių."
+  "sdkChatToday": "Šiandien",
+  "sdkChatTooLong": "Ši žinutė per ilga. Leidžiama iki {max} simbolių.",
+  "sdkChatYesterday": "Vakar"
 }

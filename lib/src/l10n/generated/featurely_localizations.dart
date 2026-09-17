@@ -587,11 +587,23 @@ abstract class FeaturelyLocalizations {
   /// **'Messages'**
   String get sdkChatTitle;
 
+  /// Day separator in the chat message list above messages sent today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get sdkChatToday;
+
   /// Inline error when a chat message exceeds the length limit.
   ///
   /// In en, this message translates to:
   /// **'This message is too long. The limit is {max} characters.'**
   String sdkChatTooLong(int max);
+
+  /// Day separator in the chat message list above messages sent yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get sdkChatYesterday;
 }
 
 class _FeaturelyLocalizationsDelegate

@@ -71,5 +71,7 @@
   "sdkChatSending": "Lähetetään…",
   "sdkChatTeamLabel": "Tiimi",
   "sdkChatTitle": "Viestit",
-  "sdkChatTooLong": "Viesti on liian pitkä. Enimmäispituus on {max} merkkiä."
+  "sdkChatToday": "Tänään",
+  "sdkChatTooLong": "Viesti on liian pitkä. Enimmäispituus on {max} merkkiä.",
+  "sdkChatYesterday": "Eilen"
 }

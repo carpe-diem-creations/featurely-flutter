@@ -71,5 +71,7 @@
   "sdkChatSending": "Sender…",
   "sdkChatTeamLabel": "Team",
   "sdkChatTitle": "Meldinger",
-  "sdkChatTooLong": "Meldingen er for lang. Grensen er {max} tegn."
+  "sdkChatToday": "I dag",
+  "sdkChatTooLong": "Meldingen er for lang. Grensen er {max} tegn.",
+  "sdkChatYesterday": "I går"
 }

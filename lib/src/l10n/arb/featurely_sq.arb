@@ -71,5 +71,7 @@
   "sdkChatSending": "Po dërgohet…",
   "sdkChatTeamLabel": "Ekipi",
   "sdkChatTitle": "Mesazhe",
-  "sdkChatTooLong": "Ky mesazh është shumë i gjatë. Kufiri është {max} karaktere."
+  "sdkChatToday": "Sot",
+  "sdkChatTooLong": "Ky mesazh është shumë i gjatë. Kufiri është {max} karaktere.",
+  "sdkChatYesterday": "Dje"
 }

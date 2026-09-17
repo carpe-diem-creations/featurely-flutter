@@ -71,5 +71,7 @@
   "sdkChatSending": "Mengirim…",
   "sdkChatTeamLabel": "Tim",
   "sdkChatTitle": "Pesan",
-  "sdkChatTooLong": "Pesan ini terlalu panjang. Batasnya {max} karakter."
+  "sdkChatToday": "Hari ini",
+  "sdkChatTooLong": "Pesan ini terlalu panjang. Batasnya {max} karakter.",
+  "sdkChatYesterday": "Kemarin"
 }

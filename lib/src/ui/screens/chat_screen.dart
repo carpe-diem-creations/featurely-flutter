@@ -8,13 +8,14 @@ import '../controllers/chat_controller.dart';
 import '../scope.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_composer.dart';
+import '../widgets/chat_day_separator.dart';
 import '../widgets/chat_email_row.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/state_views.dart';
 
-/// The In-App Chat screen: header, optional contact-email row, the message
-/// list (newest at the bottom, "Load earlier" at the top), and the
-/// composer.
+/// The In-App Chat screen: header, the message list (newest at the bottom,
+/// grouped under day separators, "Load earlier" at the top), the optional
+/// contact-email card, and the composer.
 ///
 /// Pushed from the list screen's "Message us" action, or shown as the root
 /// of a standalone sheet by `Featurely.showChat`. Polls only while this
@@ -179,13 +180,16 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       case ChatPhase.loaded:
         return Column(
           children: [
-            ChatEmailRow(controller: _controller),
             if (_controller.rateLimitedNotice)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                 child: InlineErrorBanner(message: strings.sdkCommonRateLimited),
               ),
             Expanded(child: _buildMessages(context)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+              child: ChatEmailRow(controller: _controller),
+            ),
             ChatComposer(
               onSend: _send,
               // Consumed once: a composer rebuilt after a reload stays empty.
@@ -197,34 +201,38 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildMessages(BuildContext context) {
-    final theme = FeaturelyScope.of(context).theme;
+    final scope = FeaturelyScope.of(context);
+    final theme = scope.theme;
     final strings = FeaturelyLocalizations.of(context);
     final entries = _controller.entries;
     if (entries.isEmpty && !_controller.canLoadEarlier) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(32),
+          padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 52,
-                height: 52,
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
-                  color: theme.tint(theme.accent),
-                  borderRadius: BorderRadius.circular(16),
+                  color: theme.tint(theme.accent, 0.10),
+                  borderRadius: BorderRadius.circular(18),
                 ),
-                child:
-                    Icon(Icons.forum_outlined, size: 22, color: theme.accent),
+                child: Icon(Icons.chat_bubble_outline_rounded,
+                    size: 24, color: theme.accent),
               ),
-              const SizedBox(height: 14),
-              Text(
-                strings.sdkChatEmptyGreeting,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14.5,
-                  height: 1.45,
-                  color: theme.textSecondary,
+              const SizedBox(height: 18),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 250),
+                child: Text(
+                  strings.sdkChatEmptyGreeting,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15.5,
+                    height: 1.5,
+                    color: theme.textSecondary,
+                  ),
                 ),
               ),
             ],
@@ -232,6 +240,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         ),
       );
     }
+    final now = DateTime.now();
     final showHeader = _controller.canLoadEarlier;
     // Reversed: index 0 is the newest message, pinned to the bottom.
     return NotificationListener<ScrollUpdateNotification>(
@@ -245,16 +254,34 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       child: ListView.builder(
         controller: _scroll,
         reverse: true,
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         itemCount: entries.length + (showHeader ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= entries.length) return _buildLoadEarlier(context);
-          final entry = entries[entries.length - 1 - index];
+          final position = entries.length - 1 - index;
+          final entry = entries[position];
           final cid = entry.message.clientMessageId;
-          return ChatBubble(
+          final bubble = ChatBubble(
             key: ValueKey(entry.isLocal ? 'local-$cid' : entry.message.id),
             entry: entry,
             onRetry: cid == null ? null : () => _controller.retry(cid),
+          );
+          // The separator belongs to the oldest row of its day and sits
+          // above it (in the same item, so reversal doesn't move it).
+          if (!chatStartsDay(entries, position, now)) return bubble;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ChatDaySeparator(
+                label: chatDayLabel(
+                  chatEntryDay(entry, now),
+                  now: now,
+                  locale: scope.localeTag,
+                  strings: strings,
+                ),
+              ),
+              bubble,
+            ],
           );
         },
       ),

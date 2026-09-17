@@ -283,7 +283,13 @@ class FeaturelyLocalizationsRu extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Сообщения';
 
   @override
+  String get sdkChatToday => 'Сегодня';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Сообщение слишком длинное. Лимит — $max символов.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Вчера';
 }

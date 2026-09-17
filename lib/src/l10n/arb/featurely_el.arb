@@ -71,5 +71,7 @@
   "sdkChatSending": "Αποστολή…",
   "sdkChatTeamLabel": "Ομάδα",
   "sdkChatTitle": "Μηνύματα",
-  "sdkChatTooLong": "Το μήνυμα είναι πολύ μεγάλο. Το όριο είναι {max} χαρακτήρες."
+  "sdkChatToday": "Σήμερα",
+  "sdkChatTooLong": "Το μήνυμα είναι πολύ μεγάλο. Το όριο είναι {max} χαρακτήρες.",
+  "sdkChatYesterday": "Χθες"
 }

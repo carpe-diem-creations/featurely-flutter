@@ -71,5 +71,7 @@
   "sdkChatSending": "שולח…",
   "sdkChatTeamLabel": "צוות",
   "sdkChatTitle": "הודעות",
-  "sdkChatTooLong": "ההודעה ארוכה מדי. המגבלה היא {max} תווים."
+  "sdkChatToday": "היום",
+  "sdkChatTooLong": "ההודעה ארוכה מדי. המגבלה היא {max} תווים.",
+  "sdkChatYesterday": "אתמול"
 }

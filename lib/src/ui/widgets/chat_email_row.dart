@@ -4,9 +4,9 @@ import '../../l10n/generated/featurely_localizations.dart';
 import '../controllers/chat_controller.dart';
 import '../scope.dart';
 
-/// The optional "Get replies by email" row. Collapsed it is a single
-/// prompt; tapped it opens an email field with Save; once saved it shows the
-/// address with an Edit action.
+/// The optional "Get replies by email" card above the composer. Collapsed
+/// it is a single tappable prompt; tapped it opens an email field with
+/// Save; once saved it shows the address with an Edit action.
 class ChatEmailRow extends StatefulWidget {
   /// Creates the row bound to [controller].
   const ChatEmailRow({required this.controller, super.key});
@@ -45,14 +45,29 @@ class _ChatEmailRowState extends State<ChatEmailRow> {
     final strings = FeaturelyLocalizations.of(context);
     final controller = widget.controller;
     final saved = controller.contactEmail;
+    final mailIcon =
+        Icon(Icons.mail_outline_rounded, size: 17, color: theme.textTertiary);
+    // Compact, so the action doesn't stretch the card.
+    final actionStyle = TextButton.styleFrom(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      minimumSize: const Size(44, 32),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
 
     final Widget child;
+    VoidCallback? onTap;
     if (_editing) {
       final error = switch (controller.emailError) {
         ChatEmailError.invalid => strings.sdkChatEmailInvalid,
         ChatEmailError.failed => strings.sdkFormSubmitError,
         ChatEmailError.none => null,
       };
+      final fieldBorder = OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(
+          color: error != null ? theme.errorBorder : theme.hairline,
+        ),
+      );
       child = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -78,26 +93,15 @@ class _ChatEmailRowState extends State<ChatEmailRow> {
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: theme.borderRadius,
-                      borderSide: BorderSide(
-                        color:
-                            error != null ? theme.errorBorder : theme.hairline,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: theme.borderRadius,
-                      borderSide: BorderSide(
-                        color:
-                            error != null ? theme.errorBorder : theme.hairline,
-                      ),
-                    ),
+                    border: fieldBorder,
+                    enabledBorder: fieldBorder,
                   ),
                   style: TextStyle(fontSize: 14, color: theme.textPrimary),
                 ),
               ),
               const SizedBox(width: 8),
               TextButton(
+                style: actionStyle,
                 onPressed: controller.savingEmail ? null : _save,
                 child: controller.savingEmail
                     ? const SizedBox(
@@ -108,6 +112,7 @@ class _ChatEmailRowState extends State<ChatEmailRow> {
                     : Text(
                         strings.sdkChatEmailSave,
                         style: TextStyle(
+                          fontSize: 13.5,
                           fontWeight: FontWeight.w600,
                           color: theme.accent,
                         ),
@@ -117,7 +122,7 @@ class _ChatEmailRowState extends State<ChatEmailRow> {
           ),
           if (error != null)
             Padding(
-              padding: const EdgeInsetsDirectional.only(start: 4, top: 4),
+              padding: const EdgeInsetsDirectional.only(start: 4, top: 6),
               child: Text(
                 error,
                 style: TextStyle(fontSize: 12, color: theme.errorForeground),
@@ -128,8 +133,8 @@ class _ChatEmailRowState extends State<ChatEmailRow> {
     } else if (saved != null) {
       child = Row(
         children: [
-          Icon(Icons.mail_outline_rounded, size: 18, color: theme.textTertiary),
-          const SizedBox(width: 10),
+          mailIcon,
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,6 +145,7 @@ class _ChatEmailRowState extends State<ChatEmailRow> {
                 ),
                 Text(
                   saved,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textDirection: TextDirection.ltr,
                   style: TextStyle(fontSize: 14, color: theme.textPrimary),
@@ -147,11 +153,14 @@ class _ChatEmailRowState extends State<ChatEmailRow> {
               ],
             ),
           ),
+          const SizedBox(width: 8),
           TextButton(
+            style: actionStyle,
             onPressed: _startEditing,
             child: Text(
               strings.sdkChatEmailEdit,
               style: TextStyle(
+                fontSize: 13.5,
                 fontWeight: FontWeight.w600,
                 color: theme.accent,
               ),
@@ -160,40 +169,43 @@ class _ChatEmailRowState extends State<ChatEmailRow> {
         ],
       );
     } else {
-      child = InkWell(
-        onTap: _startEditing,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Row(
-            children: [
-              Icon(Icons.mail_outline_rounded, size: 18, color: theme.accent),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  strings.sdkChatEmailPrompt,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: theme.accent,
-                  ),
-                ),
+      onTap = _startEditing;
+      child = Semantics(
+        button: true,
+        child: Row(
+          children: [
+            mailIcon,
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                strings.sdkChatEmailPrompt,
+                style: TextStyle(fontSize: 13.5, color: theme.textSecondary),
               ),
-              // arrow_forward_ios carries matchTextDirection (RTL-safe).
-              Icon(Icons.arrow_forward_ios_rounded,
-                  size: 12, color: theme.textTertiary),
-            ],
-          ),
+            ),
+            const SizedBox(width: 8),
+            // arrow_forward_ios carries matchTextDirection (RTL-safe).
+            Icon(Icons.arrow_forward_ios_rounded,
+                size: 12, color: theme.disabledForeground),
+          ],
         ),
       );
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      decoration: BoxDecoration(
-        color: theme.field,
-        border: Border(bottom: BorderSide(color: theme.hairline, width: 0.5)),
+    return Material(
+      color: theme.field,
+      borderRadius: theme.borderRadius,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          // The editing field carries its own vertical room.
+          padding: EdgeInsets.symmetric(
+            horizontal: 13,
+            vertical: _editing ? 8 : 11,
+          ),
+          child: child,
+        ),
       ),
-      child: child,
     );
   }
 }

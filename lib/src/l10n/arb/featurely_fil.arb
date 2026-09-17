@@ -71,5 +71,7 @@
   "sdkChatSending": "Ipinapadala…",
   "sdkChatTeamLabel": "Team",
   "sdkChatTitle": "Mga Mensahe",
-  "sdkChatTooLong": "Masyadong mahaba ang mensaheng ito. Ang limit ay {max} na character."
+  "sdkChatToday": "Ngayon",
+  "sdkChatTooLong": "Masyadong mahaba ang mensaheng ito. Ang limit ay {max} na character.",
+  "sdkChatYesterday": "Kahapon"
 }

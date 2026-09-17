@@ -75,7 +75,7 @@ class _ChatComposerState extends State<ChatComposer> {
     final strings = FeaturelyLocalizations.of(context);
     final canSend = _canSend;
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
       decoration: BoxDecoration(
         color: theme.background,
         border: Border(top: BorderSide(color: theme.hairline, width: 0.5)),
@@ -105,45 +105,56 @@ class _ChatComposerState extends State<ChatComposer> {
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                     hintText: strings.sdkChatComposerPlaceholder,
-                    hintStyle:
-                        TextStyle(fontSize: 14.5, color: theme.textTertiary),
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      height: 1.35,
+                      color: theme.textTertiary,
+                    ),
                     filled: true,
                     fillColor: theme.field,
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 11),
+                        horizontal: 15, vertical: 11),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  style: TextStyle(fontSize: 14.5, color: theme.textPrimary),
+                  style: TextStyle(
+                    fontSize: 15,
+                    height: 1.35,
+                    color: theme.textPrimary,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
-              Semantics(
-                button: true,
-                enabled: canSend,
-                label: strings.sdkChatSend,
-                excludeSemantics: true,
-                child: Tooltip(
-                  message: strings.sdkChatSend,
-                  child: Material(
-                    key: const ValueKey('featurely-chat-send'),
-                    color: canSend ? theme.accent : theme.disabledBackground,
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      onTap: canSend ? _send : null,
-                      customBorder: const CircleBorder(),
-                      child: SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: Icon(
-                          Icons.arrow_upward_rounded,
-                          size: 20,
-                          color: canSend
-                              ? theme.onAccent
-                              : theme.disabledForeground,
+              // Nudged up so it sits centered on a single-line field.
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Semantics(
+                  button: true,
+                  enabled: canSend,
+                  label: strings.sdkChatSend,
+                  excludeSemantics: true,
+                  child: Tooltip(
+                    message: strings.sdkChatSend,
+                    child: Material(
+                      key: const ValueKey('featurely-chat-send'),
+                      color: canSend ? theme.accent : theme.disabledBackground,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        onTap: canSend ? _send : null,
+                        customBorder: const CircleBorder(),
+                        child: SizedBox(
+                          width: 38,
+                          height: 38,
+                          child: Icon(
+                            Icons.arrow_upward_rounded,
+                            size: 20,
+                            color: canSend
+                                ? theme.onAccent
+                                : theme.disabledForeground,
+                          ),
                         ),
                       ),
                     ),

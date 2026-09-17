@@ -71,5 +71,7 @@
   "sdkChatSending": "Odosiela sa…",
   "sdkChatTeamLabel": "Tím",
   "sdkChatTitle": "Správy",
-  "sdkChatTooLong": "Táto správa je príliš dlhá. Maximálny počet znakov je {max}."
+  "sdkChatToday": "Dnes",
+  "sdkChatTooLong": "Táto správa je príliš dlhá. Maximálny počet znakov je {max}.",
+  "sdkChatYesterday": "Včera"
 }

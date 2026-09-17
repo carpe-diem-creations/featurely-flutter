@@ -276,7 +276,13 @@ class FeaturelyLocalizationsHu extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Üzenetek';
 
   @override
+  String get sdkChatToday => 'Ma';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Ez az üzenet túl hosszú. A korlát $max karakter.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Tegnap';
 }

@@ -71,5 +71,7 @@
   "sdkChatSending": "Изпращане…",
   "sdkChatTeamLabel": "Екип",
   "sdkChatTitle": "Съобщения",
-  "sdkChatTooLong": "Съобщението е твърде дълго. Ограничението е {max} знака."
+  "sdkChatToday": "Днес",
+  "sdkChatTooLong": "Съобщението е твърде дълго. Ограничението е {max} знака.",
+  "sdkChatYesterday": "Вчера"
 }

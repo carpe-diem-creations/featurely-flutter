@@ -71,5 +71,7 @@
   "sdkChatSending": "Küldés…",
   "sdkChatTeamLabel": "Csapat",
   "sdkChatTitle": "Üzenetek",
-  "sdkChatTooLong": "Ez az üzenet túl hosszú. A korlát {max} karakter."
+  "sdkChatToday": "Ma",
+  "sdkChatTooLong": "Ez az üzenet túl hosszú. A korlát {max} karakter.",
+  "sdkChatYesterday": "Tegnap"
 }

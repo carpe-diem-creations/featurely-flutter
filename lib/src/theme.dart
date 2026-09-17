@@ -175,9 +175,10 @@ class FeaturelyThemeData {
   /// Border radius helper for [radius].
   BorderRadius get borderRadius => BorderRadius.circular(radius);
 
-  /// 12%-tint of [color] over the sheet background, used by status pills.
-  Color tint(Color color) =>
-      Color.alphaBlend(color.withValues(alpha: 0.12), background);
+  /// [amount] (default 12%) of [color] over the sheet background, used by
+  /// status pills and the chat's accent-tinted surfaces.
+  Color tint(Color color, [double amount = 0.12]) =>
+      Color.alphaBlend(color.withValues(alpha: amount), background);
 
   /// A minimal Material [ThemeData] for the sheet subtree, so Material
   /// widgets inside the sheet (ripples, fields, progress indicators) match.

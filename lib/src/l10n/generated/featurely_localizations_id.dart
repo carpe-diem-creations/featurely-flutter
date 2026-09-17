@@ -269,7 +269,13 @@ class FeaturelyLocalizationsId extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Pesan';
 
   @override
+  String get sdkChatToday => 'Hari ini';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Pesan ini terlalu panjang. Batasnya $max karakter.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Kemarin';
 }

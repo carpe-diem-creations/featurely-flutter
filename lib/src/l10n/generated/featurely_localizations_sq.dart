@@ -272,7 +272,13 @@ class FeaturelyLocalizationsSq extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Mesazhe';
 
   @override
+  String get sdkChatToday => 'Sot';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Ky mesazh është shumë i gjatë. Kufiri është $max karaktere.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Dje';
 }

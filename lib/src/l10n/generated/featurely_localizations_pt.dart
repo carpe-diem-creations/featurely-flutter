@@ -275,9 +275,15 @@ class FeaturelyLocalizationsPt extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Mensagens';
 
   @override
+  String get sdkChatToday => 'Hoje';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Esta mensagem é demasiado longa. O limite é de $max caracteres.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Ontem';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -550,7 +556,13 @@ class FeaturelyLocalizationsPtBr extends FeaturelyLocalizationsPt {
   String get sdkChatTitle => 'Mensagens';
 
   @override
+  String get sdkChatToday => 'Hoje';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Esta mensagem é longa demais. O limite é de $max caracteres.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Ontem';
 }

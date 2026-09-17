@@ -277,7 +277,13 @@ class FeaturelyLocalizationsHe extends FeaturelyLocalizations {
   String get sdkChatTitle => 'הודעות';
 
   @override
+  String get sdkChatToday => 'היום';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'ההודעה ארוכה מדי. המגבלה היא $max תווים.';
   }
+
+  @override
+  String get sdkChatYesterday => 'אתמול';
 }

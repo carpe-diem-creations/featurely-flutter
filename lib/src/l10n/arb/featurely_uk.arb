@@ -71,5 +71,7 @@
   "sdkChatSending": "Надсилання…",
   "sdkChatTeamLabel": "Команда",
   "sdkChatTitle": "Повідомлення",
-  "sdkChatTooLong": "Повідомлення задовге. Ліміт — {max} символів."
+  "sdkChatToday": "Сьогодні",
+  "sdkChatTooLong": "Повідомлення задовге. Ліміт — {max} символів.",
+  "sdkChatYesterday": "Учора"
 }

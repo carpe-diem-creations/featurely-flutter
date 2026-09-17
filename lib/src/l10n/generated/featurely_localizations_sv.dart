@@ -274,7 +274,13 @@ class FeaturelyLocalizationsSv extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Meddelanden';
 
   @override
+  String get sdkChatToday => 'I dag';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Meddelandet är för långt. Gränsen är $max tecken.';
   }
+
+  @override
+  String get sdkChatYesterday => 'I går';
 }

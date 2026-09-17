@@ -276,7 +276,13 @@ class FeaturelyLocalizationsFil extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Mga Mensahe';
 
   @override
+  String get sdkChatToday => 'Ngayon';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Masyadong mahaba ang mensaheng ito. Ang limit ay $max na character.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Kahapon';
 }
