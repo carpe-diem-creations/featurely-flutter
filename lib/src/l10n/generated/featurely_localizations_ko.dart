@@ -266,7 +266,13 @@ class FeaturelyLocalizationsKo extends FeaturelyLocalizations {
   String get sdkChatTitle => '메시지';
 
   @override
+  String get sdkChatToday => '오늘';
+
+  @override
   String sdkChatTooLong(int max) {
     return '메시지가 너무 길어요. 최대 $max자까지 입력할 수 있어요.';
   }
+
+  @override
+  String get sdkChatYesterday => '어제';
 }

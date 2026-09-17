@@ -289,7 +289,13 @@ class FeaturelyLocalizationsAr extends FeaturelyLocalizations {
   String get sdkChatTitle => 'الرسائل';
 
   @override
+  String get sdkChatToday => 'اليوم';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'هذه الرسالة طويلة جدًا. الحد الأقصى هو $max حرف.';
   }
+
+  @override
+  String get sdkChatYesterday => 'أمس';
 }

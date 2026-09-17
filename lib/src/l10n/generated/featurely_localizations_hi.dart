@@ -275,7 +275,13 @@ class FeaturelyLocalizationsHi extends FeaturelyLocalizations {
   String get sdkChatTitle => 'संदेश';
 
   @override
+  String get sdkChatToday => 'आज';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'यह संदेश बहुत लंबा है। सीमा $max अक्षर है।';
   }
+
+  @override
+  String get sdkChatYesterday => 'कल';
 }

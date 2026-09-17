@@ -71,5 +71,7 @@
   "sdkChatSending": "正在发送…",
   "sdkChatTeamLabel": "团队",
   "sdkChatTitle": "消息",
-  "sdkChatTooLong": "消息过长，上限为 {max} 个字符。"
+  "sdkChatToday": "今天",
+  "sdkChatTooLong": "消息过长，上限为 {max} 个字符。",
+  "sdkChatYesterday": "昨天"
 }

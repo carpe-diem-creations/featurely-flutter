@@ -349,6 +349,10 @@
   "@sdkChatTitle": {
     "description": "Navigation title of the In-App Chat screen."
   },
+  "sdkChatToday": "Today",
+  "@sdkChatToday": {
+    "description": "Day separator in the chat message list above messages sent today."
+  },
   "sdkChatTooLong": "This message is too long. The limit is {max} characters.",
   "@sdkChatTooLong": {
     "description": "Inline error when a chat message exceeds the length limit.",
@@ -358,5 +362,9 @@
         "example": "4000"
       }
     }
+  },
+  "sdkChatYesterday": "Yesterday",
+  "@sdkChatYesterday": {
+    "description": "Day separator in the chat message list above messages sent yesterday."
   }
 }

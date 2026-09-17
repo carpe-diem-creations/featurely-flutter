@@ -71,5 +71,7 @@
   "sdkChatSending": "Đang gửi…",
   "sdkChatTeamLabel": "Đội ngũ",
   "sdkChatTitle": "Tin nhắn",
-  "sdkChatTooLong": "Tin nhắn này quá dài. Giới hạn là {max} ký tự."
+  "sdkChatToday": "Hôm nay",
+  "sdkChatTooLong": "Tin nhắn này quá dài. Giới hạn là {max} ký tự.",
+  "sdkChatYesterday": "Hôm qua"
 }

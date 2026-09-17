@@ -270,7 +270,13 @@ class FeaturelyLocalizationsVi extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Tin nhắn';
 
   @override
+  String get sdkChatToday => 'Hôm nay';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Tin nhắn này quá dài. Giới hạn là $max ký tự.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Hôm qua';
 }

@@ -266,7 +266,13 @@ class FeaturelyLocalizationsJa extends FeaturelyLocalizations {
   String get sdkChatTitle => 'メッセージ';
 
   @override
+  String get sdkChatToday => '今日';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'メッセージが長すぎます。上限は$max文字です。';
   }
+
+  @override
+  String get sdkChatYesterday => '昨日';
 }

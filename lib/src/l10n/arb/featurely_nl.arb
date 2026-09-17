@@ -71,5 +71,7 @@
   "sdkChatSending": "Versturen…",
   "sdkChatTeamLabel": "Team",
   "sdkChatTitle": "Berichten",
-  "sdkChatTooLong": "Dit bericht is te lang. De limiet is {max} tekens."
+  "sdkChatToday": "Vandaag",
+  "sdkChatTooLong": "Dit bericht is te lang. De limiet is {max} tekens.",
+  "sdkChatYesterday": "Gisteren"
 }

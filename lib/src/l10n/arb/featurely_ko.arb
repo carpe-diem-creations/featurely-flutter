@@ -71,5 +71,7 @@
   "sdkChatSending": "보내는 중…",
   "sdkChatTeamLabel": "팀",
   "sdkChatTitle": "메시지",
-  "sdkChatTooLong": "메시지가 너무 길어요. 최대 {max}자까지 입력할 수 있어요."
+  "sdkChatToday": "오늘",
+  "sdkChatTooLong": "메시지가 너무 길어요. 최대 {max}자까지 입력할 수 있어요.",
+  "sdkChatYesterday": "어제"
 }

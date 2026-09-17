@@ -71,5 +71,7 @@
   "sdkChatSending": "Wysyłanie…",
   "sdkChatTeamLabel": "Zespół",
   "sdkChatTitle": "Wiadomości",
-  "sdkChatTooLong": "Ta wiadomość jest za długa. Limit to {max} znaków."
+  "sdkChatToday": "Dzisiaj",
+  "sdkChatTooLong": "Ta wiadomość jest za długa. Limit to {max} znaków.",
+  "sdkChatYesterday": "Wczoraj"
 }

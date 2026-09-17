@@ -282,7 +282,13 @@ class FeaturelyLocalizationsSk extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Správy';
 
   @override
+  String get sdkChatToday => 'Dnes';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Táto správa je príliš dlhá. Maximálny počet znakov je $max.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Včera';
 }

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0
+
+- Refreshed the chat screen. Messages are grouped under day separators
+  (Today, Yesterday, the weekday, then the date), so each message shows only
+  its time. Bubbles have a smaller corner on the sender's side, and team
+  messages no longer carry a visible "Team" label (screen readers still
+  announce it). A message that failed to send shows as a tinted outline
+  bubble.
+- The "Get replies by email" row is now a card above the composer instead of
+  a bar under the header. The composer and send button were resized.
+- Localized "Today" and "Yesterday" strings (`sdkChatToday`,
+  `sdkChatYesterday`) in all 34 locales.
+
 ## 0.4.0
 
 - 8 new locales: Bulgarian (`bg`), Greek (`el`), Finnish (`fi`), Indonesian

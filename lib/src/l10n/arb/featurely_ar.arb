@@ -71,5 +71,7 @@
   "sdkChatSending": "جارٍ الإرسال…",
   "sdkChatTeamLabel": "الفريق",
   "sdkChatTitle": "الرسائل",
-  "sdkChatTooLong": "هذه الرسالة طويلة جدًا. الحد الأقصى هو {max} حرف."
+  "sdkChatToday": "اليوم",
+  "sdkChatTooLong": "هذه الرسالة طويلة جدًا. الحد الأقصى هو {max} حرف.",
+  "sdkChatYesterday": "أمس"
 }

@@ -8,6 +8,7 @@ import 'package:featurely/src/ui/sheet.dart';
 import 'package:featurely/src/ui/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'harness.dart';
@@ -125,8 +126,10 @@ void main() {
     await _unmount(tester);
   });
 
-  testWidgets('team messages carry the Team label on the leading side',
+  testWidgets(
+      'team messages sit on the leading side, announced (not shown) as Team',
       (tester) async {
+    final semantics = tester.ensureSemantics();
     final api = FakeApi();
     api.onGetChatMessages = (before, after) async => ChatMessagesPage(
           messages: after != null
@@ -144,7 +147,13 @@ void main() {
           newerCursor: after ?? 'c1',
         );
     await _pumpChat(tester, api, locale: const Locale('en'));
-    expect(find.text('Team'), findsOneWidget);
+    // No visible badge, but screen readers hear the sender with the body.
+    expect(find.text('Team'), findsNothing);
+    expect(
+      find.bySemanticsLabel(RegExp(r'^Team\nHello from the team\n')),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel(RegExp(r'Team\nHi\n')), findsNothing);
     expect(find.text('Load earlier messages'), findsOneWidget);
 
     final user = tester.getCenter(find.text('Hi'));
@@ -152,6 +161,133 @@ void main() {
     // LTR: user trailing (right), team leading (left).
     expect(user.dx, greaterThan(team.dx));
     await _unmount(tester);
+    semantics.dispose();
+  });
+
+  group('day separators', () {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    DateTime daysAgo(int days, [int hour = 12]) =>
+        DateTime(today.year, today.month, today.day - days, hour);
+
+    double top(WidgetTester tester, String text) =>
+        tester.getTopLeft(find.text(text)).dy;
+
+    testWidgets('label each day above its first message, time-only meta',
+        (tester) async {
+      final api = FakeApi();
+      final older = daysAgo(3, 9);
+      api.onGetChatMessages = (before, after) async => ChatMessagesPage(
+            messages: after != null
+                ? const []
+                : [
+                    makeChatMessage(
+                        id: 'a', body: 'Three days', createdAt: older),
+                    makeChatMessage(
+                        id: 'b', body: 'Yesterday 1', createdAt: daysAgo(1, 8)),
+                    makeChatMessage(
+                      id: 'c',
+                      body: 'Yesterday 2',
+                      author: ChatAuthor.team,
+                      createdAt: daysAgo(1, 10),
+                    ),
+                    makeChatMessage(id: 'd', body: 'Today 1', createdAt: today),
+                  ],
+            olderCursor: null,
+            newerCursor: after ?? 'c1',
+          );
+      await _pumpChat(tester, api, locale: const Locale('en'));
+
+      final weekday = DateFormat.EEEE('en').format(older);
+      expect(find.text(weekday), findsOneWidget);
+      expect(find.text('Yesterday'), findsOneWidget);
+      expect(find.text('Today'), findsOneWidget);
+      // Each separator sits between the previous day and its own first row.
+      expect(top(tester, weekday), lessThan(top(tester, 'Three days')));
+      expect(top(tester, 'Three days'), lessThan(top(tester, 'Yesterday')));
+      expect(top(tester, 'Yesterday'), lessThan(top(tester, 'Yesterday 1')));
+      expect(top(tester, 'Yesterday 2'), lessThan(top(tester, 'Today')));
+      expect(top(tester, 'Today'), lessThan(top(tester, 'Today 1')));
+      // The meta row carries only the time.
+      expect(find.text(DateFormat.jm('en').format(older)), findsOneWidget);
+      await _unmount(tester);
+    });
+
+    testWidgets('a failed send joins today without a second separator',
+        (tester) async {
+      final api = FakeApi();
+      api.onGetChatMessages = (before, after) async => ChatMessagesPage(
+            messages: after != null
+                ? const []
+                : [
+                    makeChatMessage(id: 'a', body: 'Old', createdAt: daysAgo(1))
+                  ],
+            olderCursor: null,
+            newerCursor: after ?? 'c1',
+          );
+      api.onSendChatMessage =
+          (body, cid) async => throw FeaturelyNetworkException();
+      await _pumpChat(tester, api, locale: const Locale('en'));
+      expect(find.text('Today'), findsNothing);
+
+      for (final body in ['First', 'Second']) {
+        await tester.enterText(find.byType(TextField).last, body);
+        await tester.pump();
+        await tester.tap(_sendButton);
+        await tester.pump();
+        await tester.pump();
+      }
+      expect(find.text('Not sent — Tap to retry'), findsNWidgets(2));
+      expect(find.text('Today'), findsOneWidget);
+      expect(top(tester, 'Old'), lessThan(top(tester, 'Today')));
+      expect(top(tester, 'Today'), lessThan(top(tester, 'First')));
+      await _unmount(tester);
+    });
+
+    testWidgets('"Load earlier" re-groups prepended messages', (tester) async {
+      final api = FakeApi();
+      final lastYear = DateTime(now.year - 1, 3, 4, 12);
+      api.onGetChatMessages = (before, after) async {
+        if (after != null) {
+          return ChatMessagesPage(
+              messages: const [], olderCursor: null, newerCursor: after);
+        }
+        if (before == null) {
+          return ChatMessagesPage(
+            messages: [
+              makeChatMessage(id: 'b', body: 'Newer', createdAt: lastYear),
+            ],
+            olderCursor: 'older',
+            newerCursor: 'c1',
+          );
+        }
+        return ChatMessagesPage(
+          messages: [
+            makeChatMessage(
+              id: 'a',
+              body: 'Older same day',
+              createdAt: lastYear.subtract(const Duration(hours: 1)),
+            ),
+          ],
+          olderCursor: null,
+          newerCursor: null,
+        );
+      };
+      await _pumpChat(tester, api, locale: const Locale('en'));
+      final label = DateFormat.yMMMd('en').format(lastYear);
+      expect(find.text(label), findsOneWidget);
+      expect(
+          top(tester, 'Load earlier messages'), lessThan(top(tester, label)));
+
+      await tester.tap(find.text('Load earlier messages'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('Older same day'), findsOneWidget);
+      // Still one separator, now above the older message.
+      expect(find.text(label), findsOneWidget);
+      expect(top(tester, label), lessThan(top(tester, 'Older same day')));
+      await _unmount(tester);
+    });
   });
 
   testWidgets('RTL (ar) mirrors bubble sides', (tester) async {

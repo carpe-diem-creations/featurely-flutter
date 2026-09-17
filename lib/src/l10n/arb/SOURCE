@@ -29,6 +29,13 @@
 # ('zh-Hant' last), and resolveLocale honors script subtags (mirrored in
 # lib/src/l10n/locale_resolution.dart).
 #
+# Incremental sync 2026-09-17 (Chat day separators): `sdkChatToday` and
+# `sdkChatYesterday` were copied for all 34 locales from
+# packages/locales/exports/flutter/app_<locale>.arb on the featurely-app
+# commit 27dc585 (feat(locales): add Today/Yesterday chat day-separator
+# strings), with their @-metadata on the
+# en template. All other sdk.* keys were verified unchanged.
+#
 # Transform (manual, per the SDK spec — no sync tooling in v1):
 #   - only `sdk.*` keys are copied (email.* keys are server-side);
 #   - key names are camelCased mechanically: strip the dots, capitalize each

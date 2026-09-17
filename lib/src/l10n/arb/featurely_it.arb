@@ -71,5 +71,7 @@
   "sdkChatSending": "Invio in corso…",
   "sdkChatTeamLabel": "Team",
   "sdkChatTitle": "Messaggi",
-  "sdkChatTooLong": "Questo messaggio è troppo lungo. Il limite è di {max} caratteri."
+  "sdkChatToday": "Oggi",
+  "sdkChatTooLong": "Questo messaggio è troppo lungo. Il limite è di {max} caratteri.",
+  "sdkChatYesterday": "Ieri"
 }

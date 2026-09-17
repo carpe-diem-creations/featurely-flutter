@@ -282,7 +282,13 @@ class FeaturelyLocalizationsLt extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Žinutės';
 
   @override
+  String get sdkChatToday => 'Šiandien';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Ši žinutė per ilga. Leidžiama iki $max simbolių.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Vakar';
 }

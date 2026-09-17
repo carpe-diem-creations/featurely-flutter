@@ -264,9 +264,15 @@ class FeaturelyLocalizationsZh extends FeaturelyLocalizations {
   String get sdkChatTitle => '消息';
 
   @override
+  String get sdkChatToday => '今天';
+
+  @override
   String sdkChatTooLong(int max) {
     return '消息过长，上限为 $max 个字符。';
   }
+
+  @override
+  String get sdkChatYesterday => '昨天';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -529,7 +535,13 @@ class FeaturelyLocalizationsZhHant extends FeaturelyLocalizationsZh {
   String get sdkChatTitle => '訊息';
 
   @override
+  String get sdkChatToday => '今天';
+
+  @override
   String sdkChatTooLong(int max) {
     return '訊息過長，上限為 $max 個字元。';
   }
+
+  @override
+  String get sdkChatYesterday => '昨天';
 }

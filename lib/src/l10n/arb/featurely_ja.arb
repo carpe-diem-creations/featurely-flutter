@@ -71,5 +71,7 @@
   "sdkChatSending": "送信中…",
   "sdkChatTeamLabel": "チーム",
   "sdkChatTitle": "メッセージ",
-  "sdkChatTooLong": "メッセージが長すぎます。上限は{max}文字です。"
+  "sdkChatToday": "今日",
+  "sdkChatTooLong": "メッセージが長すぎます。上限は{max}文字です。",
+  "sdkChatYesterday": "昨日"
 }

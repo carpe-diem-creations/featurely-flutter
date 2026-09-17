@@ -71,5 +71,7 @@
   "sdkChatSending": "Gönderiliyor…",
   "sdkChatTeamLabel": "Ekip",
   "sdkChatTitle": "Mesajlar",
-  "sdkChatTooLong": "Bu mesaj çok uzun. Sınır {max} karakter."
+  "sdkChatToday": "Bugün",
+  "sdkChatTooLong": "Bu mesaj çok uzun. Sınır {max} karakter.",
+  "sdkChatYesterday": "Dün"
 }

@@ -275,7 +275,13 @@ class FeaturelyLocalizationsEl extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Μηνύματα';
 
   @override
+  String get sdkChatToday => 'Σήμερα';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Το μήνυμα είναι πολύ μεγάλο. Το όριο είναι $max χαρακτήρες.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Χθες';
 }

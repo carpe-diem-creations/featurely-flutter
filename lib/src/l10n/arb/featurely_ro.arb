@@ -71,5 +71,7 @@
   "sdkChatSending": "Se trimite…",
   "sdkChatTeamLabel": "Echipă",
   "sdkChatTitle": "Mesaje",
-  "sdkChatTooLong": "Mesajul este prea lung. Limita este de {max} de caractere."
+  "sdkChatToday": "Astăzi",
+  "sdkChatTooLong": "Mesajul este prea lung. Limita este de {max} de caractere.",
+  "sdkChatYesterday": "Ieri"
 }

@@ -282,7 +282,13 @@ class FeaturelyLocalizationsUk extends FeaturelyLocalizations {
   String get sdkChatTitle => 'Повідомлення';
 
   @override
+  String get sdkChatToday => 'Сьогодні';
+
+  @override
   String sdkChatTooLong(int max) {
     return 'Повідомлення задовге. Ліміт — $max символів.';
   }
+
+  @override
+  String get sdkChatYesterday => 'Учора';
 }
