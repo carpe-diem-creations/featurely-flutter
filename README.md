@@ -24,7 +24,7 @@ Featurely web dashboard.
 
 ```yaml
 dependencies:
-  featurely: ^0.4.0
+  featurely: ^0.5.0
 ```
 
 Initialize once at startup (idempotent — call it on every launch), then
