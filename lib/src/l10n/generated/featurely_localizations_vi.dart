@@ -224,6 +224,17 @@ class FeaturelyLocalizationsVi extends FeaturelyLocalizations {
       'Quá nhiều yêu cầu. Hãy thử lại sau giây lát.';
 
   @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => 'Trợ lý';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name đang nhập…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Viết tin nhắn…';
 
   @override

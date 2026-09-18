@@ -228,6 +228,17 @@ class FeaturelyLocalizationsHi extends FeaturelyLocalizations {
       'बहुत सारे अनुरोध। थोड़ी देर में फिर कोशिश करें।';
 
   @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => 'सहायक';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name टाइप कर रहे हैं…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'संदेश लिखें…';
 
   @override

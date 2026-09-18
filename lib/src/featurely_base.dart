@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 import 'api/api_client.dart';
+import 'chat_actions.dart';
 import 'core.dart';
 import 'identity/identity_store.dart';
 import 'metadata.dart';
@@ -15,8 +16,10 @@ import 'ui/sheet.dart';
 ///
 /// Call [init] once at startup, then [show] from any trigger. Optionally
 /// wire [login]/[logout] to the host app's own auth so a user's votes
-/// follow them across devices, [setPlan] when their plan changes, and
-/// [setChatMetadata] to give your team context on chat messages.
+/// follow them across devices, [setPlan] when their plan changes,
+/// [setChatMetadata] to give your team context on chat messages, and
+/// [setChatDiagnosticsProvider] / [registerChatActions] /
+/// [setChatActionHandler] for the AI support assistant.
 class Featurely {
   Featurely._();
 
@@ -93,8 +96,12 @@ class Featurely {
       ),
       metadata: DeviceMetadata(override: debugMetadataOverride),
       plan: plan,
-      // Not an init option: survives re-configuration like the identity.
+      // Not init options: survive re-configuration like the identity.
       chatMetadata: previous?.chatMetadata,
+      chatDiagnosticsProvider: previous?.chatDiagnosticsProvider,
+      chatActions: previous?.chatActions ?? const [],
+      chatActionHandler: previous?.chatActionHandler,
+      usedChatActions: previous?.usedChatActions,
     );
     // The config cache is per app session; keep it when the backend didn't
     // change so later opens reuse it.
@@ -243,6 +250,81 @@ class Featurely {
   static void setChatMetadata(Map<String, String>? metadata) =>
       _requireCore('setChatMetadata').chatMetadata =
           metadata == null ? null : Map.unmodifiable(metadata);
+
+  /// Sets the provider of a live diagnostics snapshot for the AI support
+  /// assistant; `null` removes it. Survives a later [init].
+  ///
+  /// The provider is called once per chat message send (including a manual
+  /// retry) and its JSON object goes with that message, so the assistant can
+  /// diagnose from the app's real state (e.g. `{'bluetooth': 'off',
+  /// 'lastSyncMinutesAgo': 42, 'permissions': {'notifications': false}}`).
+  /// Diagnostics are shown to your team in the dashboard and sent to the
+  /// assistant's model provider (Anthropic) when the assistant is enabled —
+  /// never to the user and never returned by the API. Don't put secrets,
+  /// identifiers or personal data in them.
+  ///
+  /// The provider gets 1 second. Values must be JSON (`null`, `bool`,
+  /// finite numbers, strings of at most 200 characters, lists of at most 30
+  /// items, and maps with `String` keys), nested at most 3 levels counting
+  /// the top-level map, and at most 4 096 bytes as compact UTF-8 JSON. On a
+  /// timeout, a throw, a null or empty result, or output that breaks a
+  /// limit, the message is sent without diagnostics (with a debug-build log
+  /// only) — a send never fails because of them. The server's own check
+  /// has the final word: if it rejects the snapshot, the SDK re-sends the
+  /// message once without it.
+  static void setChatDiagnosticsProvider(
+    Future<Map<String, Object?>?> Function()? provider,
+  ) =>
+      _requireCore('setChatDiagnosticsProvider').chatDiagnosticsProvider =
+          provider;
+
+  /// Registers the in-app actions the AI support assistant may suggest,
+  /// replacing any earlier registration (an empty list clears it). Survives
+  /// a later [init].
+  ///
+  /// While a handler is set with [setChatActionHandler], every chat send
+  /// advertises the registered ids, and an assistant reply can suggest up
+  /// to 3 of them: the chat shows each as a button below the reply,
+  /// labelled with your localized `title`. Ids you haven't registered are
+  /// never shown. A tapped button calls the handler and then shows as used
+  /// for the rest of the app session.
+  ///
+  /// Ids must match `^[a-z][a-z0-9_]{0,39}$` (e.g. `'open_settings'`) and
+  /// titles must not be blank; invalid or duplicate entries, and any beyond
+  /// the first 12, are dropped with a debug-build log. Never throws.
+  static void registerChatActions(List<FeaturelyChatAction> actions) =>
+      _requireCore('registerChatActions').chatActions =
+          cleanChatActions(actions);
+
+  /// Sets the handler for assistant action buttons; `null` removes it (and
+  /// with it the buttons, and the `availableActions` sent to the server).
+  /// Survives a later [init].
+  ///
+  /// The handler runs on the UI thread when the user taps a registered
+  /// action, with that action's id, and returns what the chat does next:
+  /// [FeaturelyChatActionResult.stay] keeps it open,
+  /// [FeaturelyChatActionResult.dismiss] closes the sheet that [showChat]
+  /// (or [show]) presented. The sheet closes right after the handler
+  /// returns, so to act once it is gone — say, to push one of your own
+  /// screens — schedule that work, e.g. with
+  /// `WidgetsBinding.instance.addPostFrameCallback`. A handler that throws
+  /// counts as `stay`.
+  ///
+  /// ```dart
+  /// Featurely.registerChatActions(const [
+  ///   FeaturelyChatAction(id: 'open_settings', title: 'Open Settings'),
+  /// ]);
+  /// Featurely.setChatActionHandler((id) {
+  ///   if (id != 'open_settings') return FeaturelyChatActionResult.stay;
+  ///   WidgetsBinding.instance.addPostFrameCallback(
+  ///       (_) => navigatorKey.currentState?.pushNamed('/settings'));
+  ///   return FeaturelyChatActionResult.dismiss;
+  /// });
+  /// ```
+  static void setChatActionHandler(
+    FeaturelyChatActionResult Function(String id)? handler,
+  ) =>
+      _requireCore('setChatActionHandler').chatActionHandler = handler;
 
   static FeaturelyCore _requireCore(String method) {
     final core = _core;

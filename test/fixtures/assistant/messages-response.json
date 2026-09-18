@@ -1,0 +1,33 @@
+{
+  "messages": [
+    {
+      "id": "0b8f7a52-8e8f-4c55-9d0e-3f1b2c4d5e6f",
+      "author": "user",
+      "authorKind": "end_user",
+      "body": "The pairing prompt never shows up.",
+      "createdAt": "2026-09-18T10:00:00.000Z",
+      "clientMessageId": "6f9619ff-8b86-4d11-b42d-00c04fc964ff"
+    },
+    {
+      "id": "1c9e8b63-9f90-4d66-8e1f-4a2c3d5e6f70",
+      "author": "team",
+      "authorKind": "assistant",
+      "authorName": "Lyn",
+      "body": "Your iPhone never showed the pairing prompt. Let's retry:\n1. Keep the watch on the \"Pair with iPhone\" screen.\n2. Tap \"Try again\" below.\n3. Tap \"Pair\" when iOS asks.\nDid the prompt appear?",
+      "createdAt": "2026-09-18T10:00:06.000Z",
+      "clientMessageId": null,
+      "actions": ["retry_pairing"]
+    },
+    {
+      "id": "2daf9c74-a0a1-4e77-9f20-5b3d4e6f7081",
+      "author": "team",
+      "authorKind": "team",
+      "body": "Hi, a person here. Did that work?",
+      "createdAt": "2026-09-18T10:05:00.000Z",
+      "clientMessageId": null
+    }
+  ],
+  "olderCursor": null,
+  "newerCursor": "eyJzIjpbIjE3OTAxNjQ3MDAwMDAwMDAiXSwiaWQiOiIyZGFmOWM3NC1hMGExLTRlNzctOWYyMC01YjNkNGU2ZjcwODEifQ",
+  "assistantPending": true
+}

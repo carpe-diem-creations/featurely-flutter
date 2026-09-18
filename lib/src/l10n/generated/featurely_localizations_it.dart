@@ -228,6 +228,17 @@ class FeaturelyLocalizationsIt extends FeaturelyLocalizations {
       'Troppe richieste. Riprova tra un momento.';
 
   @override
+  String get sdkChatAiTag => 'IA';
+
+  @override
+  String get sdkChatAssistantName => 'Assistente';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name sta scrivendo…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Scrivi un messaggio…';
 
   @override

@@ -301,7 +301,20 @@ class Featurely {
   static Future<int> unreadMessageCount();        // never throws; 0 when unavailable
   static Future<bool> hasUnreadMessages();        // unreadMessageCount() > 0; never throws
   static void setChatMetadata(Map<String, String>? metadata); // app-wide team-only context on chat messages; null clears
+
+  // AI Support Assistant (featurely-functions ai-support-assistant-spec AC #35–#40a)
+  static void setChatDiagnosticsProvider(
+      Future<Map<String, Object?>?> Function()? provider);  // per send, 1 s timeout; invalid/oversized dropped
+  static void registerChatActions(List<FeaturelyChatAction> actions); // replaces; ids ^[a-z][a-z0-9_]{0,39}$, ≤ 12
+  static void setChatActionHandler(
+      FeaturelyChatActionResult Function(String id)? handler); // stay | dismiss (closes the sheet)
 }
+
+class FeaturelyChatAction {
+  const FeaturelyChatAction({required String id, required String title});
+}
+
+enum FeaturelyChatActionResult { stay, dismiss }
 
 class FeaturelyTheme {
   const FeaturelyTheme({Color? accentColor, double? cornerRadius,

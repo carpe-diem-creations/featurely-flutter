@@ -236,6 +236,17 @@ class FeaturelyLocalizationsUk extends FeaturelyLocalizations {
       'Забагато запитів. Спробуйте ще раз за мить.';
 
   @override
+  String get sdkChatAiTag => 'ШІ';
+
+  @override
+  String get sdkChatAssistantName => 'Асистент';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name друкує…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Напиши повідомлення…';
 
   @override

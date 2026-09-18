@@ -1,0 +1,10 @@
+Verbatim copies of the AI Support Assistant wire-contract fixtures.
+
+source of truth: featurely-app (featurely-functions) docs/contract/assistant/*.json
+  (checked there against the server's zod schemas by apps/api/test/unit/assistant-contract.test.ts)
+copied: 2026-09-18 (branch feat/ai-support-assistant)
+
+Never edit these files here. When the server fixtures change, copy them again
+(`cp <featurely-functions>/docs/contract/assistant/*.json <this directory>`) and
+fix the SDK's decoders/encoders until the contract tests pass; never loosen the
+server to fit the SDK. `diff -r` against the server directory must be empty.

@@ -497,6 +497,24 @@ abstract class FeaturelyLocalizations {
   /// **'Too many requests. Try again in a moment.'**
   String get sdkCommonRateLimited;
 
+  /// Small tag next to the AI support assistant's name on its chat messages. Keep it as short as possible.
+  ///
+  /// In en, this message translates to:
+  /// **'AI'**
+  String get sdkChatAiTag;
+
+  /// Fallback name for the AI support assistant when the server hasn't sent the project's own assistant name.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant'**
+  String get sdkChatAssistantName;
+
+  /// Row shown at the bottom of the chat while the AI support assistant is writing a reply.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is typing…'**
+  String sdkChatAssistantTyping(String name);
+
   /// Placeholder of the chat message composer.
   ///
   /// In en, this message translates to:

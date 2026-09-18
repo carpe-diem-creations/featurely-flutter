@@ -236,6 +236,17 @@ class FeaturelyLocalizationsSk extends FeaturelyLocalizations {
       'Príliš veľa žiadostí. Skús to znova o chvíľu.';
 
   @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => 'Asistent';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name píše…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Napíš správu…';
 
   @override

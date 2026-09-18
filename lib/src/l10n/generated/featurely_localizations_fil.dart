@@ -229,6 +229,17 @@ class FeaturelyLocalizationsFil extends FeaturelyLocalizations {
       'Masyadong maraming request. Subukan ulit mamaya.';
 
   @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => 'Assistant';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return 'Nagta-type si $name…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Sumulat ng mensahe…';
 
   @override

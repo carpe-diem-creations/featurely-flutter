@@ -35,12 +35,16 @@ ChatController _controller(
   FakeApi api, {
   List<String>? ids,
   Map<String, String>? Function()? metadata,
+  Future<Map<String, Object?>?> Function()? diagnostics,
+  List<String> Function()? availableActions,
 }) {
   var n = 0;
   final controller = ChatController(
     api: api,
     resolvedLocale: 'en',
     metadata: metadata,
+    diagnostics: diagnostics,
+    availableActions: availableActions,
     idGenerator: ids == null ? null : () => ids[n++],
   );
   _live.add(controller);
@@ -538,5 +542,262 @@ void main() {
     expect(await controller.saveEmail(''), isTrue);
     expect(api.emailCalls.last, isNull);
     expect(controller.contactEmail, isNull);
+  });
+
+  group('AI assistant', () {
+    const cid = '44444444-4444-4444-8444-444444444444';
+    FeaturelyApiException badRequest(String code) =>
+        FeaturelyApiException(FeaturelyErrorCode.decode(code), 400);
+
+    chatTest('diagnostics and actions are read per send and sent with it',
+        (tester) async {
+      final api = FakeApi();
+      var calls = 0;
+      final controller = _controller(
+        api,
+        ids: [cid, '55555555-5555-4555-8555-555555555555'],
+        diagnostics: () async => {'attempt': ++calls},
+        availableActions: () => ['open_settings'],
+      )..setVisible(true);
+      await controller.load();
+      await controller.send('One');
+      await controller.send('Two');
+      expect(api.sendDiagnostics, [
+        {'attempt': 1},
+        {'attempt': 2},
+      ]);
+      expect(api.sendActions, [
+        ['open_settings'],
+        ['open_settings'],
+      ]);
+    });
+
+    chatTest('the optimistic row shows while diagnostics are collected',
+        (tester) async {
+      final api = FakeApi();
+      final snapshot = Completer<Map<String, Object?>?>();
+      final controller = _controller(api,
+          ids: [cid], diagnostics: () => snapshot.future)
+        ..setVisible(true);
+      await controller.load();
+      unawaited(controller.send('Hi'));
+      await _settle(tester);
+      expect(controller.entries.single.delivery, ChatDelivery.sending);
+      expect(api.sendCalls, isEmpty);
+      snapshot.complete({'a': 1});
+      await _settle(tester);
+      expect(api.sendDiagnostics.single, {'a': 1});
+      expect(controller.entries.single.delivery, ChatDelivery.sent);
+    });
+
+    chatTest('a throwing diagnostics or actions hook never blocks the send',
+        (tester) async {
+      final api = FakeApi();
+      final controller = _controller(
+        api,
+        ids: [cid],
+        diagnostics: () => throw StateError('host bug'),
+        availableActions: () => throw StateError('host bug'),
+      )..setVisible(true);
+      await controller.load();
+      await controller.send('Hi');
+      expect(api.sendDiagnostics.single, isNull);
+      expect(api.sendActions.single, isNull);
+      expect(controller.entries.single.delivery, ChatDelivery.sent);
+    });
+
+    for (final code in ['validation_error', 'invalid_message']) {
+      chatTest('a 400 $code with diagnostics re-sends once without them',
+          (tester) async {
+        final api = FakeApi();
+        api.onSendChatMessage = (body, clientMessageId) async {
+          if (api.sendDiagnostics.last != null) throw badRequest(code);
+          return makeChatMessage(
+              id: 'm1', body: body, clientMessageId: clientMessageId);
+        };
+        final controller = _controller(api,
+            ids: [cid],
+            diagnostics: () async => {'a': 1},
+            availableActions: () => ['open_settings'])
+          ..setVisible(true);
+        await controller.load();
+        await controller.send('Hi');
+        expect(api.sendCalls, [('Hi', cid), ('Hi', cid)]);
+        expect(api.sendDiagnostics, [
+          {'a': 1},
+          null,
+        ]);
+        // Everything else is unchanged on the re-send.
+        expect(api.sendActions, [
+          ['open_settings'],
+          ['open_settings'],
+        ]);
+        expect(controller.entries.single.delivery, ChatDelivery.sent);
+      });
+    }
+
+    chatTest('a 400 without diagnostics fails without a re-send',
+        (tester) async {
+      final api = FakeApi();
+      api.onSendChatMessage =
+          (body, clientMessageId) async => throw badRequest('invalid_message');
+      final controller = _controller(api, ids: [cid])..setVisible(true);
+      await controller.load();
+      await controller.send('Hi');
+      expect(api.sendCalls, hasLength(1));
+      expect(controller.entries.single.delivery, ChatDelivery.failed);
+    });
+
+    chatTest('a re-send that fails too marks the message failed',
+        (tester) async {
+      final api = FakeApi();
+      api.onSendChatMessage =
+          (body, clientMessageId) async => throw badRequest('validation_error');
+      final controller = _controller(api,
+          ids: [cid], diagnostics: () async => {'a': 1})
+        ..setVisible(true);
+      await controller.load();
+      await controller.send('Hi');
+      expect(api.sendCalls, hasLength(2));
+      expect(controller.entries.single.delivery, ChatDelivery.failed);
+    });
+
+    chatTest('non-400 failures never trigger the diagnostics re-send',
+        (tester) async {
+      final api = FakeApi();
+      api.onSendChatMessage =
+          (body, clientMessageId) async => throw FeaturelyNetworkException();
+      final controller = _controller(api,
+          ids: [cid], diagnostics: () async => {'a': 1})
+        ..setVisible(true);
+      await controller.load();
+      await controller.send('Hi');
+      expect(api.sendCalls, hasLength(1));
+      expect(controller.entries.single.delivery, ChatDelivery.failed);
+    });
+
+    chatTest(
+        'polls every 1.5 s while the assistant is pending, then 5 s once '
+        'the flag clears', (tester) async {
+      final api = FakeApi();
+      var pending = true;
+      api.onGetChatMessages = (before, after) async => ChatMessagesPage(
+            messages: const [],
+            olderCursor: null,
+            newerCursor: 'c0',
+            assistantPending: pending,
+          );
+      final controller = _controller(api)..setVisible(true);
+      await controller.load();
+      await _settle(tester);
+      expect(controller.assistantPending, isTrue);
+      expect(controller.currentPollInterval, const Duration(milliseconds: 1500));
+      final start = api.chatMessageCalls.length;
+
+      await tester.pump(const Duration(milliseconds: 1500));
+      expect(api.chatMessageCalls.length, start + 1);
+      await tester.pump(const Duration(milliseconds: 1500));
+      expect(api.chatMessageCalls.length, start + 2);
+
+      pending = false;
+      await tester.pump(const Duration(milliseconds: 1500));
+      expect(api.chatMessageCalls.length, start + 3);
+      expect(controller.assistantPending, isFalse);
+      expect(controller.currentPollInterval, _poll);
+      await tester.pump(const Duration(milliseconds: 4999));
+      expect(api.chatMessageCalls.length, start + 3);
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(api.chatMessageCalls.length, start + 4);
+    });
+
+    chatTest('fast polling stops after 60 s even while still pending',
+        (tester) async {
+      final api = FakeApi();
+      api.onGetChatMessages = (before, after) async => const ChatMessagesPage(
+            messages: [],
+            olderCursor: null,
+            newerCursor: 'c0',
+            assistantPending: true,
+          );
+      final controller = _controller(api)..setVisible(true);
+      await controller.load();
+      await _settle(tester);
+      final start = api.chatMessageCalls.length;
+      await tester.pump(const Duration(seconds: 59));
+      // Fast polls at 1.5 s … 58.5 s.
+      expect(api.chatMessageCalls.length, start + 39);
+      expect(controller.currentPollInterval,
+          const Duration(milliseconds: 1500));
+      // The window closes at 60 s: the poll due then moves to 5 s later.
+      await tester.pump(const Duration(seconds: 1));
+      expect(controller.currentPollInterval, _poll);
+      expect(api.chatMessageCalls.length, start + 39);
+      // The typing row still follows the server's flag.
+      expect(controller.assistantPending, isTrue);
+      await tester.pump(const Duration(milliseconds: 4999));
+      expect(api.chatMessageCalls.length, start + 39);
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(api.chatMessageCalls.length, start + 40);
+      await tester.pump(_poll);
+      expect(api.chatMessageCalls.length, start + 41);
+    });
+
+    chatTest('a send followed by a pending poll switches to fast polling',
+        (tester) async {
+      final api = FakeApi();
+      var pending = false;
+      api.onGetChatMessages = (before, after) async => ChatMessagesPage(
+            messages: const [],
+            olderCursor: null,
+            newerCursor: 'c0',
+            assistantPending: pending,
+          );
+      api.onSendChatMessage = (body, clientMessageId) async {
+        pending = true; // The server queued a run with the insert.
+        return makeChatMessage(
+            id: 'm1', body: body, clientMessageId: clientMessageId);
+      };
+      final controller = _controller(api, ids: [cid])..setVisible(true);
+      await controller.load();
+      expect(controller.currentPollInterval, _poll);
+      await controller.send('Help');
+      await _settle(tester);
+      expect(controller.assistantPending, isTrue);
+      expect(controller.currentPollInterval, const Duration(milliseconds: 1500));
+      expect(controller.isPollScheduled, isTrue);
+    });
+
+    chatTest('assistantName comes from the newest named assistant message',
+        (tester) async {
+      final api = FakeApi();
+      api.onGetChatMessages = (before, after) async => ChatMessagesPage(
+            messages: after != null
+                ? const []
+                : [
+                    makeAssistantMessage(
+                        id: 'a1',
+                        authorName: 'Old',
+                        createdAt: DateTime.utc(2026, 9, 1, 9)),
+                    makeAssistantMessage(
+                        id: 'a2',
+                        authorName: 'Lyn',
+                        createdAt: DateTime.utc(2026, 9, 1, 10)),
+                    makeAssistantMessage(
+                        id: 'a3',
+                        authorName: '  ',
+                        createdAt: DateTime.utc(2026, 9, 1, 11)),
+                    makeChatMessage(
+                        id: 't1',
+                        author: ChatAuthor.team,
+                        createdAt: DateTime.utc(2026, 9, 1, 12)),
+                  ],
+            olderCursor: null,
+            newerCursor: 'c0',
+          );
+      final controller = _controller(api);
+      expect(controller.assistantName, isNull);
+      await controller.load();
+      expect(controller.assistantName, 'Lyn');
+    });
   });
 }

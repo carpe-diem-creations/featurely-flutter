@@ -265,6 +265,129 @@ void main() {
     });
   });
 
+  group('AI assistant hooks', () {
+    test('throw a StateError before init', () {
+      expect(() => Featurely.setChatDiagnosticsProvider(() async => null),
+          throwsStateError);
+      expect(() => Featurely.registerChatActions(const []), throwsStateError);
+      expect(
+          () => Featurely.setChatActionHandler(
+              (id) => FeaturelyChatActionResult.stay),
+          throwsStateError);
+    });
+
+    testWidgets(
+        'sends diagnostics and actions, survive re-init, and re-send once '
+        'without diagnostics the server rejects', (tester) async {
+      final sent = <Map<String, dynamic>>[];
+      var rejectDiagnostics = false;
+      Future<http.Response> handler(http.Request request) async {
+        final path = request.url.path;
+        if (path.endsWith('/config')) {
+          return http.Response(
+              jsonEncode({..._config, 'chatEnabled': true}), 200);
+        }
+        if (path.endsWith('/conversation')) {
+          return http.Response(jsonEncode({'conversation': null}), 200);
+        }
+        if (path.endsWith('/conversation/messages') &&
+            request.method == 'GET') {
+          return http.Response(
+              jsonEncode({
+                'messages': <Object>[],
+                'olderCursor': null,
+                'newerCursor': null,
+                'assistantPending': false,
+              }),
+              200);
+        }
+        if (path.endsWith('/conversation/messages')) {
+          final body = jsonDecode(request.body) as Map<String, dynamic>;
+          sent.add(body);
+          if (rejectDiagnostics && body.containsKey('diagnostics')) {
+            return http.Response(
+                jsonEncode({
+                  'error': {'code': 'validation_error', 'message': 'x'}
+                }),
+                400);
+          }
+          return http.Response(
+              jsonEncode({
+                'id': 'm${sent.length}',
+                'author': 'user',
+                'authorKind': 'end_user',
+                'body': body['body'],
+                'createdAt': '2026-09-01T10:00:00.000Z',
+                'clientMessageId': body['clientMessageId'],
+              }),
+              201);
+        }
+        return http.Response('', 204);
+      }
+
+      await tester.runAsync(() => init(handler));
+      Featurely.setChatDiagnosticsProvider(
+          () async => {'bluetooth': 'off', 'attempts': 2});
+      Featurely.registerChatActions(const [
+        FeaturelyChatAction(id: 'open_settings', title: 'Open Settings'),
+        FeaturelyChatAction(id: 'Not-Valid', title: 'Dropped'),
+      ]);
+      Featurely.setChatActionHandler((id) => FeaturelyChatActionResult.stay);
+      // Re-configuring keeps all three.
+      await tester.runAsync(() => init(handler));
+
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) => TextButton(
+            onPressed: () => Featurely.showChat(context),
+            child: const Text('Open chat'),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('Open chat'));
+      await tester.pumpAndSettle();
+
+      Future<void> send(String text) async {
+        await tester.enterText(find.byType(TextField), text);
+        await tester.pump();
+        await tester.tap(find.byKey(const ValueKey('featurely-chat-send')));
+        await tester.pumpAndSettle();
+      }
+
+      await send('Pairing fails');
+      expect(sent.single, {
+        'body': 'Pairing fails',
+        'clientMessageId': sent.single['clientMessageId'],
+        'resolvedLocale': sent.single['resolvedLocale'],
+        'deviceLocale': sent.single['deviceLocale'],
+        'diagnostics': {'bluetooth': 'off', 'attempts': 2},
+        'availableActions': ['open_settings'],
+        'assistantCapable': true,
+      });
+
+      // The server rejects the snapshot: one re-send without it, same id.
+      rejectDiagnostics = true;
+      await send('Still failing');
+      expect(sent, hasLength(3));
+      expect(sent[1].containsKey('diagnostics'), isTrue);
+      expect(sent[2].containsKey('diagnostics'), isFalse);
+      expect(sent[2]['clientMessageId'], sent[1]['clientMessageId']);
+      expect(sent[2]['assistantCapable'], isTrue);
+      expect(find.text('Not sent — Tap to retry'), findsNothing);
+
+      // Removing the handler stops advertising actions; removing the
+      // provider stops diagnostics.
+      Featurely.setChatActionHandler(null);
+      Featurely.setChatDiagnosticsProvider(null);
+      await send('Third');
+      expect(sent.last.containsKey('availableActions'), isFalse);
+      expect(sent.last.containsKey('diagnostics'), isFalse);
+      expect(sent.last['assistantCapable'], isTrue);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+  });
+
   test('showChat before init throws a StateError', () {
     expect(
       () => Featurely.showChat(_FakeContext()),
@@ -349,6 +472,7 @@ void main() {
         'clientMessageId': '0d6c1b2a-1111-4111-8111-111111111111',
         'deviceLocale': 'de-CH',
         'resolvedLocale': 'de',
+        'assistantCapable': true,
       });
       expect(message.clientMessageId, '0d6c1b2a-1111-4111-8111-111111111111');
     });
@@ -363,6 +487,7 @@ void main() {
         'body': 'Hello',
         'clientMessageId': '0d6c1b2a-1111-4111-8111-111111111111',
         'metadata': {'screen': 'Checkout', 'plan': 'pro'},
+        'assistantCapable': true,
       });
     });
 

@@ -24,7 +24,7 @@ Featurely web dashboard.
 
 ```yaml
 dependencies:
-  featurely: ^0.5.0
+  featurely: ^0.6.0
 ```
 
 Initialize once at startup (idempotent — call it on every launch), then
@@ -175,6 +175,136 @@ Things to know:
 - The chat uses the same theming, localization (including RTL) and SANDBOX
   strip as the feedback sheet.
 
+## AI Support Assistant
+
+A Featurely project can turn on an **AI support assistant** (powered by
+Claude) that answers chat messages within seconds, from a knowledge document
+your team maintains in the dashboard plus a live **diagnostics snapshot**
+your app attaches to each message. When it can't help, or the user asks for
+a person, it hands the conversation to your team, who get the usual alert
+email. A team reply always takes over from the assistant.
+
+### Setup
+
+1. **Server** (self-hosted): set `ANTHROPIC_API_KEY` and
+   `ASSISTANT_ENABLED=true`. Optional: `ASSISTANT_MODEL` (default
+   `claude-opus-5`), `ASSISTANT_EFFORT` (default `low`) and
+   `ASSISTANT_CONCURRENCY` (default `4`). See the server README.
+2. **Dashboard**: an admin enables the assistant per environment under
+   **Settings → Assistant** (Sandbox and Live separately), and sets its
+   name, instructions and knowledge document.
+3. **App**: update to this SDK (0.6.0+). Nothing else is required: every
+   chat send declares that this SDK can show assistant replies, and the
+   assistant only answers conversations whose SDK does. The two hooks below
+   make its answers much better.
+
+Assistant replies show under the assistant's name with a small **AI** tag.
+They are plain text; step-by-step help comes as numbered lines. While the
+assistant is writing, the chat shows "{name} is typing…" and checks for the
+reply every 1.5 s (for up to 60 s, then back to every 5 s). There is no
+"talk to a person" button: users just ask, and the assistant escalates.
+
+### Diagnostics provider
+
+Give the assistant the app state it needs to diagnose a problem, so it
+doesn't have to ask:
+
+```dart
+Featurely.setChatDiagnosticsProvider(() async => {
+      'bluetooth': bluetooth.isOn ? 'on' : 'off',
+      'watchPaired': pairing.isPaired,
+      'lastSyncMinutesAgo': sync.minutesSinceLast,
+      'permissions': {'notifications': await notificationsGranted()},
+    });
+```
+
+The provider runs on every send (including a manual retry) and gets **1
+second**. Its result must be a JSON object: `null`, `bool`, finite numbers,
+strings of at most 200 characters, lists of at most 30 items, and maps with
+`String` keys, nested at most 3 levels (the top-level map counts), and at
+most 4 096 bytes as UTF-8 JSON. If the provider times out, throws, returns
+`null`, or breaks a limit, the message goes **without** diagnostics (a debug
+build logs why); a send never fails because of them. If the server still
+rejects the snapshot, the SDK re-sends the message once without it. Pass
+`null` to remove the provider.
+
+Diagnostics are shown to your team in the Inbox and sent to the assistant;
+they are never shown to the user or returned by the API. **Don't include
+secrets, identifiers, or personal data** — report states and counts, not
+names, emails, or tokens.
+
+### Actions
+
+Let the assistant suggest one-tap actions in your app. Register the actions
+with localized titles, and handle taps:
+
+```dart
+Featurely.registerChatActions([
+  FeaturelyChatAction(id: 'open_settings', title: l10n.openSettings),
+  FeaturelyChatAction(id: 'retry_pairing', title: l10n.tryAgain),
+]);
+
+Featurely.setChatActionHandler((id) {
+  switch (id) {
+    case 'retry_pairing':
+      pairing.retry();
+      return FeaturelyChatActionResult.stay; // keep the chat open
+    case 'open_settings':
+      // Runs after the chat sheet has closed.
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => navigatorKey.currentState?.pushNamed('/settings'));
+      return FeaturelyChatActionResult.dismiss; // close the chat sheet
+    default:
+      return FeaturelyChatActionResult.stay;
+  }
+});
+```
+
+- Each send lists the registered ids (as long as a handler is set), and the
+  assistant can suggest up to 3 of them per reply. They appear as buttons
+  below the reply, labelled with your `title`. Ids you haven't registered
+  are never shown.
+- A tapped button shows as used for the rest of the app session.
+- `stay` keeps the chat open. `dismiss` closes the sheet that `showChat` (or
+  `show`) presented right after the handler returns. To navigate once it is
+  gone, schedule the work as above (or navigate after `await
+  Featurely.showChat(context)` completes).
+- Ids must match `^[a-z][a-z0-9_]{0,39}$`; at most 12 are kept. Invalid,
+  duplicate, or blank-titled entries are dropped with a debug-build log.
+  `registerChatActions` replaces the previous list; pass `null` to
+  `setChatActionHandler` to remove the buttons.
+
+All three hooks are app-wide, need `init` first, and survive a later `init`.
+
+### Data sent to Anthropic
+
+When a project enables the assistant, Anthropic becomes a subprocessor for
+that project. For each reply, the Featurely server sends Anthropic only:
+
+- the conversation's message bodies, who wrote each (user, team, or
+  assistant) and relative timestamps
+- the diagnostics snapshot
+- the conversation locale
+- the chat metadata (`setChatMetadata` / `showChat(metadata:)`), minus the
+  keys your admin hides (by default `support_id`, `email`, and `user_id`)
+- the registered action ids
+- your project's assistant instructions and knowledge document
+
+It never sends the contact email, the device ID, your `login` user ID, IP
+addresses, user agents, or your team members' emails. API data is not used
+for model training by default.
+
+### Privacy policy wording
+
+Disclose the assistant in your privacy policy. For example:
+
+> In-app support messages, together with technical information about the
+> app's state on your device (for example, connection and permission
+> status), may be processed by an AI assistant provided by Anthropic, PBC,
+> to answer your question. Your email address and device identifiers are
+> not shared with Anthropic. You can always ask to reach a person on our
+> team.
+
 ## Theming
 
 ```dart
@@ -262,7 +392,8 @@ flutter run \
 ```
 
 (Use `http://10.0.2.2:3000` on the Android emulator.) It exposes theming
-knobs, a locale override, and login/logout buttons.
+knobs, a locale override, login/logout buttons, and a chat button wired to
+an AI assistant diagnostics provider and one registered action.
 
 ## Requirements
 
@@ -270,4 +401,5 @@ knobs, a locale override, and login/logout buttons.
 - Android & iOS (no web/desktop)
 - A Featurely instance serving the frozen `/api/v1` contract (any server
   version — the SDK decodes leniently and never breaks on additive changes).
-  In-App Chat needs a server that reports `chatEnabled`.
+  In-App Chat needs a server that reports `chatEnabled`; the AI Support
+  Assistant needs one with the assistant enabled for the environment.

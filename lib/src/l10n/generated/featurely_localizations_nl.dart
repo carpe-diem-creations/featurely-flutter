@@ -227,6 +227,17 @@ class FeaturelyLocalizationsNl extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => 'Te veel verzoeken. Probeer het zo weer.';
 
   @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => 'Assistent';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name is aan het typen…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Schrijf een bericht…';
 
   @override

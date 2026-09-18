@@ -1,0 +1,14 @@
+{
+  "body": "The pairing prompt never shows up.",
+  "clientMessageId": "6f9619ff-8b86-4d11-b42d-00c04fc964ff",
+  "deviceLocale": "de-DE",
+  "resolvedLocale": "de",
+  "metadata": { "screen": "Pairing" },
+  "diagnostics": {
+    "setupStep": "pairing",
+    "bluetooth": { "state": "poweredOn", "bonded": false },
+    "recentErrors": ["bond_timeout", "bond_timeout"]
+  },
+  "availableActions": ["retry_pairing", "open_bluetooth_settings"],
+  "assistantCapable": true
+}

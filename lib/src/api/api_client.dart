@@ -214,13 +214,19 @@ class FeaturelyApiClient {
   /// manual retry must reuse the same id. Never auto-retried.
   ///
   /// [metadata] is host-app context shown to the team only; the field is
-  /// omitted when it is null or empty.
+  /// omitted when it is null or empty. [diagnostics] (an already validated
+  /// JSON object) and [availableActions] (registered action ids) feed the
+  /// AI assistant; each is omitted when null or empty. Every send declares
+  /// `assistantCapable: true`, since this SDK renders assistant messages;
+  /// servers without the assistant ignore all three fields.
   Future<ChatMessage> sendChatMessage({
     required String body,
     required String clientMessageId,
     String? deviceLocale,
     String? resolvedLocale,
     Map<String, String>? metadata,
+    Map<String, Object?>? diagnostics,
+    List<String>? availableActions,
   }) =>
       _reporting('sendChatMessage', () async =>
           ChatMessage.fromJson(await _sendJson(
@@ -232,6 +238,11 @@ class FeaturelyApiClient {
               if (deviceLocale != null) 'deviceLocale': deviceLocale,
               if (resolvedLocale != null) 'resolvedLocale': resolvedLocale,
               if (metadata != null && metadata.isNotEmpty) 'metadata': metadata,
+              if (diagnostics != null && diagnostics.isNotEmpty)
+                'diagnostics': diagnostics,
+              if (availableActions != null && availableActions.isNotEmpty)
+                'availableActions': availableActions,
+              'assistantCapable': true,
             },
             expect: 201,
             alsoAccept: 200,

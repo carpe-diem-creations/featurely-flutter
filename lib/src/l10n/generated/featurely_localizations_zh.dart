@@ -219,6 +219,17 @@ class FeaturelyLocalizationsZh extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => '请求过多，请稍后再试。';
 
   @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => '助手';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name 正在输入…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => '输入消息…';
 
   @override
@@ -488,6 +499,17 @@ class FeaturelyLocalizationsZhHant extends FeaturelyLocalizationsZh {
 
   @override
   String get sdkCommonRateLimited => '請求次數過多，請稍後再試。';
+
+  @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => '助理';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name 正在輸入…';
+  }
 
   @override
   String get sdkChatComposerPlaceholder => '輸入訊息…';

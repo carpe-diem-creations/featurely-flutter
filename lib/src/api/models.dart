@@ -271,6 +271,7 @@ class SdkConfig {
     required this.commentMax,
     required this.attachmentMaxBytes,
     this.chatEnabled = false,
+    this.assistantEnabled = false,
   });
 
   /// Lenient decode with defaults.
@@ -286,6 +287,7 @@ class SdkConfig {
       attachmentMaxBytes:
           (limits['attachmentMaxBytes'] as num?)?.toInt() ?? 5242880,
       chatEnabled: json['chatEnabled'] as bool? ?? false,
+      assistantEnabled: json['assistantEnabled'] as bool? ?? false,
     );
   }
 
@@ -298,7 +300,8 @@ class SdkConfig {
         descriptionMax = 10000,
         commentMax = 5000,
         attachmentMaxBytes = 5242880,
-        chatEnabled = false;
+        chatEnabled = false,
+        assistantEnabled = false;
 
   /// `project.name` — supplies `{appName}` in strings.
   final String projectName;
@@ -321,6 +324,12 @@ class SdkConfig {
   /// Whether the server supports In-App Chat. Absent (older servers) decodes
   /// to false, which hides every chat entry point.
   final bool chatEnabled;
+
+  /// Whether the project's AI support assistant answers chat messages in
+  /// this environment. Absent (older servers) decodes to false.
+  /// Informational: the SDK always declares assistant support on sends and
+  /// renders whatever the server returns.
+  final bool assistantEnabled;
 }
 
 /// The maximum chat message length (trimmed, UTF-16 code units — the same
@@ -348,6 +357,36 @@ enum ChatAuthor {
       );
 }
 
+/// Who wrote a chat message, distinguishing the AI assistant from people.
+///
+/// Assistant messages keep `author: 'team'` on the wire so older SDKs render
+/// them as team replies; `authorKind` tells them apart.
+enum ChatAuthorKind {
+  /// This device's end user.
+  endUser('end_user'),
+
+  /// A person on the app's team.
+  team('team'),
+
+  /// The project's AI support assistant.
+  assistant('assistant');
+
+  const ChatAuthorKind(this.wire);
+
+  /// The wire value.
+  final String wire;
+
+  /// Lenient decode: an absent or unknown `authorKind` (servers without the
+  /// assistant) falls back to [author] — a user message is [endUser],
+  /// anything else [team].
+  static ChatAuthorKind decode(Object? value, ChatAuthor author) {
+    for (final kind in values) {
+      if (kind.wire == value) return kind;
+    }
+    return author == ChatAuthor.user ? endUser : team;
+  }
+}
+
 /// Conversation status.
 enum ConversationStatus {
   /// Awaiting the team (or ongoing).
@@ -368,8 +407,9 @@ enum ConversationStatus {
       );
 }
 
-/// A public chat message — exactly `{id, author, body, createdAt,
-/// clientMessageId}`. Team messages never carry a name or email.
+/// A public chat message: `{id, author, body, createdAt, clientMessageId}`,
+/// plus `authorKind` and, on assistant messages, `authorName` and `actions`.
+/// Team messages never carry a name or email.
 class ChatMessage {
   /// Creates a message.
   const ChatMessage({
@@ -378,22 +418,40 @@ class ChatMessage {
     required this.body,
     required this.createdAt,
     this.clientMessageId,
-  });
+    ChatAuthorKind? authorKind,
+    this.authorName,
+    this.actions = const [],
+  }) : _authorKind = authorKind;
 
-  /// Lenient decode.
-  factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
-        id: json['id'] as String? ?? '',
-        author: ChatAuthor.decode(json['author']),
-        body: json['body'] as String? ?? '',
-        createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
-            DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
-        clientMessageId: json['clientMessageId'] as String?,
-      );
+  /// Lenient decode. Messages from servers without the assistant (no
+  /// `authorKind`) decode exactly as before.
+  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    final author = ChatAuthor.decode(json['author']);
+    final kind = ChatAuthorKind.decode(json['authorKind'], author);
+    final isAssistant = kind == ChatAuthorKind.assistant;
+    final name = json['authorName'];
+    return ChatMessage(
+      id: json['id'] as String? ?? '',
+      author: author,
+      body: json['body'] as String? ?? '',
+      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
+          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+      clientMessageId: json['clientMessageId'] as String?,
+      authorKind: kind,
+      authorName: isAssistant && name is String ? name : null,
+      actions: isAssistant
+          ? List.unmodifiable(
+              ((json['actions'] as List<dynamic>?) ?? const [])
+                  .whereType<String>(),
+            )
+          : const [],
+    );
+  }
 
   /// Server-generated id.
   final String id;
 
-  /// Author kind.
+  /// Author side: the user or the team (assistant messages are `team`).
   final ChatAuthor author;
 
   /// Plain-text body.
@@ -404,6 +462,23 @@ class ChatMessage {
 
   /// The client-generated UUID; set only on this device's own messages.
   final String? clientMessageId;
+
+  final ChatAuthorKind? _authorKind;
+
+  /// Who wrote it, derived from [author] when the server didn't say.
+  ChatAuthorKind get authorKind =>
+      _authorKind ??
+      (author == ChatAuthor.user ? ChatAuthorKind.endUser : ChatAuthorKind.team);
+
+  /// Whether the project's AI assistant wrote this message.
+  bool get isAssistant => authorKind == ChatAuthorKind.assistant;
+
+  /// The assistant's display name (assistant messages only; may be null).
+  final String? authorName;
+
+  /// Action ids the assistant suggested (assistant messages only). The SDK
+  /// shows only those the host app registered.
+  final List<String> actions;
 }
 
 /// The device's single conversation (`GET /conversation`).
@@ -450,6 +525,7 @@ class ChatMessagesPage {
     required this.messages,
     required this.olderCursor,
     required this.newerCursor,
+    this.assistantPending = false,
   });
 
   /// Lenient decode.
@@ -461,6 +537,7 @@ class ChatMessagesPage {
             .toList(),
         olderCursor: json['olderCursor'] as String?,
         newerCursor: json['newerCursor'] as String?,
+        assistantPending: json['assistantPending'] as bool? ?? false,
       );
 
   /// Messages, oldest first.
@@ -471,4 +548,8 @@ class ChatMessagesPage {
 
   /// Pass as `after` to poll; null only when the device has no messages.
   final String? newerCursor;
+
+  /// Whether the AI assistant is working on a reply right now. Absent
+  /// (servers without the assistant) decodes to false.
+  final bool assistantPending;
 }

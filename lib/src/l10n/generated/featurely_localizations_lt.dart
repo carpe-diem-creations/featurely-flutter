@@ -235,6 +235,17 @@ class FeaturelyLocalizationsLt extends FeaturelyLocalizations {
       'Per daug užklausų. Bandyk dar kartą po akimirkos.';
 
   @override
+  String get sdkChatAiTag => 'DI';
+
+  @override
+  String get sdkChatAssistantName => 'Asistentas';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name rašo…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Rašyk žinutę…';
 
   @override

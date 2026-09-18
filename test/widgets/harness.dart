@@ -65,6 +65,14 @@ class FakeApi extends FeaturelyApiClient {
   /// [sendCalls].
   final List<Map<String, String>?> sendMetadata = [];
 
+  /// The `diagnostics` of every `sendChatMessage` call, parallel to
+  /// [sendCalls].
+  final List<Map<String, Object?>?> sendDiagnostics = [];
+
+  /// The `availableActions` of every `sendChatMessage` call, parallel to
+  /// [sendCalls].
+  final List<List<String>?> sendActions = [];
+
   /// Every `setChatEmail` argument.
   final List<String?> emailCalls = [];
 
@@ -131,9 +139,13 @@ class FakeApi extends FeaturelyApiClient {
     String? deviceLocale,
     String? resolvedLocale,
     Map<String, String>? metadata,
+    Map<String, Object?>? diagnostics,
+    List<String>? availableActions,
   }) {
     sendCalls.add((body, clientMessageId));
     sendMetadata.add(metadata);
+    sendDiagnostics.add(diagnostics);
+    sendActions.add(availableActions);
     lastChatResolvedLocale = resolvedLocale;
     return onSendChatMessage?.call(body, clientMessageId) ??
         Future.value(makeChatMessage(
@@ -207,6 +219,24 @@ ChatMessage makeChatMessage({
       body: body,
       createdAt: createdAt ?? DateTime.utc(2026, 9, 1, 10),
       clientMessageId: clientMessageId,
+    );
+
+/// An AI assistant message fixture (wire `author: 'team'`).
+ChatMessage makeAssistantMessage({
+  required String id,
+  String body = 'Try this:\n1. Open Settings.\n2. Tap "Pair".',
+  String? authorName = 'Lyn',
+  List<String> actions = const [],
+  DateTime? createdAt,
+}) =>
+    ChatMessage(
+      id: id,
+      author: ChatAuthor.team,
+      authorKind: ChatAuthorKind.assistant,
+      authorName: authorName,
+      actions: actions,
+      body: body,
+      createdAt: createdAt ?? DateTime.utc(2026, 9, 1, 10),
     );
 
 /// A conversation fixture.

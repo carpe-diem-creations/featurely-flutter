@@ -229,6 +229,17 @@ class FeaturelyLocalizationsEs extends FeaturelyLocalizations {
       'Demasiadas solicitudes. Inténtalo de nuevo en un momento.';
 
   @override
+  String get sdkChatAiTag => 'IA';
+
+  @override
+  String get sdkChatAssistantName => 'Asistente';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name está escribiendo…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Escribe un mensaje…';
 
   @override

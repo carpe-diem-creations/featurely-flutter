@@ -228,6 +228,17 @@ class FeaturelyLocalizationsBg extends FeaturelyLocalizations {
       'Твърде много заявки. Опитай отново след малко.';
 
   @override
+  String get sdkChatAiTag => 'ИИ';
+
+  @override
+  String get sdkChatAssistantName => 'Асистент';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name пише…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Напиши съобщение…';
 
   @override

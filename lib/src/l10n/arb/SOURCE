@@ -56,6 +56,16 @@
 #   sdkFilterShowResultsOverflow  (filter apply label when the count preview
 #                                  page was full and more results exist)
 #
+# Upstreamed 2026-09-18 (AI Support Assistant): `sdkChatAiTag`,
+# `sdkChatAssistantName` and `sdkChatAssistantTyping` are canonical keys now
+# (sdk.chat.aiTag / assistantName / assistantTyping in featurely-app
+# packages/locales/catalog/*.arb, commit aacad9b, PR #16). The values and en @-metadata here match
+# packages/locales/exports/flutter/app_<locale>.arb for all 34 locales, so they
+# are no longer SDK-local and the next sync treats them like any other sdk.*
+# key. (The catalog also
+# gained sdk.chat.actionUsed, which only the iOS SDK uses; this SDK does not
+# vendor it.)
+#
 # To re-sync after a canonical catalog change: repeat the transform above for
 # all 34 locales, re-add the extension keys (until upstreamed), update the
 # commit hash and date here, then run `flutter gen-l10n`.

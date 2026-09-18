@@ -222,6 +222,17 @@ class FeaturelyLocalizationsTh extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => 'คำขอมากเกินไป ลองอีกครั้งในอีกสักครู่';
 
   @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => 'ผู้ช่วย';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name กำลังพิมพ์…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'พิมพ์ข้อความ…';
 
   @override

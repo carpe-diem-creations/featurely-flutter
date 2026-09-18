@@ -19,6 +19,7 @@ class FeaturelyScope extends InheritedWidget {
     required this.listController,
     required super.child,
     this.hostVisible = true,
+    this.dismissSheet,
     super.key,
   });
 
@@ -48,6 +49,10 @@ class FeaturelyScope extends InheritedWidget {
   /// while the host app covers the sheet with another route). Chat polling
   /// stops while this is false.
   final bool hostVisible;
+
+  /// Closes the whole sheet (the route `Featurely.show` / `showChat`
+  /// pushed), even when the host has pushed a route above it meanwhile.
+  final VoidCallback? dismissSheet;
 
   /// `{appName}` for strings, from config (empty-string-safe fallback).
   String get appName => config.value?.projectName ?? '';

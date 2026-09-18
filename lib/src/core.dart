@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'api/api_client.dart';
 import 'api/models.dart';
+import 'chat_actions.dart';
+import 'chat_diagnostics.dart';
 import 'identity/identity_store.dart';
 import 'metadata.dart';
 import 'options.dart';
 
 /// The per-configuration runtime the sheet operates on: API client,
-/// identity, session-long config cache, mutable plan and chat metadata.
+/// identity, session-long config cache, mutable plan, chat metadata, and
+/// the chat assistant hooks (diagnostics provider, actions, action handler).
 ///
 /// Internal — hosts only ever touch the `Featurely` facade. Kept as an
 /// injectable object so widget tests can supply fakes.
@@ -20,7 +23,12 @@ class FeaturelyCore {
     required this.metadata,
     String? plan,
     this.chatMetadata,
-  }) : plan = plan ?? options.plan;
+    this.chatDiagnosticsProvider,
+    this.chatActions = const [],
+    this.chatActionHandler,
+    Set<String>? usedChatActions,
+  })  : plan = plan ?? options.plan,
+        usedChatActions = usedChatActions ?? <String>{};
 
   /// Resolved init options.
   final FeaturelyOptions options;
@@ -40,6 +48,31 @@ class FeaturelyCore {
   /// App-wide chat metadata (an unmodifiable copy), mutable via
   /// `Featurely.setChatMetadata`.
   Map<String, String>? chatMetadata;
+
+  /// The host's diagnostics provider, mutable via
+  /// `Featurely.setChatDiagnosticsProvider`.
+  ChatDiagnosticsProvider? chatDiagnosticsProvider;
+
+  /// The registered assistant actions (cleaned, unmodifiable), mutable via
+  /// `Featurely.registerChatActions`.
+  List<FeaturelyChatAction> chatActions;
+
+  /// The host's action handler, mutable via `Featurely.setChatActionHandler`.
+  FeaturelyChatActionResult Function(String id)? chatActionHandler;
+
+  /// Assistant action buttons tapped this app session, as
+  /// [chatActionKey]s. In memory only.
+  final Set<String> usedChatActions;
+
+  /// The action ids a chat send advertises as `availableActions`: the
+  /// registered ones, but only while a handler can act on them.
+  List<String> get availableChatActionIds => chatActionHandler == null
+      ? const []
+      : [for (final action in chatActions) action.id];
+
+  /// The [usedChatActions] key of action [actionId] on message [messageId].
+  static String chatActionKey(String messageId, String actionId) =>
+      '$messageId/$actionId';
 
   /// Session-cached `GET /config` response.
   SdkConfig? cachedConfig;
@@ -91,6 +124,7 @@ class FeaturelyCore {
       commentMax: cached.commentMax,
       attachmentMaxBytes: cached.attachmentMaxBytes,
       chatEnabled: cached.chatEnabled,
+      assistantEnabled: cached.assistantEnabled,
     );
   }
 
