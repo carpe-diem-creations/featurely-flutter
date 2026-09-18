@@ -1,8 +1,13 @@
 import 'dart:ui' show PlatformDispatcher;
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
+import '../../api/models.dart';
+import '../../chat_actions.dart';
+import '../../chat_diagnostics.dart';
 import '../../chat_metadata.dart';
+import '../../core.dart';
 import '../../l10n/generated/featurely_localizations.dart';
 import '../controllers/chat_controller.dart';
 import '../scope.dart';
@@ -10,6 +15,7 @@ import '../widgets/chat_bubble.dart';
 import '../widgets/chat_composer.dart';
 import '../widgets/chat_day_separator.dart';
 import '../widgets/chat_email_row.dart';
+import '../widgets/chat_typing_row.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/state_views.dart';
 
@@ -19,7 +25,9 @@ import '../widgets/state_views.dart';
 ///
 /// Pushed from the list screen's "Message us" action, or shown as the root
 /// of a standalone sheet by `Featurely.showChat`. Polls only while this
-/// route is the visible one and the app is resumed.
+/// route is the visible one and the app is resumed. Shows the AI
+/// assistant's typing row and its suggested-action buttons, which call the
+/// host's `Featurely.setChatActionHandler` handler.
 class ChatScreen extends StatefulWidget {
   /// Creates the chat screen. [metadata] is per-presentation chat metadata,
   /// merged over the app-wide `Featurely.setChatMetadata` map on each send.
@@ -53,6 +61,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       // messages (retries keep their own snapshot).
       metadata: () =>
           effectiveChatMetadata(scope.core.chatMetadata, widget.metadata),
+      // Both read per delivery attempt, so later host changes apply.
+      diagnostics: () =>
+          collectChatDiagnostics(scope.core.chatDiagnosticsProvider),
+      availableActions: () => scope.core.availableChatActionIds,
     );
     WidgetsBinding.instance.addObserver(this);
     final lifecycle = WidgetsBinding.instance.lifecycleState;
@@ -93,6 +105,31 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOut,
       );
+    }
+  }
+
+  /// Runs the host's handler for a tapped assistant action, marks it used
+  /// for the session, and closes the sheet when the handler says so.
+  void _runAction(ChatMessage message, FeaturelyChatAction action) {
+    final scope = FeaturelyScope.read(context);
+    final core = scope.core;
+    final handler = core.chatActionHandler;
+    if (handler == null) return;
+    final key = FeaturelyCore.chatActionKey(message.id, action.id);
+    if (!core.usedChatActions.add(key)) return; // Already used.
+    setState(() {});
+    FeaturelyChatActionResult result;
+    try {
+      result = handler(action.id);
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('Featurely chat actions: the handler threw for '
+            '"${action.id}" ($error); keeping the chat open');
+      }
+      result = FeaturelyChatActionResult.stay;
+    }
+    if (result == FeaturelyChatActionResult.dismiss) {
+      scope.dismissSheet?.call();
     }
   }
 
@@ -205,7 +242,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     final theme = scope.theme;
     final strings = FeaturelyLocalizations.of(context);
     final entries = _controller.entries;
-    if (entries.isEmpty && !_controller.canLoadEarlier) {
+    final typing = _controller.assistantPending;
+    if (entries.isEmpty && !_controller.canLoadEarlier && !typing) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 24),
@@ -242,6 +280,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }
     final now = DateTime.now();
     final showHeader = _controller.canLoadEarlier;
+    final core = scope.core;
+    final registered = {
+      for (final action in core.chatActions) action.id: action,
+    };
+    final canAct = core.chatActionHandler != null;
+    final typingOffset = typing ? 1 : 0;
     // Reversed: index 0 is the newest message, pinned to the bottom.
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
@@ -255,16 +299,39 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         controller: _scroll,
         reverse: true,
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-        itemCount: entries.length + (showHeader ? 1 : 0),
-        itemBuilder: (context, index) {
+        itemCount: entries.length + (showHeader ? 1 : 0) + typingOffset,
+        itemBuilder: (context, rawIndex) {
+          if (typing && rawIndex == 0) {
+            return ChatTypingRow(
+              key: const ValueKey('featurely-chat-typing'),
+              name: _controller.assistantName ?? strings.sdkChatAssistantName,
+            );
+          }
+          final index = rawIndex - typingOffset;
           if (index >= entries.length) return _buildLoadEarlier(context);
           final position = entries.length - 1 - index;
           final entry = entries[position];
-          final cid = entry.message.clientMessageId;
+          final message = entry.message;
+          final cid = message.clientMessageId;
+          final actions = canAct && message.isAssistant
+              ? [
+                  for (final id in message.actions.toSet())
+                    if (registered[id] case final action?) action,
+                ]
+              : const <FeaturelyChatAction>[];
           final bubble = ChatBubble(
-            key: ValueKey(entry.isLocal ? 'local-$cid' : entry.message.id),
+            key: ValueKey(entry.isLocal ? 'local-$cid' : message.id),
             entry: entry,
             onRetry: cid == null ? null : () => _controller.retry(cid),
+            actions: actions,
+            usedActionIds: {
+              for (final action in actions)
+                if (core.usedChatActions.contains(
+                    FeaturelyCore.chatActionKey(message.id, action.id)))
+                  action.id,
+            },
+            onAction:
+                actions.isEmpty ? null : (action) => _runAction(message, action),
           );
           // The separator belongs to the oldest row of its day and sits
           // above it (in the same item, so reversal doesn't move it).

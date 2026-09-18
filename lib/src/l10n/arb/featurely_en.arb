@@ -289,6 +289,24 @@
   "@sdkCommonRateLimited": {
     "description": "Notice for 429 rate_limited responses on user-initiated actions. [SDK-local extension key — not in the canonical catalog yet]"
   },
+  "sdkChatAiTag": "AI",
+  "@sdkChatAiTag": {
+    "description": "Small tag next to the AI support assistant's name on its chat messages. Keep it as short as possible."
+  },
+  "sdkChatAssistantName": "Assistant",
+  "@sdkChatAssistantName": {
+    "description": "Fallback name for the AI support assistant when the server hasn't sent the project's own assistant name."
+  },
+  "sdkChatAssistantTyping": "{name} is typing…",
+  "@sdkChatAssistantTyping": {
+    "description": "Row shown at the bottom of the chat while the AI support assistant is writing a reply.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Assistant"
+      }
+    }
+  },
   "sdkChatComposerPlaceholder": "Write a message…",
   "@sdkChatComposerPlaceholder": {
     "description": "Placeholder of the chat message composer."

@@ -229,6 +229,17 @@ class FeaturelyLocalizationsHu extends FeaturelyLocalizations {
       'Túl sok kérés. Próbáld újra kicsit később.';
 
   @override
+  String get sdkChatAiTag => 'MI';
+
+  @override
+  String get sdkChatAssistantName => 'Asszisztens';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name éppen ír…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Írj üzenetet…';
 
   @override

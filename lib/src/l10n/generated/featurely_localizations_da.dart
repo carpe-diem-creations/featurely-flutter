@@ -228,6 +228,17 @@ class FeaturelyLocalizationsDa extends FeaturelyLocalizations {
       'For mange anmodninger. Prøv igen om lidt.';
 
   @override
+  String get sdkChatAiTag => 'AI';
+
+  @override
+  String get sdkChatAssistantName => 'Assistent';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name skriver…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Skriv en besked…';
 
   @override

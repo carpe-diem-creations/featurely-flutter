@@ -132,6 +132,24 @@ class _FeaturelySheetState extends State<FeaturelySheet> {
     super.dispose();
   }
 
+  /// Removes the route hosting this sheet: popped (animated) when it is on
+  /// top, removed in place when the host already pushed a route above it
+  /// (e.g. from a chat action handler), and never when it is the
+  /// navigator's first route.
+  void _dismissSheet() {
+    if (!mounted) return;
+    final route = ModalRoute.of(context);
+    final navigator = route?.navigator;
+    if (route == null || navigator == null || !route.isActive || route.isFirst) {
+      return;
+    }
+    if (route.isCurrent) {
+      navigator.pop();
+    } else {
+      navigator.removeRoute(route);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final locale = localeForTag(widget.localeTag);
@@ -157,6 +175,7 @@ class _FeaturelySheetState extends State<FeaturelySheet> {
               configSnapshot: configValue,
               listController: _listController,
               hostVisible: hostVisible,
+              dismissSheet: _dismissSheet,
               child: child!,
             ),
             child: ClipRRect(

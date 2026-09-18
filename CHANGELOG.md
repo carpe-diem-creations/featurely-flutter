@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.6.0
+
+**AI Support Assistant:** a Featurely project can let an AI assistant
+answer chat messages within seconds and hand off to the team when it can't
+help. Needs a Featurely server with the assistant enabled for the
+environment; against older servers everything below is ignored and chat
+works as before.
+
+- Every chat send now declares `assistantCapable: true`, so the assistant
+  may answer conversations from this SDK.
+- Assistant replies show the assistant's name and a small "AI" tag. They
+  are plain text (no markdown); numbered lines get a hanging indent.
+- While the assistant is writing, the chat shows "{name} is typing…" and
+  polls every 1.5 s, returning to 5 s when the reply lands or after 60 s.
+- New `Featurely.setChatDiagnosticsProvider(provider)`: a live app-state
+  snapshot sent with each message. The provider gets 1 s; a timeout, a
+  throw, or a result over the limits (4 096 bytes of JSON, 3 levels deep,
+  200-character strings, 30-item lists) sends the message without it. If the
+  server rejects the snapshot, the message is re-sent once without it.
+- New `Featurely.registerChatActions([FeaturelyChatAction(id:, title:)])`
+  and `Featurely.setChatActionHandler(handler)`: the assistant can suggest
+  registered actions, shown as buttons under its reply. The handler returns
+  `FeaturelyChatActionResult.stay` or `.dismiss` (closes the chat sheet); a
+  tapped action shows as used for the session.
+- Localized "AI", "Assistant" and "{name} is typing…" strings
+  (`sdkChatAiTag`, `sdkChatAssistantName`, `sdkChatAssistantTyping`) in all
+  34 locales.
+
 ## 0.5.0
 
 - Refreshed the chat screen. Messages are grouped under day separators

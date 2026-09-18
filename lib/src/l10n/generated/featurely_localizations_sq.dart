@@ -226,6 +226,17 @@ class FeaturelyLocalizationsSq extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => 'Shumë kërkesa. Provo sërish pas pak.';
 
   @override
+  String get sdkChatAiTag => 'IA';
+
+  @override
+  String get sdkChatAssistantName => 'Asistenti';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name po shkruan…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Shkruaj një mesazh…';
 
   @override

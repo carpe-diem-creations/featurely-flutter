@@ -71,10 +71,13 @@ enum ChatEmailError {
 }
 
 /// Controller for the In-App Chat screen: history paging, optimistic sends
-/// with manual retry, the contact email, polling, and read markers.
+/// with manual retry, the contact email, polling, read markers, and the AI
+/// assistant's pending state.
 ///
 /// Polling runs only while [setVisible] is true **and** the app is in the
 /// foreground ([setForeground]); a `429` pauses it for [rateLimitPause].
+/// While the server reports the assistant is working on a reply, polling
+/// speeds up to [assistantPollInterval] for at most [assistantPendingWindow].
 /// Pending and failed messages live in memory only and are discarded with
 /// the controller.
 class ChatController extends ChangeNotifier {
@@ -82,13 +85,19 @@ class ChatController extends ChangeNotifier {
   /// each message so reply emails are localized. [metadata] is read once per
   /// composed message; its result is sent with that message and its retries.
   /// [initialMessage] prefills the composer once (see [takeInitialMessage]).
+  /// [diagnostics] and [availableActions] are read on every delivery
+  /// attempt (a send or a manual retry).
   ChatController({
     required this.api,
     this.resolvedLocale,
     this.deviceLocale,
     this.metadata,
+    this.diagnostics,
+    this.availableActions,
     String? initialMessage,
     this.pollInterval = const Duration(seconds: 5),
+    this.assistantPollInterval = const Duration(milliseconds: 1500),
+    this.assistantPendingWindow = const Duration(seconds: 60),
     this.rateLimitPause = const Duration(seconds: 30),
     String Function()? idGenerator,
   })  : _idGenerator = idGenerator ?? generateUuidV4,
@@ -107,8 +116,21 @@ class ChatController extends ChangeNotifier {
   /// cleaned; null or empty sends none).
   final Map<String, String>? Function()? metadata;
 
+  /// Supplies the validated diagnostics snapshot for a delivery attempt
+  /// (null sends none). Must never take long: the message waits for it.
+  final Future<Map<String, Object?>?> Function()? diagnostics;
+
+  /// Supplies the action ids to advertise on a delivery attempt.
+  final List<String> Function()? availableActions;
+
   /// Delay between polls while visible and foregrounded.
   final Duration pollInterval;
+
+  /// Delay between polls while the assistant is working on a reply.
+  final Duration assistantPollInterval;
+
+  /// How long one pending episode may keep the faster polling.
+  final Duration assistantPendingWindow;
 
   /// How long polling pauses after a `429`.
   final Duration rateLimitPause;
@@ -137,6 +159,9 @@ class ChatController extends ChangeNotifier {
   DateTime? _readThrough;
   Timer? _pollTimer;
   Timer? _pauseTimer;
+  bool _assistantPending = false;
+  Timer? _pendingWindowTimer;
+  bool _pendingWindowOver = false;
   int _loadGeneration = 0;
   bool _disposed = false;
 
@@ -171,6 +196,26 @@ class ChatController extends ChangeNotifier {
 
   /// Whether a `429` notice should show (cleared by the next success).
   bool get rateLimitedNotice => _rateLimitedNotice;
+
+  /// Whether the AI assistant is working on a reply (the typing row shows).
+  bool get assistantPending => _assistantPending;
+
+  /// The assistant's display name, from its newest loaded message, or null
+  /// when no assistant message is loaded (the UI falls back to a default).
+  String? get assistantName {
+    for (final message in _confirmed.reversed) {
+      final name = message.isAssistant ? message.authorName?.trim() : null;
+      if (name != null && name.isNotEmpty) return name;
+    }
+    return null;
+  }
+
+  /// The interval the next poll will be scheduled with.
+  @visibleForTesting
+  Duration get currentPollInterval =>
+      _assistantPending && !_pendingWindowOver
+          ? assistantPollInterval
+          : pollInterval;
 
   /// Whether a poll timer is currently armed (for tests / diagnostics).
   @visibleForTesting
@@ -218,6 +263,7 @@ class ChatController extends ChangeNotifier {
       _olderCursor = page.olderCursor;
       _newerCursor = page.newerCursor;
       _loadEarlierFailed = false;
+      _setAssistantPending(page.assistantPending);
       // Nothing unread → the loaded team messages count as already read.
       if ((conversation?.unreadCount ?? 0) == 0) {
         _readThrough = _newestTeamMessageAt;
@@ -225,7 +271,7 @@ class ChatController extends ChangeNotifier {
       _phase = ChatPhase.loaded;
       _notify();
       unawaited(_maybeMarkRead());
-      _schedulePoll(pollInterval);
+      _schedulePoll(currentPollInterval);
     } catch (error) {
       if (_disposed || generation != _loadGeneration) return;
       _phase = ChatPhase.error;
@@ -318,23 +364,61 @@ class ChatController extends ChangeNotifier {
     }
   }
 
+  List<String>? _snapshotActions() {
+    try {
+      return availableActions?.call();
+    } catch (_) {
+      return null; // Actions must never block a send.
+    }
+  }
+
+  Future<Map<String, Object?>?> _snapshotDiagnostics() async {
+    try {
+      return await diagnostics?.call();
+    } catch (_) {
+      return null; // Diagnostics must never block a send.
+    }
+  }
+
   Future<void> _deliver(ChatEntry entry) async {
     final pending = entry.message;
     final clientMessageId = pending.clientMessageId!;
     try {
-      final stored = await api.sendChatMessage(
-        body: pending.body,
-        clientMessageId: clientMessageId,
-        deviceLocale: deviceLocale,
-        resolvedLocale: resolvedLocale,
-        metadata: entry.metadata,
-      );
+      final snapshot = await _snapshotDiagnostics();
+      final actions = _snapshotActions();
+      if (_disposed) return;
+      Future<ChatMessage> post(Map<String, Object?>? diagnostics) =>
+          api.sendChatMessage(
+            body: pending.body,
+            clientMessageId: clientMessageId,
+            deviceLocale: deviceLocale,
+            resolvedLocale: resolvedLocale,
+            metadata: entry.metadata,
+            diagnostics: diagnostics,
+            availableActions: actions,
+          );
+      ChatMessage stored;
+      try {
+        stored = await post(snapshot);
+      } on FeaturelyApiException catch (error) {
+        // The server rejected the send and stored nothing. When diagnostics
+        // went with it they are the likely cause (the server's check has
+        // the final word), so re-send once without them: a message is
+        // never lost over diagnostics.
+        if (snapshot == null || error.statusCode != 400 || _disposed) rethrow;
+        if (kDebugMode) {
+          debugPrint('Featurely chat diagnostics: the server rejected the '
+              'snapshot (${error.code.wire}); re-sending without it');
+        }
+        stored = await post(null);
+      }
       if (_disposed) return;
       _local.removeWhere((e) => e.message.clientMessageId == clientMessageId);
       _merge([stored]);
       _rateLimitedNotice = false;
       _notify();
-      // One immediate poll picks up anything the team sent meanwhile.
+      // One immediate poll picks up anything the team sent meanwhile, and
+      // whether the assistant started on a reply.
       unawaited(pollNow());
     } catch (error) {
       if (_disposed) return;
@@ -442,7 +526,8 @@ class ChatController extends ChangeNotifier {
       final cursor = _newerCursor;
       final page = await api.getChatMessages(after: cursor);
       if (_disposed || generation != _loadGeneration) return;
-      final changed = _merge(page.messages);
+      var changed = _merge(page.messages);
+      if (_setAssistantPending(page.assistantPending)) changed = true;
       _newerCursor = page.newerCursor ?? cursor;
       // A cursor-less poll returned the newest page, which carries the
       // history cursor too.
@@ -469,8 +554,28 @@ class ChatController extends ChangeNotifier {
       // Transient: try again next cycle.
     } finally {
       _polling = false;
-      _schedulePoll(pollInterval);
+      _schedulePoll(currentPollInterval);
     }
+  }
+
+  /// Records the server's `assistantPending` flag. A new pending episode
+  /// starts the [assistantPendingWindow] of faster polling; the flag
+  /// clearing ends it. Returns whether the flag changed.
+  bool _setAssistantPending(bool pending) {
+    if (pending == _assistantPending) return false;
+    _assistantPending = pending;
+    _pendingWindowTimer?.cancel();
+    _pendingWindowTimer = null;
+    _pendingWindowOver = false;
+    if (pending) {
+      _pendingWindowTimer = Timer(assistantPendingWindow, () {
+        _pendingWindowTimer = null;
+        _pendingWindowOver = true;
+        // Back to the normal interval from the next poll on.
+        if (_pollTimer?.isActive ?? false) _schedulePoll(pollInterval);
+      });
+    }
+    return true;
   }
 
   void _schedulePoll(Duration delay) {
@@ -563,6 +668,7 @@ class ChatController extends ChangeNotifier {
     _disposed = true;
     _cancelPoll();
     _pauseTimer?.cancel();
+    _pendingWindowTimer?.cancel();
     super.dispose();
   }
 }

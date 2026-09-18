@@ -40,6 +40,8 @@ class _ExampleAppState extends State<ExampleApp> {
     null, 'en', 'de', 'pt-BR', 'ar', 'ja', 'zh-TW', //
   ];
 
+  final navigatorKey = GlobalKey<NavigatorState>();
+
   Color accent = accents.first;
   double radius = 12;
   bool dark = false;
@@ -69,15 +71,47 @@ class _ExampleAppState extends State<ExampleApp> {
     );
   }
 
+  /// AI Support Assistant hooks. They need `init` first and survive later
+  /// `init` calls, so they're set once.
+  void _configureAssistant() {
+    // A live snapshot of app state, sent with each chat message so the
+    // assistant can diagnose without asking. States and counts only: no
+    // identifiers or personal data.
+    Featurely.setChatDiagnosticsProvider(() async => {
+          'sdkLocale': localeTag ?? 'device',
+          'darkMode': dark,
+          'plan': plan ?? 'none',
+          'signedIn': userId.trim().isNotEmpty,
+          'theme': {'radius': radius.round()},
+        });
+    // One action the assistant may suggest, shown as a button under its
+    // reply. Titles come from the host app (localize them in a real app).
+    Featurely.registerChatActions(const [
+      FeaturelyChatAction(id: 'open_settings', title: 'Open Settings'),
+    ]);
+    Featurely.setChatActionHandler((id) {
+      if (id != 'open_settings') return FeaturelyChatActionResult.stay;
+      // `dismiss` closes the chat sheet right after this returns; navigate
+      // once it's gone.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        navigatorKey.currentState?.push(MaterialPageRoute<void>(
+          builder: (_) => const _SettingsPage(),
+        ));
+      });
+      return FeaturelyChatActionResult.dismiss;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _reinit();
+    _reinit().then((_) => _configureAssistant());
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Featurely Example',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -101,6 +135,13 @@ class _ExampleAppState extends State<ExampleApp> {
               FilledButton(
                 onPressed: () => Featurely.show(context),
                 child: const Text('Give feedback'),
+              ),
+              const SizedBox(height: 8),
+              FilledButton.tonal(
+                // With the assistant enabled for the project, try asking it
+                // to "open settings".
+                onPressed: () => Featurely.showChat(context),
+                child: const Text('Chat with us'),
               ),
               const Divider(height: 32),
               Text('Theming', style: Theme.of(context).textTheme.titleMedium),
@@ -213,4 +254,17 @@ class _ExampleAppState extends State<ExampleApp> {
       ),
     );
   }
+}
+
+/// The screen the example's `open_settings` chat action navigates to.
+class _SettingsPage extends StatelessWidget {
+  const _SettingsPage();
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: const Text('Settings')),
+        body: const Center(
+          child: Text('Opened from an AI assistant chat action.'),
+        ),
+      );
 }

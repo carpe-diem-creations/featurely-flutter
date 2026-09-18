@@ -1,0 +1,14 @@
+{
+  "project": { "name": "Lynio" },
+  "commentingEnabled": true,
+  "chatEnabled": true,
+  "assistantEnabled": true,
+  "visibleStatuses": ["open", "planned", "in_progress", "done"],
+  "limits": {
+    "titleMax": 60,
+    "descriptionMax": 10000,
+    "commentMax": 5000,
+    "attachmentMaxBytes": 5242880,
+    "attachmentTypes": ["image/png", "image/jpeg", "image/webp"]
+  }
+}

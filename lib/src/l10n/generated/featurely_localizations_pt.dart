@@ -229,6 +229,17 @@ class FeaturelyLocalizationsPt extends FeaturelyLocalizations {
       'Demasiados pedidos. Tenta novamente dentro de momentos.';
 
   @override
+  String get sdkChatAiTag => 'IA';
+
+  @override
+  String get sdkChatAssistantName => 'Assistente';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name está a escrever…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Escreve uma mensagem…';
 
   @override
@@ -508,6 +519,17 @@ class FeaturelyLocalizationsPtBr extends FeaturelyLocalizationsPt {
   @override
   String get sdkCommonRateLimited =>
       'Muitas solicitações. Tente novamente em instantes.';
+
+  @override
+  String get sdkChatAiTag => 'IA';
+
+  @override
+  String get sdkChatAssistantName => 'Assistente';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name está digitando…';
+  }
 
   @override
   String get sdkChatComposerPlaceholder => 'Escreva uma mensagem…';

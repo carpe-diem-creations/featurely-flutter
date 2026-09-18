@@ -18,6 +18,8 @@ library;
 
 export 'src/api/api_exception.dart'
     show FeaturelyApiException, FeaturelyErrorCode, FeaturelyNetworkException;
+export 'src/chat_actions.dart'
+    show FeaturelyChatAction, FeaturelyChatActionResult;
 export 'src/featurely_base.dart' show Featurely;
 export 'src/options.dart' show FeaturelyEnvironment, FeaturelyErrorListener;
 export 'src/theme.dart' show FeaturelyTheme;

@@ -228,6 +228,17 @@ class FeaturelyLocalizationsEl extends FeaturelyLocalizations {
       'Πάρα πολλά αιτήματα. Δοκίμασε ξανά σε λίγο.';
 
   @override
+  String get sdkChatAiTag => 'ΤΝ';
+
+  @override
+  String get sdkChatAssistantName => 'Βοηθός';
+
+  @override
+  String sdkChatAssistantTyping(String name) {
+    return '$name πληκτρολογεί…';
+  }
+
+  @override
   String get sdkChatComposerPlaceholder => 'Γράψε ένα μήνυμα…';
 
   @override
