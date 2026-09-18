@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.1
 
 - Assistant replies are labeled with the assistant's name only (default
   "Assistant"); the small "AI" tag is gone. The `sdkChatAiTag` string is
