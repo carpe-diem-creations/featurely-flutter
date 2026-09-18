@@ -49,7 +49,6 @@ class FakeApi extends FeaturelyApiClient {
       onGetChatMessages;
   Future<ChatMessage> Function(String body, String clientMessageId)?
       onSendChatMessage;
-  Future<void> Function(String? email)? onSetChatEmail;
   Future<void> Function()? onMarkChatRead;
 
   /// Every `getChatMessages` call as `(before, after)`.
@@ -72,9 +71,6 @@ class FakeApi extends FeaturelyApiClient {
   /// The `availableActions` of every `sendChatMessage` call, parallel to
   /// [sendCalls].
   final List<List<String>?> sendActions = [];
-
-  /// Every `setChatEmail` argument.
-  final List<String?> emailCalls = [];
 
   /// Number of `markChatRead` calls.
   int readCalls = 0;
@@ -156,12 +152,6 @@ class FakeApi extends FeaturelyApiClient {
   }
 
   @override
-  Future<void> setChatEmail(String? email) {
-    emailCalls.add(email);
-    return onSetChatEmail?.call(email) ?? Future.value();
-  }
-
-  @override
   Future<void> markChatRead() {
     readCalls++;
     return onMarkChatRead?.call() ?? Future.value();
@@ -240,11 +230,9 @@ ChatMessage makeAssistantMessage({
     );
 
 /// A conversation fixture.
-ChatConversation makeConversation({int unread = 0, String? email}) =>
-    ChatConversation(
+ChatConversation makeConversation({int unread = 0}) => ChatConversation(
       id: 'conv-1',
       status: ConversationStatus.open,
-      contactEmail: email,
       unreadCount: unread,
       lastMessageAt: DateTime.utc(2026, 9, 1, 10),
     );

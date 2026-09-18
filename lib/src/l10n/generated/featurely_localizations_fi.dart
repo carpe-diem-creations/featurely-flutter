@@ -228,9 +228,6 @@ class FeaturelyLocalizationsFi extends FeaturelyLocalizations {
       'Liian monta pyyntöä. Yritä hetken kuluttua uudelleen.';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => 'Avustaja';
 
   @override
@@ -240,24 +237,6 @@ class FeaturelyLocalizationsFi extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Kirjoita viesti…';
-
-  @override
-  String get sdkChatEmailEdit => 'Muokkaa';
-
-  @override
-  String get sdkChatEmailInvalid => 'Anna kelvollinen sähköpostiosoite.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Sähköpostiosoitteesi';
-
-  @override
-  String get sdkChatEmailPrompt => 'Saa vastaukset sähköpostiin';
-
-  @override
-  String get sdkChatEmailSave => 'Tallenna';
-
-  @override
-  String get sdkChatEmailSaved => 'Sähköposti vastauksille';
 
   @override
   String get sdkChatEmptyGreeting =>

@@ -130,8 +130,7 @@ class Featurely {
   /// it is dismissed. Throws a [StateError] when called before [init].
   ///
   /// Chat is a private one-to-one thread between this device and your team;
-  /// replies arrive by polling while the screen is open (and by email when
-  /// the user left an address). The thread belongs to the device ID, so
+  /// replies arrive by polling while the screen is open. The thread belongs to the device ID, so
   /// [logout] starts a fresh, empty chat. Requires a Featurely server that
   /// reports `chatEnabled` — against an older server the screen shows its
   /// failed-load state, so gate your own entry point on a server you know

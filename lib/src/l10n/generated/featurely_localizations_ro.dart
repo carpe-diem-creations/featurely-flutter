@@ -231,9 +231,6 @@ class FeaturelyLocalizationsRo extends FeaturelyLocalizations {
       'Prea multe cereri. Încearcă din nou în câteva momente.';
 
   @override
-  String get sdkChatAiTag => 'IA';
-
-  @override
   String get sdkChatAssistantName => 'Asistent';
 
   @override
@@ -243,24 +240,6 @@ class FeaturelyLocalizationsRo extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Scrie un mesaj…';
-
-  @override
-  String get sdkChatEmailEdit => 'Editează';
-
-  @override
-  String get sdkChatEmailInvalid => 'Introdu o adresă de e-mail validă.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Adresa ta de e-mail';
-
-  @override
-  String get sdkChatEmailPrompt => 'Primește răspunsurile pe e-mail';
-
-  @override
-  String get sdkChatEmailSave => 'Salvează';
-
-  @override
-  String get sdkChatEmailSaved => 'E-mail pentru răspunsuri';
 
   @override
   String get sdkChatEmptyGreeting =>

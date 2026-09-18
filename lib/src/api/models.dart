@@ -487,7 +487,6 @@ class ChatConversation {
   const ChatConversation({
     required this.id,
     required this.status,
-    required this.contactEmail,
     required this.unreadCount,
     required this.lastMessageAt,
   });
@@ -497,7 +496,6 @@ class ChatConversation {
       ChatConversation(
         id: json['id'] as String? ?? '',
         status: ConversationStatus.decode(json['status']),
-        contactEmail: json['contactEmail'] as String?,
         unreadCount: (json['unreadCount'] as num?)?.toInt() ?? 0,
         lastMessageAt: DateTime.tryParse(json['lastMessageAt'] as String? ?? ''),
       );
@@ -507,9 +505,6 @@ class ChatConversation {
 
   /// Open or closed.
   final ConversationStatus status;
-
-  /// The address team replies are emailed to, if any.
-  final String? contactEmail;
 
   /// Team messages newer than this device's last read marker.
   final int unreadCount;

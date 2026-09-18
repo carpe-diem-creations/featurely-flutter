@@ -221,9 +221,6 @@ class FeaturelyLocalizationsKo extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => '요청이 너무 많습니다. 잠시 후 다시 시도하세요.';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => '어시스턴트';
 
   @override
@@ -233,24 +230,6 @@ class FeaturelyLocalizationsKo extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => '메시지 입력…';
-
-  @override
-  String get sdkChatEmailEdit => '수정';
-
-  @override
-  String get sdkChatEmailInvalid => '올바른 이메일 주소를 입력해 주세요.';
-
-  @override
-  String get sdkChatEmailPlaceholder => '이메일 주소';
-
-  @override
-  String get sdkChatEmailPrompt => '이메일로 답변 받기';
-
-  @override
-  String get sdkChatEmailSave => '저장';
-
-  @override
-  String get sdkChatEmailSaved => '답변 받을 이메일';
 
   @override
   String get sdkChatEmptyGreeting => '안녕하세요! 메시지를 보내 주시면 저희 팀이 여기에서 답변해 드릴게요.';

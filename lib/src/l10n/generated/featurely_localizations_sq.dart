@@ -226,9 +226,6 @@ class FeaturelyLocalizationsSq extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => 'Shumë kërkesa. Provo sërish pas pak.';
 
   @override
-  String get sdkChatAiTag => 'IA';
-
-  @override
   String get sdkChatAssistantName => 'Asistenti';
 
   @override
@@ -238,24 +235,6 @@ class FeaturelyLocalizationsSq extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Shkruaj një mesazh…';
-
-  @override
-  String get sdkChatEmailEdit => 'Ndrysho';
-
-  @override
-  String get sdkChatEmailInvalid => 'Shkruaj një adresë email-i të vlefshme.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Adresa jote e email-it';
-
-  @override
-  String get sdkChatEmailPrompt => 'Merr përgjigjet me email';
-
-  @override
-  String get sdkChatEmailSave => 'Ruaj';
-
-  @override
-  String get sdkChatEmailSaved => 'Email-i për përgjigjet';
 
   @override
   String get sdkChatEmptyGreeting =>

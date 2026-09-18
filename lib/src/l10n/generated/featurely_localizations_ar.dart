@@ -243,9 +243,6 @@ class FeaturelyLocalizationsAr extends FeaturelyLocalizations {
       'طلبات كثيرة جدًا. حاول مرة أخرى بعد قليل.';
 
   @override
-  String get sdkChatAiTag => 'ذكاء اصطناعي';
-
-  @override
   String get sdkChatAssistantName => 'المساعد';
 
   @override
@@ -255,24 +252,6 @@ class FeaturelyLocalizationsAr extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'اكتب رسالة…';
-
-  @override
-  String get sdkChatEmailEdit => 'تعديل';
-
-  @override
-  String get sdkChatEmailInvalid => 'أدخل عنوان بريد إلكتروني صالحًا.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'عنوان بريدك الإلكتروني';
-
-  @override
-  String get sdkChatEmailPrompt => 'تلقَّ الردود عبر البريد الإلكتروني';
-
-  @override
-  String get sdkChatEmailSave => 'حفظ';
-
-  @override
-  String get sdkChatEmailSaved => 'البريد الإلكتروني للردود';
 
   @override
   String get sdkChatEmptyGreeting =>

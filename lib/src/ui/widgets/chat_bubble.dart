@@ -14,7 +14,7 @@ import '../scope.dart';
 /// day lives in the list's day separators), "Sending…", or the retry hint.
 ///
 /// AI assistant messages also sit on the leading side, under the
-/// assistant's name and a small "AI" tag. Their text is plain (no markdown);
+/// assistant's name. Their text is plain (no markdown);
 /// numbered lines (`1. …`) get a hanging indent. Suggested [actions] render
 /// as buttons below the bubble.
 class ChatBubble extends StatelessWidget {
@@ -139,7 +139,7 @@ class ChatBubble extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Name, tag and text read as one node; buttons stay separate.
+          // Name and text read as one node; buttons stay separate.
           MergeSemantics(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,7 +221,7 @@ class ChatBubble extends StatelessWidget {
   }
 }
 
-/// The assistant's name with the small "AI" tag, above its messages.
+/// The assistant's name, above its messages.
 class ChatAssistantLabel extends StatelessWidget {
   /// Creates the label for [name].
   const ChatAssistantLabel({required this.name, super.key});
@@ -232,40 +232,15 @@ class ChatAssistantLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = FeaturelyScope.of(context).theme;
-    final strings = FeaturelyLocalizations.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Flexible(
-          child: Text(
-            name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: theme.textSecondary,
-            ),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-          decoration: BoxDecoration(
-            color: theme.tint(theme.accent, 0.12),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            strings.sdkChatAiTag,
-            style: TextStyle(
-              fontSize: 10,
-              height: 1.3,
-              fontWeight: FontWeight.w700,
-              color: theme.accent,
-            ),
-          ),
-        ),
-      ],
+    return Text(
+      name,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: theme.textSecondary,
+      ),
     );
   }
 }

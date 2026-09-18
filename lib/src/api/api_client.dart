@@ -248,12 +248,6 @@ class FeaturelyApiClient {
             alsoAccept: 200,
           )));
 
-  /// `PUT /conversation/email` — store (or, with null, clear) the address
-  /// team replies are emailed to.
-  Future<void> setChatEmail(String? email) => _reporting('setChatEmail', () =>
-      _sendJson('PUT', '/conversation/email',
-          body: {'email': email}, expect: 204));
-
   /// `POST /conversation/read` — mark every team message so far as read.
   Future<void> markChatRead() => _reporting('markChatRead',
       () => _sendJson('POST', '/conversation/read', expect: 204));

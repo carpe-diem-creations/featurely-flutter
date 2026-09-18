@@ -231,9 +231,6 @@ class FeaturelyLocalizationsHe extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => 'יותר מדי בקשות. נסו שוב בעוד רגע.';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => 'עוזר';
 
   @override
@@ -243,24 +240,6 @@ class FeaturelyLocalizationsHe extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'כתיבת הודעה…';
-
-  @override
-  String get sdkChatEmailEdit => 'עריכה';
-
-  @override
-  String get sdkChatEmailInvalid => 'יש להזין כתובת מייל תקינה.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'כתובת המייל שלך';
-
-  @override
-  String get sdkChatEmailPrompt => 'קבלת תשובות במייל';
-
-  @override
-  String get sdkChatEmailSave => 'שמירה';
-
-  @override
-  String get sdkChatEmailSaved => 'מייל לתשובות';
 
   @override
   String get sdkChatEmptyGreeting =>

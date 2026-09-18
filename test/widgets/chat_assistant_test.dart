@@ -48,14 +48,14 @@ void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   testWidgets(
-      'assistant messages show the name and AI tag, with numbered lines as '
+      'assistant messages show the name (no AI tag), with numbered lines as '
       'plain text', (tester) async {
     final api = FakeApi();
     _serve(api, [makeAssistantMessage(id: 'a1', body: _steps)]);
     await _pumpChat(tester, makeCore(api));
 
     expect(find.text('Lyn'), findsOneWidget);
-    expect(find.text('AI'), findsOneWidget);
+    expect(find.text('AI'), findsNothing);
     expect(
         find.text("Your iPhone never showed the pairing prompt. Let's "
             'retry:'),
@@ -83,7 +83,7 @@ void main() {
     await _pumpChat(tester, makeCore(api));
     expect(find.text('**Bold** and # heading'), findsOneWidget);
     expect(find.text('Assistant'), findsOneWidget);
-    expect(find.text('AI'), findsOneWidget);
+    expect(find.text('AI'), findsNothing);
     await _unmount(tester);
   });
 
@@ -121,12 +121,12 @@ void main() {
     await _unmount(tester);
   });
 
-  testWidgets('German renders the tag and typing row from its catalog',
+  testWidgets('German renders the typing row from its catalog, with no tag',
       (tester) async {
     final api = FakeApi();
     _serve(api, [makeAssistantMessage(id: 'a1')], pending: () => true);
     await _pumpChat(tester, makeCore(api, locale: const Locale('de')));
-    expect(find.text('KI'), findsOneWidget);
+    expect(find.text('KI'), findsNothing);
     expect(find.text('Lyn schreibt…'), findsOneWidget);
     await _unmount(tester);
   });

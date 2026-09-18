@@ -237,9 +237,6 @@ class FeaturelyLocalizationsRu extends FeaturelyLocalizations {
       'Слишком много запросов. Попробуйте снова чуть позже.';
 
   @override
-  String get sdkChatAiTag => 'ИИ';
-
-  @override
   String get sdkChatAssistantName => 'Ассистент';
 
   @override
@@ -249,24 +246,6 @@ class FeaturelyLocalizationsRu extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Напиши сообщение…';
-
-  @override
-  String get sdkChatEmailEdit => 'Изменить';
-
-  @override
-  String get sdkChatEmailInvalid => 'Введи корректный адрес электронной почты.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Твой адрес электронной почты';
-
-  @override
-  String get sdkChatEmailPrompt => 'Получать ответы по почте';
-
-  @override
-  String get sdkChatEmailSave => 'Сохранить';
-
-  @override
-  String get sdkChatEmailSaved => 'Почта для ответов';
 
   @override
   String get sdkChatEmptyGreeting =>

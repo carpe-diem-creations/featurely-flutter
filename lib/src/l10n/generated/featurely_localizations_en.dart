@@ -228,9 +228,6 @@ class FeaturelyLocalizationsEn extends FeaturelyLocalizations {
       'Too many requests. Try again in a moment.';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => 'Assistant';
 
   @override
@@ -240,24 +237,6 @@ class FeaturelyLocalizationsEn extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Write a message…';
-
-  @override
-  String get sdkChatEmailEdit => 'Edit';
-
-  @override
-  String get sdkChatEmailInvalid => 'Enter a valid email address.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Your email address';
-
-  @override
-  String get sdkChatEmailPrompt => 'Get replies by email';
-
-  @override
-  String get sdkChatEmailSave => 'Save';
-
-  @override
-  String get sdkChatEmailSaved => 'Email for replies';
 
   @override
   String get sdkChatEmptyGreeting =>

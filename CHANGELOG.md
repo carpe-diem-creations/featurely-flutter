@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Assistant replies are labeled with the assistant's name only (default
+  "Assistant"); the small "AI" tag is gone. The `sdkChatAiTag` string is
+  removed.
+- Removed the chat's "Get replies by email" card, along with its
+  `PUT /conversation/email` call and the six `sdkChatEmail*` strings. The
+  feedback form's optional email field is unchanged.
+
 ## 0.6.0
 
 **AI Support Assistant:** a Featurely project can let an AI assistant

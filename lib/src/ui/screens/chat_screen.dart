@@ -14,14 +14,13 @@ import '../scope.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_composer.dart';
 import '../widgets/chat_day_separator.dart';
-import '../widgets/chat_email_row.dart';
 import '../widgets/chat_typing_row.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/state_views.dart';
 
 /// The In-App Chat screen: header, the message list (newest at the bottom,
-/// grouped under day separators, "Load earlier" at the top), the optional
-/// contact-email card, and the composer.
+/// grouped under day separators, "Load earlier" at the top), and the
+/// composer.
 ///
 /// Pushed from the list screen's "Message us" action, or shown as the root
 /// of a standalone sheet by `Featurely.showChat`. Polls only while this
@@ -223,10 +222,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                 child: InlineErrorBanner(message: strings.sdkCommonRateLimited),
               ),
             Expanded(child: _buildMessages(context)),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-              child: ChatEmailRow(controller: _controller),
-            ),
             ChatComposer(
               onSend: _send,
               // Consumed once: a composer rebuilt after a reload stays empty.

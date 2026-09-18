@@ -497,12 +497,6 @@ abstract class FeaturelyLocalizations {
   /// **'Too many requests. Try again in a moment.'**
   String get sdkCommonRateLimited;
 
-  /// Small tag next to the AI support assistant's name on its chat messages. Keep it as short as possible.
-  ///
-  /// In en, this message translates to:
-  /// **'AI'**
-  String get sdkChatAiTag;
-
   /// Fallback name for the AI support assistant when the server hasn't sent the project's own assistant name.
   ///
   /// In en, this message translates to:
@@ -520,42 +514,6 @@ abstract class FeaturelyLocalizations {
   /// In en, this message translates to:
   /// **'Write a message…'**
   String get sdkChatComposerPlaceholder;
-
-  /// Action to change the saved chat contact email.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get sdkChatEmailEdit;
-
-  /// Inline error when the chat contact email is not a valid address.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a valid email address.'**
-  String get sdkChatEmailInvalid;
-
-  /// Placeholder of the chat contact-email field.
-  ///
-  /// In en, this message translates to:
-  /// **'Your email address'**
-  String get sdkChatEmailPlaceholder;
-
-  /// Row inviting the user to leave an email address so team replies are also emailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Get replies by email'**
-  String get sdkChatEmailPrompt;
-
-  /// Button saving the chat contact email.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get sdkChatEmailSave;
-
-  /// Label shown above the saved contact email address (the address itself is shown separately, with an Edit action).
-  ///
-  /// In en, this message translates to:
-  /// **'Email for replies'**
-  String get sdkChatEmailSaved;
 
   /// Greeting shown on the chat screen before any message exists. Fixed text, not configurable per project.
   ///
