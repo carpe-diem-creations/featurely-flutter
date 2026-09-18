@@ -71,8 +71,7 @@ toggle.
 End users can message your team privately; the team answers from the
 dashboard **Inbox**. Replies show up in the open chat within a few seconds
 (the SDK polls every 5 s while the chat is on screen and the app is in the
-foreground), and are also emailed when the user left an address via the
-optional "Get replies by email" row.
+foreground).
 
 Two entry points:
 
@@ -198,7 +197,7 @@ email. A team reply always takes over from the assistant.
    assistant only answers conversations whose SDK does. The two hooks below
    make its answers much better.
 
-Assistant replies show under the assistant's name with a small **AI** tag.
+Assistant replies show under the assistant's name (default "Assistant").
 They are plain text; step-by-step help comes as numbered lines. While the
 assistant is writing, the chat shows "{name} is typing…" and checks for the
 reply every 1.5 s (for up to 60 s, then back to every 5 s). There is no

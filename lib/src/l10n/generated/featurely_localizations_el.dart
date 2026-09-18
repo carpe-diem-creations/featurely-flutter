@@ -228,9 +228,6 @@ class FeaturelyLocalizationsEl extends FeaturelyLocalizations {
       'Πάρα πολλά αιτήματα. Δοκίμασε ξανά σε λίγο.';
 
   @override
-  String get sdkChatAiTag => 'ΤΝ';
-
-  @override
   String get sdkChatAssistantName => 'Βοηθός';
 
   @override
@@ -240,24 +237,6 @@ class FeaturelyLocalizationsEl extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Γράψε ένα μήνυμα…';
-
-  @override
-  String get sdkChatEmailEdit => 'Επεξεργασία';
-
-  @override
-  String get sdkChatEmailInvalid => 'Συμπλήρωσε μια έγκυρη διεύθυνση email.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Η διεύθυνση email σου';
-
-  @override
-  String get sdkChatEmailPrompt => 'Λάβε τις απαντήσεις με email';
-
-  @override
-  String get sdkChatEmailSave => 'Αποθήκευση';
-
-  @override
-  String get sdkChatEmailSaved => 'Email για απαντήσεις';
 
   @override
   String get sdkChatEmptyGreeting =>

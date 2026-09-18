@@ -3,7 +3,7 @@ description: >-
   In-app feedback sheet for the self-hosted Featurely platform: feature
   requests, issue reports, voting, and comments — themed by your app and
   localized in 34 languages.
-version: 0.6.0
+version: 0.6.1
 repository: https://github.com/carpe-diem-creations/featurely-flutter
 issue_tracker: https://github.com/carpe-diem-creations/featurely-flutter/issues
 topics:

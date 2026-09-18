@@ -236,9 +236,6 @@ class FeaturelyLocalizationsSk extends FeaturelyLocalizations {
       'Príliš veľa žiadostí. Skús to znova o chvíľu.';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => 'Asistent';
 
   @override
@@ -248,24 +245,6 @@ class FeaturelyLocalizationsSk extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Napíš správu…';
-
-  @override
-  String get sdkChatEmailEdit => 'Upraviť';
-
-  @override
-  String get sdkChatEmailInvalid => 'Zadaj platnú e-mailovú adresu.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Tvoja e-mailová adresa';
-
-  @override
-  String get sdkChatEmailPrompt => 'Dostávaj odpovede e-mailom';
-
-  @override
-  String get sdkChatEmailSave => 'Uložiť';
-
-  @override
-  String get sdkChatEmailSaved => 'E-mail pre odpovede';
 
   @override
   String get sdkChatEmptyGreeting =>

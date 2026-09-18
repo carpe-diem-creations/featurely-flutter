@@ -67,7 +67,6 @@ void main() {
           'you here.'),
       findsOneWidget,
     );
-    expect(find.text('Get replies by email'), findsOneWidget);
     await _unmount(tester);
   });
 
@@ -317,57 +316,6 @@ void main() {
     await _unmount(tester);
   });
 
-  testWidgets('email row validates, saves, and shows the address with Edit',
-      (tester) async {
-    final api = FakeApi();
-    await _pumpChat(tester, api);
-
-    await tester.tap(find.text('Get replies by email'));
-    await tester.pump();
-    final field = find.byKey(const ValueKey('featurely-chat-email-field'));
-    expect(field, findsOneWidget);
-
-    await tester.enterText(field, 'nope');
-    await tester.tap(find.text('Save'));
-    await tester.pump();
-    expect(find.text('Enter a valid email address.'), findsOneWidget);
-    expect(api.emailCalls, isEmpty);
-
-    // Server-side rejection surfaces the same message.
-    api.onSetChatEmail = (email) async =>
-        throw FeaturelyApiException(FeaturelyErrorCode.invalidEmail, 400);
-    await tester.enterText(field, 'me@bad.example');
-    await tester.tap(find.text('Save'));
-    await tester.pump();
-    await tester.pump();
-    expect(find.text('Enter a valid email address.'), findsOneWidget);
-
-    api.onSetChatEmail = null;
-    await tester.enterText(field, 'me@example.com');
-    await tester.tap(find.text('Save'));
-    await tester.pump();
-    await tester.pump();
-    expect(api.emailCalls.last, 'me@example.com');
-    expect(find.text('Email for replies'), findsOneWidget);
-    expect(find.text('me@example.com'), findsOneWidget);
-    expect(find.text('Edit'), findsOneWidget);
-
-    await tester.tap(find.text('Edit'));
-    await tester.pump();
-    expect(field, findsOneWidget);
-    await _unmount(tester);
-  });
-
-  testWidgets('a saved contact email is shown on open', (tester) async {
-    final api = FakeApi();
-    api.onGetConversation =
-        () async => makeConversation(email: 'saved@example.com');
-    await _pumpChat(tester, api);
-    expect(find.text('saved@example.com'), findsOneWidget);
-    expect(find.text('Get replies by email'), findsNothing);
-    await _unmount(tester);
-  });
-
   testWidgets('failed initial load shows the shared error state with Retry',
       (tester) async {
     final api = FakeApi();
@@ -386,7 +334,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(find.text('Retry'), findsNothing);
-    expect(find.text('Get replies by email'), findsOneWidget);
+    expect(find.text('Messages'), findsOneWidget);
     await _unmount(tester);
   });
 

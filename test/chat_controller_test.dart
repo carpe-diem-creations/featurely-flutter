@@ -510,40 +510,6 @@ void main() {
     expect(controller.isPollScheduled, isFalse);
   });
 
-  chatTest('email: client-side and server-side validation, then save',
-      (tester) async {
-    final api = FakeApi();
-    api.onSetChatEmail = (email) async {
-      if (email == 'bad@example') {
-        throw FeaturelyApiException(FeaturelyErrorCode.invalidEmail, 400);
-      }
-    };
-    final controller = _controller(api);
-    await controller.load();
-
-    expect(await controller.saveEmail('not-an-email'), isFalse);
-    expect(controller.emailError, ChatEmailError.invalid);
-    expect(api.emailCalls, isEmpty);
-
-    // The server has the final word.
-    expect(ChatController.looksLikeEmail('bad@example.c'), isTrue);
-    api.onSetChatEmail = (email) async =>
-        throw FeaturelyApiException(FeaturelyErrorCode.invalidEmail, 400);
-    expect(await controller.saveEmail('bad@example.c'), isFalse);
-    expect(controller.emailError, ChatEmailError.invalid);
-
-    api.onSetChatEmail = null;
-    expect(await controller.saveEmail(' me@example.com '), isTrue);
-    expect(api.emailCalls.last, 'me@example.com');
-    expect(controller.contactEmail, 'me@example.com');
-    expect(controller.emailError, ChatEmailError.none);
-
-    // Blank clears.
-    expect(await controller.saveEmail(''), isTrue);
-    expect(api.emailCalls.last, isNull);
-    expect(controller.contactEmail, isNull);
-  });
-
   group('AI assistant', () {
     const cid = '44444444-4444-4444-8444-444444444444';
     FeaturelyApiException badRequest(String code) =>

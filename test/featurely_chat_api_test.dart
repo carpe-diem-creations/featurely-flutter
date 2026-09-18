@@ -507,18 +507,11 @@ void main() {
       }
     });
 
-    test('setChatEmail PUTs the address (null clears); markChatRead POSTs',
-        () async {
-      await client.setChatEmail('me@example.com');
-      await client.setChatEmail(null);
+    test('markChatRead POSTs', () async {
       await client.markChatRead();
       expect(requests.map((r) => '${r.method} ${r.url.path}'), [
-        'PUT /api/v1/conversation/email',
-        'PUT /api/v1/conversation/email',
         'POST /api/v1/conversation/read',
       ]);
-      expect(jsonDecode(requests[0].body), {'email': 'me@example.com'});
-      expect(jsonDecode(requests[1].body), {'email': null});
     });
 
     test('generated clientMessageIds are RFC 4122 v4 UUIDs', () async {

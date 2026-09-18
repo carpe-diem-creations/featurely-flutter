@@ -235,9 +235,6 @@ class FeaturelyLocalizationsLt extends FeaturelyLocalizations {
       'Per daug užklausų. Bandyk dar kartą po akimirkos.';
 
   @override
-  String get sdkChatAiTag => 'DI';
-
-  @override
   String get sdkChatAssistantName => 'Asistentas';
 
   @override
@@ -247,24 +244,6 @@ class FeaturelyLocalizationsLt extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Rašyk žinutę…';
-
-  @override
-  String get sdkChatEmailEdit => 'Redaguoti';
-
-  @override
-  String get sdkChatEmailInvalid => 'Įvesk galiojantį el. pašto adresą.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Tavo el. pašto adresas';
-
-  @override
-  String get sdkChatEmailPrompt => 'Gauk atsakymus el. paštu';
-
-  @override
-  String get sdkChatEmailSave => 'Išsaugoti';
-
-  @override
-  String get sdkChatEmailSaved => 'El. paštas atsakymams';
 
   @override
   String get sdkChatEmptyGreeting =>

@@ -219,9 +219,6 @@ class FeaturelyLocalizationsZh extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => '请求过多，请稍后再试。';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => '助手';
 
   @override
@@ -231,24 +228,6 @@ class FeaturelyLocalizationsZh extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => '输入消息…';
-
-  @override
-  String get sdkChatEmailEdit => '编辑';
-
-  @override
-  String get sdkChatEmailInvalid => '请输入有效的邮箱地址。';
-
-  @override
-  String get sdkChatEmailPlaceholder => '你的邮箱地址';
-
-  @override
-  String get sdkChatEmailPrompt => '通过邮件接收回复';
-
-  @override
-  String get sdkChatEmailSave => '保存';
-
-  @override
-  String get sdkChatEmailSaved => '接收回复的邮箱';
 
   @override
   String get sdkChatEmptyGreeting => '你好！给我们发条消息，我们的团队会在这里回复你。';
@@ -501,9 +480,6 @@ class FeaturelyLocalizationsZhHant extends FeaturelyLocalizationsZh {
   String get sdkCommonRateLimited => '請求次數過多，請稍後再試。';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => '助理';
 
   @override
@@ -513,24 +489,6 @@ class FeaturelyLocalizationsZhHant extends FeaturelyLocalizationsZh {
 
   @override
   String get sdkChatComposerPlaceholder => '輸入訊息…';
-
-  @override
-  String get sdkChatEmailEdit => '編輯';
-
-  @override
-  String get sdkChatEmailInvalid => '請輸入有效的電子郵件地址。';
-
-  @override
-  String get sdkChatEmailPlaceholder => '你的電子郵件地址';
-
-  @override
-  String get sdkChatEmailPrompt => '透過電子郵件接收回覆';
-
-  @override
-  String get sdkChatEmailSave => '儲存';
-
-  @override
-  String get sdkChatEmailSaved => '接收回覆的電子郵件';
 
   @override
   String get sdkChatEmptyGreeting => '你好！傳訊息給我們，我們的團隊會在這裡回覆你。';

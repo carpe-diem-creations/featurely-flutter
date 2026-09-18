@@ -66,6 +66,11 @@
 # gained sdk.chat.actionUsed, which only the iOS SDK uses; this SDK does not
 # vendor it.)
 #
+# Not vendored since 2026-09-19: `sdkChatAiTag` (sdk.chat.aiTag; assistant
+# replies are labeled with the assistant's name only) and the six
+# `sdkChatEmail*` keys (sdk.chat.email*; the chat's "Get replies by email"
+# card is removed). Skip them when re-syncing.
+#
 # To re-sync after a canonical catalog change: repeat the transform above for
 # all 34 locales, re-add the extension keys (until upstreamed), update the
 # commit hash and date here, then run `flutter gen-l10n`.

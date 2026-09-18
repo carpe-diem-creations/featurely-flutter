@@ -58,20 +58,8 @@ class ChatEntry {
   bool get isLocal => delivery != ChatDelivery.sent;
 }
 
-/// Outcome of the contact-email editor.
-enum ChatEmailError {
-  /// No error.
-  none,
-
-  /// The address was rejected (client check or `400 invalid_email`).
-  invalid,
-
-  /// The save failed for another reason.
-  failed,
-}
-
 /// Controller for the In-App Chat screen: history paging, optimistic sends
-/// with manual retry, the contact email, polling, read markers, and the AI
+/// with manual retry, polling, read markers, and the AI
 /// assistant's pending state.
 ///
 /// Polling runs only while [setVisible] is true **and** the app is in the
@@ -146,9 +134,6 @@ class ChatController extends ChangeNotifier {
   String? _newerCursor;
   bool _loadingEarlier = false;
   bool _loadEarlierFailed = false;
-  String? _contactEmail;
-  bool _savingEmail = false;
-  ChatEmailError _emailError = ChatEmailError.none;
   bool _rateLimitedNotice = false;
 
   bool _visible = false;
@@ -184,15 +169,6 @@ class ChatController extends ChangeNotifier {
 
   /// Whether the last "Load earlier" failed.
   bool get loadEarlierFailed => _loadEarlierFailed;
-
-  /// The saved contact email, if any.
-  String? get contactEmail => _contactEmail;
-
-  /// Whether the email is being saved.
-  bool get savingEmail => _savingEmail;
-
-  /// The email editor's error state.
-  ChatEmailError get emailError => _emailError;
 
   /// Whether a `429` notice should show (cleared by the next success).
   bool get rateLimitedNotice => _rateLimitedNotice;
@@ -257,7 +233,6 @@ class ChatController extends ChangeNotifier {
       if (_disposed || generation != _loadGeneration) return;
       final conversation = results[0] as ChatConversation?;
       final page = results[1]! as ChatMessagesPage;
-      _contactEmail = conversation?.contactEmail;
       _confirmed = [];
       _merge(page.messages);
       _olderCursor = page.olderCursor;
@@ -441,52 +416,6 @@ class ChatController extends ChangeNotifier {
       _notify();
     }
   }
-
-  /// Saves (or, when blank, clears) the contact email.
-  Future<bool> saveEmail(String input) async {
-    final email = input.trim();
-    if (email.isNotEmpty && !looksLikeEmail(email)) {
-      _emailError = ChatEmailError.invalid;
-      _notify();
-      return false;
-    }
-    _savingEmail = true;
-    _emailError = ChatEmailError.none;
-    _notify();
-    try {
-      await api.setChatEmail(email.isEmpty ? null : email);
-      if (_disposed) return true;
-      _contactEmail = email.isEmpty ? null : email;
-      return true;
-    } on FeaturelyApiException catch (error) {
-      if (_disposed) return false;
-      _emailError = error.code == FeaturelyErrorCode.invalidEmail
-          ? ChatEmailError.invalid
-          : ChatEmailError.failed;
-      if (error.code == FeaturelyErrorCode.rateLimited) _startRateLimitPause();
-      return false;
-    } catch (_) {
-      if (_disposed) return false;
-      _emailError = ChatEmailError.failed;
-      return false;
-    } finally {
-      if (!_disposed) {
-        _savingEmail = false;
-        _notify();
-      }
-    }
-  }
-
-  /// Clears the email editor's error (e.g. when the user edits the field).
-  void clearEmailError() {
-    if (_emailError == ChatEmailError.none) return;
-    _emailError = ChatEmailError.none;
-    _notify();
-  }
-
-  /// A lenient client-side address check; the server has the final word.
-  static bool looksLikeEmail(String value) =>
-      RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value);
 
   /// Whether the chat route is on screen. Starts or stops polling.
   void setVisible(bool visible) {

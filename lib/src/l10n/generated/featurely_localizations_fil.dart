@@ -229,9 +229,6 @@ class FeaturelyLocalizationsFil extends FeaturelyLocalizations {
       'Masyadong maraming request. Subukan ulit mamaya.';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => 'Assistant';
 
   @override
@@ -241,24 +238,6 @@ class FeaturelyLocalizationsFil extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Sumulat ng mensahe…';
-
-  @override
-  String get sdkChatEmailEdit => 'I-edit';
-
-  @override
-  String get sdkChatEmailInvalid => 'Maglagay ng wastong email address.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Iyong email address';
-
-  @override
-  String get sdkChatEmailPrompt => 'Tumanggap ng mga tugon sa email';
-
-  @override
-  String get sdkChatEmailSave => 'I-save';
-
-  @override
-  String get sdkChatEmailSaved => 'Email para sa mga tugon';
 
   @override
   String get sdkChatEmptyGreeting =>

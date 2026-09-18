@@ -221,9 +221,6 @@ class FeaturelyLocalizationsJa extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => 'リクエストが多すぎます。しばらくしてからもう一度お試しください。';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => 'アシスタント';
 
   @override
@@ -233,24 +230,6 @@ class FeaturelyLocalizationsJa extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'メッセージを入力…';
-
-  @override
-  String get sdkChatEmailEdit => '編集';
-
-  @override
-  String get sdkChatEmailInvalid => '有効なメールアドレスを入力してください。';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'メールアドレス';
-
-  @override
-  String get sdkChatEmailPrompt => '返信をメールで受け取る';
-
-  @override
-  String get sdkChatEmailSave => '保存';
-
-  @override
-  String get sdkChatEmailSaved => '返信先メールアドレス';
 
   @override
   String get sdkChatEmptyGreeting => 'こんにちは！メッセージをお送りください。チームがこちらでお返事します。';

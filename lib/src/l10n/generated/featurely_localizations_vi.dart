@@ -224,9 +224,6 @@ class FeaturelyLocalizationsVi extends FeaturelyLocalizations {
       'Quá nhiều yêu cầu. Hãy thử lại sau giây lát.';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => 'Trợ lý';
 
   @override
@@ -236,24 +233,6 @@ class FeaturelyLocalizationsVi extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Viết tin nhắn…';
-
-  @override
-  String get sdkChatEmailEdit => 'Sửa';
-
-  @override
-  String get sdkChatEmailInvalid => 'Hãy nhập địa chỉ email hợp lệ.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Địa chỉ email của bạn';
-
-  @override
-  String get sdkChatEmailPrompt => 'Nhận phản hồi qua email';
-
-  @override
-  String get sdkChatEmailSave => 'Lưu';
-
-  @override
-  String get sdkChatEmailSaved => 'Email nhận phản hồi';
 
   @override
   String get sdkChatEmptyGreeting =>

@@ -138,7 +138,6 @@ void main() {
               as Map<String, dynamic>);
       expect(conversation.id, '3eb0ad85-b1b2-4f88-8a31-6c4e5f708192');
       expect(conversation.status, ConversationStatus.open);
-      expect(conversation.contactEmail, isNull);
       expect(conversation.unreadCount, 2);
       expect(conversation.lastMessageAt, DateTime.utc(2026, 9, 18, 10, 5));
     });

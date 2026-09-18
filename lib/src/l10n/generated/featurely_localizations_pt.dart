@@ -229,9 +229,6 @@ class FeaturelyLocalizationsPt extends FeaturelyLocalizations {
       'Demasiados pedidos. Tenta novamente dentro de momentos.';
 
   @override
-  String get sdkChatAiTag => 'IA';
-
-  @override
   String get sdkChatAssistantName => 'Assistente';
 
   @override
@@ -241,24 +238,6 @@ class FeaturelyLocalizationsPt extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Escreve uma mensagem…';
-
-  @override
-  String get sdkChatEmailEdit => 'Editar';
-
-  @override
-  String get sdkChatEmailInvalid => 'Introduz um endereço de email válido.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'O teu endereço de email';
-
-  @override
-  String get sdkChatEmailPrompt => 'Receber respostas por email';
-
-  @override
-  String get sdkChatEmailSave => 'Guardar';
-
-  @override
-  String get sdkChatEmailSaved => 'Email para respostas';
 
   @override
   String get sdkChatEmptyGreeting =>
@@ -521,9 +500,6 @@ class FeaturelyLocalizationsPtBr extends FeaturelyLocalizationsPt {
       'Muitas solicitações. Tente novamente em instantes.';
 
   @override
-  String get sdkChatAiTag => 'IA';
-
-  @override
   String get sdkChatAssistantName => 'Assistente';
 
   @override
@@ -533,24 +509,6 @@ class FeaturelyLocalizationsPtBr extends FeaturelyLocalizationsPt {
 
   @override
   String get sdkChatComposerPlaceholder => 'Escreva uma mensagem…';
-
-  @override
-  String get sdkChatEmailEdit => 'Editar';
-
-  @override
-  String get sdkChatEmailInvalid => 'Informe um endereço de e-mail válido.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Seu endereço de e-mail';
-
-  @override
-  String get sdkChatEmailPrompt => 'Receber respostas por e-mail';
-
-  @override
-  String get sdkChatEmailSave => 'Salvar';
-
-  @override
-  String get sdkChatEmailSaved => 'E-mail para respostas';
 
   @override
   String get sdkChatEmptyGreeting =>

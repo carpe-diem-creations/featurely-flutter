@@ -227,9 +227,6 @@ class FeaturelyLocalizationsNl extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => 'Te veel verzoeken. Probeer het zo weer.';
 
   @override
-  String get sdkChatAiTag => 'AI';
-
-  @override
   String get sdkChatAssistantName => 'Assistent';
 
   @override
@@ -239,24 +236,6 @@ class FeaturelyLocalizationsNl extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Schrijf een bericht…';
-
-  @override
-  String get sdkChatEmailEdit => 'Bewerken';
-
-  @override
-  String get sdkChatEmailInvalid => 'Voer een geldig e-mailadres in.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Je e-mailadres';
-
-  @override
-  String get sdkChatEmailPrompt => 'Antwoorden per e-mail ontvangen';
-
-  @override
-  String get sdkChatEmailSave => 'Opslaan';
-
-  @override
-  String get sdkChatEmailSaved => 'E-mail voor antwoorden';
 
   @override
   String get sdkChatEmptyGreeting =>

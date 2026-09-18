@@ -289,10 +289,6 @@
   "@sdkCommonRateLimited": {
     "description": "Notice for 429 rate_limited responses on user-initiated actions. [SDK-local extension key — not in the canonical catalog yet]"
   },
-  "sdkChatAiTag": "AI",
-  "@sdkChatAiTag": {
-    "description": "Small tag next to the AI support assistant's name on its chat messages. Keep it as short as possible."
-  },
   "sdkChatAssistantName": "Assistant",
   "@sdkChatAssistantName": {
     "description": "Fallback name for the AI support assistant when the server hasn't sent the project's own assistant name."
@@ -310,30 +306,6 @@
   "sdkChatComposerPlaceholder": "Write a message…",
   "@sdkChatComposerPlaceholder": {
     "description": "Placeholder of the chat message composer."
-  },
-  "sdkChatEmailEdit": "Edit",
-  "@sdkChatEmailEdit": {
-    "description": "Action to change the saved chat contact email."
-  },
-  "sdkChatEmailInvalid": "Enter a valid email address.",
-  "@sdkChatEmailInvalid": {
-    "description": "Inline error when the chat contact email is not a valid address."
-  },
-  "sdkChatEmailPlaceholder": "Your email address",
-  "@sdkChatEmailPlaceholder": {
-    "description": "Placeholder of the chat contact-email field."
-  },
-  "sdkChatEmailPrompt": "Get replies by email",
-  "@sdkChatEmailPrompt": {
-    "description": "Row inviting the user to leave an email address so team replies are also emailed."
-  },
-  "sdkChatEmailSave": "Save",
-  "@sdkChatEmailSave": {
-    "description": "Button saving the chat contact email."
-  },
-  "sdkChatEmailSaved": "Email for replies",
-  "@sdkChatEmailSaved": {
-    "description": "Label shown above the saved contact email address (the address itself is shown separately, with an Edit action)."
   },
   "sdkChatEmptyGreeting": "Hi there! Send us a message and our team will get back to you here.",
   "@sdkChatEmptyGreeting": {

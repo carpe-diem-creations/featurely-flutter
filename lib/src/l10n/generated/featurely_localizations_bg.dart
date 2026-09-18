@@ -228,9 +228,6 @@ class FeaturelyLocalizationsBg extends FeaturelyLocalizations {
       'Твърде много заявки. Опитай отново след малко.';
 
   @override
-  String get sdkChatAiTag => 'ИИ';
-
-  @override
   String get sdkChatAssistantName => 'Асистент';
 
   @override
@@ -240,24 +237,6 @@ class FeaturelyLocalizationsBg extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Напиши съобщение…';
-
-  @override
-  String get sdkChatEmailEdit => 'Редактирай';
-
-  @override
-  String get sdkChatEmailInvalid => 'Въведи валиден имейл адрес.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Твоят имейл адрес';
-
-  @override
-  String get sdkChatEmailPrompt => 'Получавай отговорите по имейл';
-
-  @override
-  String get sdkChatEmailSave => 'Запази';
-
-  @override
-  String get sdkChatEmailSaved => 'Имейл за отговори';
 
   @override
   String get sdkChatEmptyGreeting =>

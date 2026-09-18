@@ -226,9 +226,6 @@ class FeaturelyLocalizationsTr extends FeaturelyLocalizations {
   String get sdkCommonRateLimited => 'Çok fazla istek. Birazdan tekrar dene.';
 
   @override
-  String get sdkChatAiTag => 'YZ';
-
-  @override
   String get sdkChatAssistantName => 'Asistan';
 
   @override
@@ -238,24 +235,6 @@ class FeaturelyLocalizationsTr extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Bir mesaj yaz…';
-
-  @override
-  String get sdkChatEmailEdit => 'Düzenle';
-
-  @override
-  String get sdkChatEmailInvalid => 'Geçerli bir e-posta adresi gir.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'E-posta adresin';
-
-  @override
-  String get sdkChatEmailPrompt => 'Yanıtları e-postayla al';
-
-  @override
-  String get sdkChatEmailSave => 'Kaydet';
-
-  @override
-  String get sdkChatEmailSaved => 'Yanıtlar için e-posta';
 
   @override
   String get sdkChatEmptyGreeting =>

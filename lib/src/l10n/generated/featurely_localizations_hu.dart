@@ -229,9 +229,6 @@ class FeaturelyLocalizationsHu extends FeaturelyLocalizations {
       'Túl sok kérés. Próbáld újra kicsit később.';
 
   @override
-  String get sdkChatAiTag => 'MI';
-
-  @override
   String get sdkChatAssistantName => 'Asszisztens';
 
   @override
@@ -241,24 +238,6 @@ class FeaturelyLocalizationsHu extends FeaturelyLocalizations {
 
   @override
   String get sdkChatComposerPlaceholder => 'Írj üzenetet…';
-
-  @override
-  String get sdkChatEmailEdit => 'Szerkesztés';
-
-  @override
-  String get sdkChatEmailInvalid => 'Adj meg egy érvényes e-mail-címet.';
-
-  @override
-  String get sdkChatEmailPlaceholder => 'Az e-mail-címed';
-
-  @override
-  String get sdkChatEmailPrompt => 'Válaszok e-mailben';
-
-  @override
-  String get sdkChatEmailSave => 'Mentés';
-
-  @override
-  String get sdkChatEmailSaved => 'E-mail a válaszokhoz';
 
   @override
   String get sdkChatEmptyGreeting =>
